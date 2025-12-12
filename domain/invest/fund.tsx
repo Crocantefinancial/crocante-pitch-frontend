@@ -146,7 +146,7 @@ export default function Fund({ slug }: { slug: string }) {
           </button>
           <ChevronRight className="w-4 h-4" />
           <button
-            onClick={() => router.push("/")}
+            onClick={() => router.push("/invest")}
             className="hover:text-foreground"
           >
             Invest

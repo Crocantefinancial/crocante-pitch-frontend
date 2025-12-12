@@ -5,7 +5,6 @@ import { Header, MENU_ITEMS, NavBar } from "@/components/index";
 interface ShellProps {
   children: React.ReactNode;
   activeMenu: string;
-  setActiveMenu: (menu: string) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
   customAdditionalHeader: React.ReactNode;
@@ -13,7 +12,6 @@ interface ShellProps {
 export default function Shell({
   children,
   activeMenu,
-  setActiveMenu,
   sidebarOpen,
   setSidebarOpen,
   customAdditionalHeader,
@@ -28,7 +26,6 @@ export default function Shell({
       {/* Sidebar */}
       <NavBar
         activeMenu={activeMenu}
-        setActiveMenu={setActiveMenu}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
       />

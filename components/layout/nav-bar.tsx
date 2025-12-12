@@ -10,6 +10,7 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
+import { useRouter } from "next/navigation";
 
 export const MENU_ITEMS = [
   { icon: Building2, label: "Portfolio", id: "portfolio" },
@@ -25,18 +26,17 @@ export const MENU_ITEMS = [
 
 interface NavBarProps {
   activeMenu: string;
-  setActiveMenu: (menu: string) => void;
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
 
 export default function NavBar({
   activeMenu,
-  setActiveMenu,
   sidebarOpen,
   setSidebarOpen,
 }: NavBarProps) {
   const { user } = useSession();
+  const router = useRouter();
 
   return (
     <div
@@ -76,7 +76,7 @@ export default function NavBar({
             <button
               key={item.id}
               onClick={() => {
-                setActiveMenu(item.id);
+                router.push(`/${item.id}`);
               }}
               className={`w-full px-6 py-3 flex items-center gap-3 text-sm font-normal transition-all duration-200 ${
                 isActive
