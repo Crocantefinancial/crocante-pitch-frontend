@@ -1,26 +1,214 @@
+@import url("https://fonts.googleapis.com/css2?family=Overused+Grotesk:wght@300;400;500;600;700&display=swap");
 @import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* Neutrals - from design system */
+  --neutral-950: #0f1117;
+  --neutral-900: #21252b;
+  --neutral-800: #2d333b;
+  --neutral-700: #39414c;
+  --neutral-600: #444c56;
+  --neutral-500: #57606a;
+  --neutral-400: #6e7681;
+  --neutral-300: #8b949e;
+  --neutral-200: #c9d1d9;
+  --neutral-100: #e6edf3;
+  --neutral-50: #f6f8fb;
+
+  /* Primary - Blue/Purple gradient */
+  --primary-950: #0a0e27;
+  --primary-900: #1a1f4b;
+  --primary-800: #2e3675;
+  --primary-700: #4557c3;
+  --primary-600: #5b6bff;
+  --primary-500: #7b7ff0;
+  --primary-400: #9ba8ff;
+  --primary-300: #bcc5ff;
+  --primary-200: #dde2ff;
+  --primary-100: #eef1ff;
+
+  /* Accent - Orange/Coral gradient */
+  --accent-950: #2d1b0a;
+  --accent-900: #5c3515;
+  --accent-800: #8b4c1f;
+  --accent-700: #b8652a;
+  --accent-600: #e8764a;
+  --accent-500: #f5956b;
+  --accent-400: #faa97f;
+  --accent-300: #ffb89e;
+  --accent-200: #ffd4c9;
+  --accent-100: #ffe8e0;
+
+  /* Semantic tokens */
+  --background: var(--neutral-50);
+  --foreground: var(--neutral-900);
+  --card: white;
+  --card-foreground: var(--neutral-900);
+  --border: var(--neutral-200);
+  --input: var(--neutral-100);
+  --primary: var(--primary-600);
+  --primary-foreground: white;
+  --accent: var(--accent-600);
+  --accent-foreground: white;
+  --muted: var(--neutral-300);
+  --muted-foreground: var(--neutral-600);
+
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.97 0 0);
+  --secondary-foreground: oklch(0.205 0 0);
+  --destructive: oklch(0.577 0.245 27.325);
+  --destructive-foreground: oklch(0.577 0.245 27.325);
+  --ring: oklch(0.708 0 0);
+  --chart-1: oklch(0.646 0.222 41.116);
+  --chart-2: oklch(0.6 0.118 184.704);
+  --chart-3: oklch(0.398 0.07 227.392);
+  --chart-4: oklch(0.828 0.189 84.429);
+  --chart-5: oklch(0.769 0.188 70.08);
+  --radius: 0.625rem;
+  --sidebar: oklch(0.985 0 0);
+  --sidebar-foreground: oklch(0.145 0 0);
+  --sidebar-primary: oklch(0.205 0 0);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.97 0 0);
+  --sidebar-accent-foreground: oklch(0.205 0 0);
+  --sidebar-border: oklch(0.922 0 0);
+  --sidebar-ring: oklch(0.708 0 0);
+}
+
+.dark {
+  --background: var(--neutral-950);
+  --foreground: var(--neutral-50);
+  --card: var(--neutral-900);
+  --card-foreground: var(--neutral-50);
+  --border: var(--neutral-700);
+  --input: var(--neutral-800);
+  --primary: var(--primary-500);
+  --primary-foreground: var(--neutral-950);
+  --accent: var(--accent-500);
+  --accent-foreground: var(--neutral-950);
+  --muted: var(--neutral-500);
+  --muted-foreground: var(--neutral-400);
+
+  --popover: oklch(0.145 0 0);
+  --popover-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.269 0 0);
+  --secondary-foreground: oklch(0.985 0 0);
+  --destructive: oklch(0.396 0.141 25.723);
+  --destructive-foreground: oklch(0.637 0.237 25.331);
+  --ring: oklch(0.439 0 0);
+  --chart-1: oklch(0.488 0.243 264.376);
+  --chart-2: oklch(0.696 0.17 162.48);
+  --chart-3: oklch(0.769 0.188 70.08);
+  --chart-4: oklch(0.627 0.265 303.9);
+  --chart-5: oklch(0.645 0.246 16.439);
+  --sidebar: oklch(0.205 0 0);
+  --sidebar-foreground: oklch(0.985 0 0);
+  --sidebar-primary: oklch(0.488 0.243 264.376);
+  --sidebar-primary-foreground: oklch(0.985 0 0);
+  --sidebar-accent: oklch(0.269 0 0);
+  --sidebar-accent-foreground: oklch(0.985 0 0);
+  --sidebar-border: oklch(0.269 0 0);
+  --sidebar-ring: oklch(0.439 0 0);
 }
 
 @theme inline {
+  --font-sans: "Overused Grotesk", system-ui, sans-serif;
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Explicit pie chart segment colors with !important to override any global styles */
+.portfolio-segment-0 path {
+  fill: #3B82F6 !important; /* BTC - Blue */
+}
+
+.portfolio-segment-1 path {
+  fill: #A855F7 !important; /* ETH - Purple */
+}
+
+.portfolio-segment-2 path {
+  fill: #22C55E !important; /* Stables - Green */
+}
+
+.portfolio-segment-3 path {
+  fill: #64748B !important; /* Fiat - Slate Gray */
+}
+
+.portfolio-segment-4 path {
+  fill: #F97316 !important; /* Others - Orange */
+}
+
+/* Base Button Styles */
+button {
+  /*@apply px-3 sm:px-4 py-2 rounded-3xl border-2 transition-all duration-200 flex items-center justify-center gap-2 sm:gap-3 font-medium text-sm sm:text-base leading-none text-center;*/
+  @apply inline-flex items-center gap-2 px-6 py-2 rounded-lg font-normal transition-colors hover:cursor-pointer
+}
+
+button:focus {
+  @apply outline-none;
+}
+
+/* Added category accent colors for Invest section */
+:root {
+  --btc-accent: #C8A24A;
+  --eth-accent: #7C88C2;
+  --defi-accent: #5FA6A1;
+  --tbill-accent: #7FA38F;
+  --stable-accent: #7C8A99;
+}
+
+/* Added custody provider accent colors */
+:root {
+  --custody-btc: #C8A24A;
+  --custody-eth: #7C88C2;
+  --custody-stable: #7C8A99;
+  --custody-defi: #5FA6A1;
 }
