@@ -103,7 +103,7 @@ export default function SendModal({
             </div>
 
             {/* Send Button */}
-            <Button variant="primary" className="w-full">
+            <Button variant="primary" className="w-full justify-center">
               Send
             </Button>
           </div>

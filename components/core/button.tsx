@@ -49,11 +49,26 @@ export default function Button({
 
   const loadingClasses = "!bg-primary !border-primary !text-textDark";
 
+  // Extract justify-* utilities from className to apply to inner div
+  const justifyMatch = className.match(
+    /justify-(between|around|evenly|start|end|center)/
+  );
+  const justifyClass = justifyMatch ? justifyMatch[0] : "";
+  const buttonClassName = className
+    .replace(/justify-(between|around|evenly|start|end|center)/g, "")
+    .trim();
+
   const buttonClasses = clsx(
     variants[variant],
-    className,
+    buttonClassName,
     disabled && disabledClasses,
     isLoading && loadingClasses
+  );
+
+  const innerDivClasses = clsx(
+    "flex items-center min-h-[1.1rem]",
+    justifyClass,
+    "[&>*:first-child]:mr-2 [&>*:last-child]:ml-2"
   );
 
   return (
@@ -68,14 +83,12 @@ export default function Button({
       className={buttonClasses}
     >
       {isLoading ? (
-        <div className="flex items-center gap-2 min-h-[1.1rem] [&>*:first-child]:mr-2 [&>*:last-child]:ml-2">
+        <div className={clsx(innerDivClasses, "gap-2")}>
           <span>{children}</span>
           <div className="w-4 h-4 border-2 border-current border-t-transparent rounded-full animate-spin" />
         </div>
       ) : (
-        <div className="flex items-center min-h-[1.1rem] [&>*:first-child]:mr-2 [&>*:last-child]:ml-2">
-          {children}
-        </div>
+        <div className={innerDivClasses}>{children}</div>
       )}
     </button>
   );
