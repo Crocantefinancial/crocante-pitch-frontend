@@ -25,10 +25,8 @@ export default function Button({
       "bg-primary border-primary-foreground text-primary-foreground \
       hover:bg-primary/90",
     secondary:
-      "bg-secondary border-secondary text-textLight \
-      hover:bg-neutral hover:border-neutral hover:text-textDark \
-      active:bg-secondary active:border-secondary active:text-textLight active:opacity-80 \
-      cursor-pointer",
+      "bg-secondary/10 border-secondary/10 text-secondary-foreground \
+      hover:bg-secondary/90",
     tertiary:
       "bg-accent border-accent text-textDark \
       hover:bg-neutral hover:border-neutral hover:text-textDark hover:opacity-95 \

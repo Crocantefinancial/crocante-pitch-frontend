@@ -1,3 +1,4 @@
+import { Button } from "@/components/index";
 import { ArrowUpDown, Lock, Send } from "lucide-react";
 
 interface SendModalProps {
@@ -102,9 +103,9 @@ export default function SendModal({
             </div>
 
             {/* Send Button */}
-            <button className="w-full mt-6 py-3 bg-primary text-primary-foreground rounded-lg font-normal hover:bg-primary/90 transition-colors">
+            <Button variant="primary" className="w-full">
               Send
-            </button>
+            </Button>
           </div>
         </div>
       </div>
