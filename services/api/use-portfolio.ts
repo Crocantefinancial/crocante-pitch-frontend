@@ -26,9 +26,11 @@ export function usePortfolio(userId: string, pollInterval: number) {
       }
     },
     enabled: typeof userId === "string" && userId.trim() !== "",
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes - data is considered fresh for 5 minutes
+    gcTime: 1000 * 60 * 10, // 10 minutes - keep unused data in cache for 10 minutes
     refetchInterval: pollInterval,
     refetchIntervalInBackground: true,
-    refetchOnMount: "always",
+    refetchOnMount: true, // Only refetch if data is stale (respects staleTime)
+    //refetchOnMount: "always" // Always refetch when component mounts,
   });
 }

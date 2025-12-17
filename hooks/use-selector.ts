@@ -11,7 +11,7 @@ export function useSelector<T>(
     onReset?: () => void;
     onChange?: () => void;
     onChangeReactive?: (selectedRow: T) => void;
-  },
+  }
 ) {
   const defaultSelection = options[Object.keys(options)[defaultIndex]];
   const [selectedRow, setSelectedRow] = useState<T>(defaultSelection);
@@ -29,7 +29,7 @@ export function useSelector<T>(
       opts && opts.onChange?.();
       opts && opts.onChangeReactive?.(options[key]);
     },
-    [options, opts],
+    [options, opts]
   );
 
   const reset = useCallback(() => {
