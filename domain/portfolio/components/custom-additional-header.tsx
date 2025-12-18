@@ -81,17 +81,17 @@ export default function CustomAdditionalHeader() {
           handleSend={handleSend}
           assetSelector={{
             selectedIndex: selectedAssetIndex,
-            onOptionSelected: changeAssetSelection,
+            onChange: changeAssetSelection,
             options: tokensOptions,
           }}
           fromSelector={{
             selectedIndex: selectedFromIndex,
-            onOptionSelected: changeFromSelection,
+            onChange: changeFromSelection,
             options: walletsOptions,
           }}
           toSelector={{
             selectedIndex: selectedToIndex,
-            onOptionSelected: changeToSelection,
+            onChange: changeToSelection,
             options: exchangesOptions,
           }}
         />

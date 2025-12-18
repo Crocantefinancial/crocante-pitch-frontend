@@ -1,12 +1,7 @@
-import { SelectOption } from "@/components/core/select";
+import { SelectorProps } from "@/components/core/select";
 import { Button, Modal, Select } from "@/components/index";
 import { Send } from "lucide-react";
 
-interface SelectorProps {
-  selectedIndex: number;
-  onOptionSelected: (e: React.ChangeEvent<HTMLSelectElement>) => void;
-  options: Array<SelectOption>;
-}
 interface SendModalProps {
   sendModalOpen: boolean;
   setSendModalOpen: (open: boolean) => void;
@@ -45,31 +40,13 @@ export default function SendModal({
     >
       <div className="space-y-4">
         {/* Asset Field */}
-        <Select
-          className="w-full"
-          label="Asset"
-          onChange={assetSelector.onOptionSelected}
-          selectedIndex={assetSelector.selectedIndex}
-          options={assetSelector.options}
-        />
+        <Select className="w-full" label="Asset" properties={assetSelector} />
 
         {/* From Field */}
-        <Select
-          className="w-full"
-          label="From"
-          onChange={fromSelector.onOptionSelected}
-          selectedIndex={fromSelector.selectedIndex}
-          options={fromSelector.options}
-        />
+        <Select className="w-full" label="From" properties={fromSelector} />
 
         {/* To Field */}
-        <Select
-          className="w-full"
-          label="To"
-          onChange={toSelector.onOptionSelected}
-          selectedIndex={toSelector.selectedIndex}
-          options={toSelector.options}
-        />
+        <Select className="w-full" label="To" properties={toSelector} />
 
         {/* Quantity Field */}
         <div>

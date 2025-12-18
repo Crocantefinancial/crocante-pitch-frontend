@@ -7,28 +7,32 @@ export interface SelectOption {
   icon?: React.ReactNode;
   value: string;
 }
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+
+export interface SelectorProps {
+  selectedIndex: number;
+  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   options: Array<SelectOption>;
+}
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
   label: string;
   className?: string;
-  onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
   secondaryLabel?: string;
   secondaryLabelAlign?: "left" | "right";
   block?: boolean;
-  selectedIndex?: number;
+  properties: SelectorProps;
 }
 
 export default function Select({
-  options,
   label,
   className,
   secondaryLabel,
   secondaryLabelAlign = "left",
-  onChange,
   block,
-  selectedIndex,
+  properties,
   ...props
 }: SelectProps) {
+  const { selectedIndex, options, onChange } = properties;
   const hasIcon = selectedIndex !== undefined && !!options[selectedIndex]?.icon;
   const selectedValue =
     selectedIndex !== undefined && options[selectedIndex]
