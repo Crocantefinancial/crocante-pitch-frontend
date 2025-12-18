@@ -8,13 +8,13 @@ interface TabsProps {
 
 export default function Tabs({ TabValues, selectedRow, onChange }: TabsProps) {
   return (
-    <div className="flex gap-2 bg-muted/10 p-1 rounded-lg">
+    <div className="flex flex-wrap gap-2 bg-muted/10 p-1 rounded-lg">
       {Object.keys(TabValues).map((tabKey) => (
         <Button
           key={tabKey}
           onClick={() => onChange?.(tabKey)}
           variant="secondary"
-          className={`text-sm ${
+          className={`text-sm flex flex-col ${
             selectedRow === TabValues[tabKey as keyof typeof TabValues]
               ? "!bg-card shadow-sm"
               : "!text-muted-foreground hover:!text-foreground"

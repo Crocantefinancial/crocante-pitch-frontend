@@ -44,7 +44,7 @@ export default function TabsSection() {
 
   return (
     <div className="bg-card rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6">
+      <div className="flex items-center justify-between mb-6 gap-2">
         <Tabs
           TabValues={TabValues}
           selectedRow={selectedRow}
