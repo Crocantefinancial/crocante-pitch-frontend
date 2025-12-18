@@ -1,6 +1,6 @@
 import { SelectOption } from "@/components/core/select";
 import { Button, Modal, Select } from "@/components/index";
-import { ArrowUpDown, Lock, Send } from "lucide-react";
+import { Send } from "lucide-react";
 
 interface SelectorProps {
   selectedIndex: number;
@@ -12,6 +12,8 @@ interface SendModalProps {
   setSendModalOpen: (open: boolean) => void;
   handleSend: () => void;
   assetSelector: SelectorProps;
+  fromSelector: SelectorProps;
+  toSelector: SelectorProps;
 }
 
 export default function SendModal({
@@ -19,6 +21,8 @@ export default function SendModal({
   setSendModalOpen,
   handleSend,
   assetSelector,
+  fromSelector,
+  toSelector,
 }: SendModalProps) {
   return (
     <Modal
@@ -50,34 +54,22 @@ export default function SendModal({
         />
 
         {/* From Field */}
-        <div>
-          <label className="block text-sm font-normal text-muted-foreground mb-2">
-            From
-          </label>
-          <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors">
-            <Lock className="w-5 h-5 text-muted-foreground" />
-            <span className="text-sm font-normal text-foreground flex-1">
-              Omnibus Wallet
-            </span>
-            <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-          </div>
-        </div>
+        <Select
+          className="w-full"
+          label="From"
+          onChange={fromSelector.onOptionSelected}
+          selectedIndex={fromSelector.selectedIndex}
+          options={fromSelector.options}
+        />
 
         {/* To Field */}
-        <div>
-          <label className="block text-sm font-normal text-muted-foreground mb-2">
-            To
-          </label>
-          <div className="flex items-center gap-3 p-3 border border-gray-200 rounded-lg cursor-pointer hover:border-gray-300 transition-colors">
-            <div className="w-6 h-6 rounded-full bg-blue-100 flex items-center justify-center">
-              <span className="text-xs font-semibold text-blue-600">K</span>
-            </div>
-            <span className="text-sm font-normal text-foreground flex-1">
-              Kraken Main Account
-            </span>
-            <ArrowUpDown className="w-4 h-4 text-muted-foreground" />
-          </div>
-        </div>
+        <Select
+          className="w-full"
+          label="To"
+          onChange={toSelector.onOptionSelected}
+          selectedIndex={toSelector.selectedIndex}
+          options={toSelector.options}
+        />
 
         {/* Quantity Field */}
         <div>

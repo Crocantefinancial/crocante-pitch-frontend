@@ -1,7 +1,9 @@
 import { Button } from "@/components/index";
 import { SendModal } from "@/domain/portfolio/components";
 import {
+  FromType,
   TokenType,
+  ToType,
   usePortfolioData,
 } from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useModal } from "@/hooks/use-modal";
@@ -9,25 +11,53 @@ import { useSelector } from "@/hooks/use-selector";
 import { ArrowUpDown, Eye, Send } from "lucide-react";
 
 export default function CustomAdditionalHeader() {
-  const { tokens } = usePortfolioData();
+  const {
+    tokens,
+    tokensOptions,
+    wallets,
+    walletsOptions,
+    exchanges,
+    exchangesOptions,
+  } = usePortfolioData();
 
   const {
-    selectedRow,
-    reset: resetSelector,
-    change: changeTokenSelection,
+    selectedRow: selectedAsset,
+    selectedIndex: selectedAssetIndex,
+    reset: resetAssetSelector,
+    change: changeAssetSelection,
   } = useSelector<TokenType>(tokens || {}, 0, {});
+
+  const {
+    selectedRow: selectedFrom,
+    selectedIndex: selectedFromIndex,
+    reset: resetFromSelector,
+    change: changeFromSelection,
+  } = useSelector<FromType>(wallets || {}, 0, {});
+
+  const {
+    selectedRow: selectedTo,
+    selectedIndex: selectedToIndex,
+    reset: resetToSelector,
+    change: changeToSelection,
+  } = useSelector<ToType>(exchanges || {}, 0, {});
+
+  const handleResetSelectors = () => {
+    resetAssetSelector();
+    resetFromSelector();
+    resetToSelector();
+  };
 
   const {
     isOpen: sendModalOpen,
     setIsOpen: setSendModalOpen,
     open: openSendModal,
-  } = useModal(false, { onOpen: resetSelector });
+  } = useModal(false, { onOpen: handleResetSelectors });
 
   const handleSend = () => {
-    console.log("SEND", selectedRow);
+    console.log("SEND", selectedAsset, selectedFrom, selectedTo);
   };
 
-  if (!tokens) return null;
+  if (!tokens || !wallets || !exchanges) return null;
 
   return (
     <div className="flex items-center gap-3">
@@ -50,16 +80,19 @@ export default function CustomAdditionalHeader() {
           setSendModalOpen={setSendModalOpen}
           handleSend={handleSend}
           assetSelector={{
-            selectedIndex: selectedRow
-              ? Object.keys(tokens).indexOf(selectedRow.symbol)
-              : 0,
-            onOptionSelected: (e: React.ChangeEvent<HTMLSelectElement>) =>
-              changeTokenSelection(e.target.value),
-            options: Object.keys(tokens).map((token) => ({
-              label: tokens[token as keyof typeof tokens].symbol,
-              value: token,
-              icon: tokens[token as keyof typeof tokens].icon,
-            })),
+            selectedIndex: selectedAssetIndex,
+            onOptionSelected: changeAssetSelection,
+            options: tokensOptions,
+          }}
+          fromSelector={{
+            selectedIndex: selectedFromIndex,
+            onOptionSelected: changeFromSelection,
+            options: walletsOptions,
+          }}
+          toSelector={{
+            selectedIndex: selectedToIndex,
+            onOptionSelected: changeToSelection,
+            options: exchangesOptions,
           }}
         />
       )}
