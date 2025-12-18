@@ -12,6 +12,9 @@ export { default as Table } from "./core/table";
 export { default as Tabs } from "./core/tabs";
 export { default as Tooltip } from "./core/tooltip";
 
+// Custom Components
+export { default as InputToken } from "./custom/input-token";
+
 // Icons
 export { default as AvatarIcon } from "./icons/avatar";
 export { default as Badge } from "./icons/badge";

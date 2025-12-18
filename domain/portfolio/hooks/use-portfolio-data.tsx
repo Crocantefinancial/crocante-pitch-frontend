@@ -47,7 +47,8 @@ export function usePortfolioData() {
       tokensRecord[currency.code] = token;
       options.push({
         label: currency.code,
-        value: currency.code,
+        id: currency.code,
+        value: currency.value,
         icon: token.icon,
       });
     });
@@ -69,13 +70,12 @@ export function usePortfolioData() {
     portfolioData.custodiansData.forEach((currency) => {
       const wallet: FromType = {
         symbol: currency.name,
-        //icon: <AvatarIcon initials={currency.name.charAt(0)} color="primary" />,
         icon: <Lock className="w-5 h-5 text-muted-foreground" />,
       };
       walletsRecord[currency.name] = wallet;
       options.push({
         label: currency.name,
-        value: currency.name,
+        id: currency.name,
         icon: wallet.icon,
       });
     });
@@ -102,7 +102,7 @@ export function usePortfolioData() {
       exchangesRecord[ex.name] = exchange;
       options.push({
         label: ex.name,
-        value: ex.name,
+        id: ex.name,
         icon: exchange.icon,
       });
     });

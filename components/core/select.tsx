@@ -3,9 +3,10 @@ import { ChevronDownIcon } from "lucide-react";
 import React from "react";
 
 export interface SelectOption {
+  id: string;
   label: string;
   icon?: React.ReactNode;
-  value: string;
+  value?: string;
 }
 
 export interface SelectorProps {
@@ -34,9 +35,9 @@ export default function Select({
 }: SelectProps) {
   const { selectedIndex, options, onChange } = properties;
   const hasIcon = selectedIndex !== undefined && !!options[selectedIndex]?.icon;
-  const selectedValue =
+  const selectedLabel =
     selectedIndex !== undefined && options[selectedIndex]
-      ? options[selectedIndex].value
+      ? options[selectedIndex].label
       : undefined;
 
   return (
@@ -62,12 +63,12 @@ export default function Select({
             hasIcon ? "pl-8 sm:pl-10" : "pl-3 sm:pl-4"
           )}
           {...props}
-          value={selectedValue}
+          value={selectedLabel}
           onChange={onChange}
           disabled={block}
         >
           {options.map((option) => (
-            <option key={option.value} value={option.value}>
+            <option key={option.id} value={option.id}>
               {option.label}
             </option>
           ))}

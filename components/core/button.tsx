@@ -35,7 +35,7 @@ export default function Button({
     outline:
       "bg-transparent border-primary text-primary \
       hover:bg-neutral hover:border-neutral hover:text-textDark \
-      active:bg-primary active:border-primary active:text-textDark active:opacity-90 \
+      active:bg-secondary active:border-primary active:text-textDark active:opacity-90 \
       cursor-pointer",
     "outline-secondary":
       "bg-transparent border-neutral text-accent \
@@ -45,7 +45,7 @@ export default function Button({
   };
 
   const disabledClasses =
-    "!bg-disabled !border-disabled !text-textMuted !cursor-not-allowed";
+    "!bg-disabled !border-disabled !text-neutral-500 !cursor-not-allowed";
 
   const loadingClasses = "!bg-primary !border-primary !text-textDark";
 

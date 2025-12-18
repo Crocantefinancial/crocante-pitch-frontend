@@ -42,6 +42,9 @@
   --accent-200: #ffd4c9;
   --accent-100: #ffe8e0;
 
+  /* Disabled */
+  --disabled: #0a0e27;
+
   /* Semantic tokens */
   --background: var(--neutral-50);
   --foreground: var(--neutral-900);
@@ -129,6 +132,7 @@
   --color-accent-foreground: var(--accent-foreground);
   --color-muted: var(--muted);
   --color-muted-foreground: var(--muted-foreground);
+  --color-disabled: var(--disabled);
 
   --color-popover: var(--popover);
   --color-popover-foreground: var(--popover-foreground);

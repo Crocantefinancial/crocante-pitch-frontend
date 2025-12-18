@@ -7,6 +7,7 @@ import {
   OTCDesksTable,
 } from "@/domain/portfolio/components";
 
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useSelector } from "@/hooks/use-selector";
 import { Plus } from "lucide-react";
 
@@ -19,6 +20,7 @@ enum TabValues {
 }
 
 export default function TabsSection() {
+  const isMobile = useIsMobile();
   type TabType = (typeof TabValues)[keyof typeof TabValues];
   const { selectedRow, change: changeTabSelection } = useSelector<TabType>(
     TabValues,
@@ -44,15 +46,15 @@ export default function TabsSection() {
 
   return (
     <div className="bg-card rounded-lg p-6">
-      <div className="flex items-center justify-between mb-6 gap-2">
+      <div className="flex items-end justify-between mb-6 gap-2">
         <Tabs
           TabValues={TabValues}
           selectedRow={selectedRow}
           onChange={changeTabSelection}
         />
-        <Button variant="primary" className="text-sm">
+        <Button variant="primary" className="text-sm mb-1">
           <Plus className="w-4 h-4" />
-          Add New
+          {!isMobile && "Add New"}
         </Button>
       </div>
 

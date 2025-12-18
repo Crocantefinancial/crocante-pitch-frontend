@@ -11,6 +11,7 @@ import { useModal } from "@/hooks/use-modal";
 import { useSelector } from "@/hooks/use-selector";
 import clsx from "clsx";
 import { ArrowUpDown, Eye, Send } from "lucide-react";
+import { useState } from "react";
 
 export default function CustomAdditionalHeader() {
   const isMobile = useIsMobile();
@@ -23,12 +24,23 @@ export default function CustomAdditionalHeader() {
     exchangesOptions,
   } = usePortfolioData();
 
+  const [value, setValue] = useState("");
+  const [valueUSD, setValueUSD] = useState("");
+
+  const handleResetValues = () => {
+    setValue("");
+    setValueUSD("");
+  };
+
   const {
     selectedRow: selectedAsset,
     selectedIndex: selectedAssetIndex,
     reset: resetAssetSelector,
     change: changeAssetSelection,
-  } = useSelector<TokenType>(tokens || {}, 0, {});
+  } = useSelector<TokenType>(tokens || {}, 0, {
+    onReset: handleResetValues,
+    onChange: handleResetValues,
+  });
 
   const {
     selectedRow: selectedFrom,
@@ -57,7 +69,14 @@ export default function CustomAdditionalHeader() {
   } = useModal(false, { onOpen: handleResetSelectors });
 
   const handleSend = () => {
-    console.log("SEND", selectedAsset, selectedFrom, selectedTo);
+    console.log(
+      "SEND",
+      selectedAsset,
+      selectedFrom,
+      selectedTo,
+      value,
+      valueUSD + " USD"
+    );
   };
 
   if (!tokens || !wallets || !exchanges) return null;
@@ -92,6 +111,10 @@ export default function CustomAdditionalHeader() {
           sendModalOpen={sendModalOpen}
           setSendModalOpen={setSendModalOpen}
           handleSend={handleSend}
+          value={value}
+          valueUSD={valueUSD}
+          setValue={setValue}
+          setValueUSD={setValueUSD}
           assetSelector={{
             selectedIndex: selectedAssetIndex,
             onChange: changeAssetSelection,
