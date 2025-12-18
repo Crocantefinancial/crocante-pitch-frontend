@@ -1,9 +1,9 @@
 import { SelectorProps } from "@/components/core/select";
 import { Button, InputToken, Modal, Select } from "@/components/index";
 import { useTokenConversion } from "@/hooks/use-token-conversion";
+import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { parseValue } from "@/lib/utils";
 import { Send } from "lucide-react";
-import { useEffect, useState } from "react";
 
 interface SendModalProps {
   sendModalOpen: boolean;
@@ -37,8 +37,6 @@ export default function SendModal({
 
   const parsedMaxValue = parseValue(rawMaxValue);
 
-  const [conditionsSuccess, setConditionsSuccess] = useState(false);
-
   const { convertToUSD, convertFromUSD } = useTokenConversion(tokenLabel);
 
   const handleChangeUSD = (usdValue: string) => {
@@ -61,17 +59,12 @@ export default function SendModal({
     }
   };
 
-  useEffect(() => {
-    if (
-      !!value &&
-      !!valueUSD &&
-      value !== "0" &&
-      valueUSD !== "0" &&
-      Number(value) <= Number(parsedMaxValue)
-    ) {
-      setConditionsSuccess(true);
-    } else setConditionsSuccess(false);
-  }, [value, valueUSD, parsedMaxValue]);
+  const { isValid: conditionsSuccess } = useValueVerifier({
+    value,
+    min: 0,
+    max: Number(parsedMaxValue),
+    requireNonZero: true,
+  });
 
   return (
     <Modal
