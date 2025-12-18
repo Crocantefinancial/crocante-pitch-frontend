@@ -1,16 +1,18 @@
 import { useEffect, useState } from "react";
 
 export function useIsMobile(breakpoint = 1024) {
-  const [isMobile, setIsMobile] = useState(
-    typeof window !== "undefined" ? window.innerWidth < breakpoint : false,
-  );
+  // Always start with false to avoid hydration mismatches
+  const [isMobile, setIsMobile] = useState(false);
 
   useEffect(() => {
-    function handleResize() {
+    // Only check after mount to avoid hydration issues
+    function checkIsMobile() {
       setIsMobile(window.innerWidth < breakpoint);
     }
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
+
+    checkIsMobile();
+    window.addEventListener("resize", checkIsMobile);
+    return () => window.removeEventListener("resize", checkIsMobile);
   }, [breakpoint]);
 
   return isMobile;

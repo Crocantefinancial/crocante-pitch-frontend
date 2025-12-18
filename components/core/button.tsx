@@ -25,7 +25,7 @@ export default function Button({
       "bg-primary border-primary-foreground text-primary-foreground \
       hover:bg-primary/90",
     secondary:
-      "bg-secondary/10 border-secondary/10 text-secondary-foreground \
+      "bg-secondary/10 text-secondary-foreground \
       hover:bg-secondary/90",
     tertiary:
       "bg-accent border-accent text-textDark \
@@ -49,13 +49,17 @@ export default function Button({
 
   const loadingClasses = "!bg-primary !border-primary !text-textDark";
 
-  // Extract justify-* utilities from className to apply to inner div
+  // Extract justify-* and flex-* utilities from className to apply to inner div
   const justifyMatch = className.match(
     /justify-(between|around|evenly|start|end|center)/
   );
+  const flexMatch = className.match(/flex-(col|row)/);
   const justifyClass = justifyMatch ? justifyMatch[0] : "";
+  const flexClass = flexMatch ? flexMatch[0] : "";
+
   const buttonClassName = className
     .replace(/justify-(between|around|evenly|start|end|center)/g, "")
+    .replace(/flex-(col|row)/g, "")
     .trim();
 
   const buttonClasses = clsx(
@@ -67,6 +71,7 @@ export default function Button({
 
   const innerDivClasses = clsx(
     "flex items-center min-h-[1.1rem]",
+    flexClass,
     justifyClass,
     "[&>*:first-child]:mr-2 [&>*:last-child]:ml-2"
   );

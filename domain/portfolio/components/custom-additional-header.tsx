@@ -6,11 +6,14 @@ import {
   ToType,
   usePortfolioData,
 } from "@/domain/portfolio/hooks/use-portfolio-data";
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useModal } from "@/hooks/use-modal";
 import { useSelector } from "@/hooks/use-selector";
+import clsx from "clsx";
 import { ArrowUpDown, Eye, Send } from "lucide-react";
 
 export default function CustomAdditionalHeader() {
+  const isMobile = useIsMobile();
   const {
     tokens,
     tokensOptions,
@@ -60,18 +63,28 @@ export default function CustomAdditionalHeader() {
   if (!tokens || !wallets || !exchanges) return null;
 
   return (
-    <div className="flex items-center gap-3">
-      <Button variant="secondary">
-        <Eye className="w-4 h-4" />
-        View Options
+    <div className="flex items-center gap-[clamp(0rem,4vw-1rem,0.75rem)]">
+      <Button
+        variant="secondary"
+        className={clsx("flex flex-row", isMobile && "")}
+      >
+        <Eye className="h-4 w-auto" />
+        {!isMobile && "View Options"}
       </Button>
-      <Button variant="secondary">
-        <ArrowUpDown className="w-4 h-4" />
-        Sort
+      <Button
+        variant="secondary"
+        className={clsx("flex flex-row", isMobile && "-ml-6")}
+      >
+        <ArrowUpDown className="h-4 w-auto" />
+        {!isMobile && "Sort"}
       </Button>
-      <Button onClick={openSendModal} variant="primary">
-        <Send className="w-4 h-4" />
-        Send
+      <Button
+        onClick={openSendModal}
+        variant="primary"
+        className={clsx("flex flex-row", isMobile && "")}
+      >
+        <Send className="h-4 w-auto" />
+        {!isMobile && "Send"}
       </Button>
 
       {sendModalOpen && tokens && (

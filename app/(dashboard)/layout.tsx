@@ -2,6 +2,8 @@
 
 import { Shell } from "@/components/index";
 import { CustomHeaderProvider } from "@/context/custom-header-context";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useModal } from "@/hooks/use-modal";
 import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 
@@ -11,9 +13,17 @@ export default function DashboardLayout({
   children: React.ReactNode;
 }) {
   const pathname = usePathname();
-  const [sidebarOpen, setSidebarOpen] = useState(true);
+
   const [customAdditionalHeader, setCustomAdditionalHeader] =
     useState<React.ReactNode>(<></>);
+
+  const { isOpen: sidebarOpen, setIsOpen: setSidebarOpen } = useModal(true);
+  const isMobile = useIsMobile();
+  useEffect(() => {
+    if (isMobile) {
+      setSidebarOpen(false);
+    }
+  }, [isMobile]);
 
   // Extract activeMenu from pathname (e.g., /portfolio -> portfolio)
   const activeMenu = pathname?.split("/").filter(Boolean)[0] || "portfolio";
