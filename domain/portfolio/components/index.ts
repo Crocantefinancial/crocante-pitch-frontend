@@ -5,6 +5,7 @@ export { default as InternalWalletsTable } from "./bottom-section/internal-walle
 export { default as OTCDesksTable } from "./bottom-section/otc-desks-table";
 export { default as TabsSection } from "./bottom-section/tabs-section";
 export { default as CustomAdditionalHeader } from "./custom-additional-header";
+export { default as DepositModal } from "./deposit-modal";
 export { default as Header } from "./header";
 export { default as AssetBreakdown } from "./left-section/asset-breakdown";
 export { default as CurrencyTable } from "./left-section/currency-table";

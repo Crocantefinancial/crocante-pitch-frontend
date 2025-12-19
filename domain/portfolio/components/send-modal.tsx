@@ -59,12 +59,17 @@ export default function SendModal({
     }
   };
 
-  const { isValid: conditionsSuccess } = useValueVerifier({
+  const { isValid: isValidValue } = useValueVerifier({
     value,
     min: 0,
     max: Number(parsedMaxValue),
     requireNonZero: true,
   });
+
+  const conditionsSuccess =
+    isValidValue &&
+    fromSelector.options[fromSelector.selectedIndex]?.id !==
+      toSelector.options[toSelector.selectedIndex]?.id;
 
   return (
     <Modal

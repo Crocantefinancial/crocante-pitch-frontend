@@ -59,59 +59,63 @@ export function usePortfolioData() {
     };
   }, [portfolioData?.cryptocurrenciesData]);
 
-  const { wallets, walletsOptions } = useMemo(() => {
+  const { custodiansFrom, fromOptions } = useMemo(() => {
+    // TODO: Should filter out custodians that hold no balance
     if (!portfolioData?.custodiansData) {
-      return { wallets: undefined, walletsOptions: [] };
+      return { custodiansFrom: undefined, fromOptions: [] };
     }
 
-    const walletsRecord: Record<string, FromType> = {};
+    const custodiansRecord: Record<string, FromType> = {};
     const options: Array<SelectOption> = [];
 
-    portfolioData.custodiansData.forEach((currency) => {
-      const wallet: FromType = {
-        symbol: currency.name,
+    portfolioData.custodiansData.forEach((custodianData) => {
+      const custodian: FromType = {
+        symbol: custodianData.name,
         icon: <Lock className="w-5 h-5 text-muted-foreground" />,
       };
-      walletsRecord[currency.name] = wallet;
+      custodiansRecord[custodianData.name] = custodian;
       options.push({
-        label: currency.name,
-        id: currency.name,
-        icon: wallet.icon,
+        label: custodianData.name,
+        id: custodianData.name,
+        icon: custodian.icon,
       });
     });
 
     return {
-      wallets: walletsRecord,
-      walletsOptions: options,
+      custodiansFrom: custodiansRecord,
+      fromOptions: options,
     };
   }, [portfolioData?.custodiansData]);
 
-  const { exchanges, exchangesOptions } = useMemo(() => {
-    if (!portfolioData?.exchangesData) {
-      return { exchanges: undefined, exchangesOptions: [] };
+  const { custodiansTo, toOptions } = useMemo(() => {
+    // Delivers all custodians, From selector will remove from To selector the From custodian
+    if (!portfolioData?.custodiansData) {
+      return { custodiansTo: undefined, toOptions: [] };
     }
 
-    const exchangesRecord: Record<string, ToType> = {};
+    const custodiansRecord: Record<string, ToType> = {};
     const options: Array<SelectOption> = [];
 
-    portfolioData.exchangesData.forEach((ex) => {
-      const exchange: ToType = {
-        symbol: ex.name,
-        icon: <AvatarIcon initials={ex.name.charAt(0)} color="primary" />,
+    portfolioData.custodiansData.forEach((custodianData) => {
+      const custodian: ToType = {
+        symbol: custodianData.name,
+        icon: (
+          <AvatarIcon initials={custodianData.name.charAt(0)} color="primary" />
+        ),
       };
-      exchangesRecord[ex.name] = exchange;
+      custodiansRecord[custodianData.name] = custodian;
       options.push({
-        label: ex.name,
-        id: ex.name,
-        icon: exchange.icon,
+        label: custodianData.name,
+        id: custodianData.name,
+        icon: custodian.icon,
       });
     });
 
     return {
-      exchanges: exchangesRecord,
-      exchangesOptions: options,
+      custodiansTo: custodiansRecord,
+      toOptions: options,
     };
-  }, [portfolioData?.exchangesData]);
+  }, [portfolioData?.custodiansData]);
 
   return {
     isLoading: isLoadingPortfolio,
@@ -133,11 +137,20 @@ export function usePortfolioData() {
     currenciesData: portfolioData?.currenciesData,
     cryptocurrenciesData: portfolioData?.cryptocurrenciesData,
     assetAllocationData: portfolioData?.assetAllocationData,
-    tokens: tokens,
-    tokensOptions: tokensOptions,
-    wallets: wallets,
-    walletsOptions: walletsOptions,
-    exchanges: exchanges,
-    exchangesOptions: exchangesOptions,
+    tokens,
+    tokensOptions,
+    custodiansFrom,
+    fromOptions,
+    custodiansTo,
+    toOptions,
   };
 }
+
+/* 
+
+wallets: custodiansFrom,
+    walletsOptions: fromOptions,
+    exchanges: custodiansTo,
+    exchangesOptions: toOptions,
+
+*/
