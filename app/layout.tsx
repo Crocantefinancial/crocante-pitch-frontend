@@ -7,12 +7,11 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Crocante Dashboard",
   description: "Crocante Dashboard",
-  generator: "v0.app",
   icons: {
     icon: [
       {
-        url: "/icon.svg",
-        type: "image/svg+xml",
+        url: "/images/design-mode/1X_Logo.png",
+        type: "image/png",
       },
     ],
     apple: "/apple-icon.png",
