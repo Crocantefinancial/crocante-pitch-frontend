@@ -2,28 +2,44 @@ import clsx from "clsx";
 import { ChevronDownIcon } from "lucide-react";
 import React from "react";
 
-interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
-  children: React.ReactNode;
+export interface SelectOption {
+  id: string;
   label: string;
-  leftIcon?: React.ReactNode;
-  className?: string;
+  icon?: React.ReactNode;
+  value?: string;
+}
+
+export interface SelectorProps {
+  selectedIndex: number;
   onChange?: (e: React.ChangeEvent<HTMLSelectElement>) => void;
+  options: Array<SelectOption>;
+}
+
+interface SelectProps extends React.SelectHTMLAttributes<HTMLSelectElement> {
+  label: string;
+  className?: string;
   secondaryLabel?: string;
   secondaryLabelAlign?: "left" | "right";
   block?: boolean;
+  properties: SelectorProps;
 }
 
 export default function Select({
-  children,
   label,
-  leftIcon,
   className,
   secondaryLabel,
   secondaryLabelAlign = "left",
-  onChange,
   block,
+  properties,
   ...props
 }: SelectProps) {
+  const { selectedIndex, options, onChange } = properties;
+  const hasIcon = selectedIndex !== undefined && !!options[selectedIndex]?.icon;
+  const selectedLabel =
+    selectedIndex !== undefined && options[selectedIndex]
+      ? options[selectedIndex].label
+      : undefined;
+
   return (
     <div className={clsx("flex flex-col", className)}>
       {label && (
@@ -31,10 +47,10 @@ export default function Select({
           {label}
         </label>
       )}
-      <div className="relative">
-        {leftIcon && (
+      <div className={clsx("relative border border-gray-200 rounded-lg p-3")}>
+        {hasIcon && (
           <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2">
-            {leftIcon}
+            {options[selectedIndex].icon}
           </div>
         )}
         <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
@@ -42,14 +58,20 @@ export default function Select({
         </div>
         <select
           className={clsx(
-            "appearance-none",
-            leftIcon ? "pl-10 sm:pl-12 pr-12 sm:pr-16" : "pl-3 sm:pl-4 pr-12 sm:pr-16",
+            "appearance-none focus:outline-none pr-12 sm:pr-16",
+            className,
+            hasIcon ? "pl-8 sm:pl-10" : "pl-3 sm:pl-4"
           )}
           {...props}
+          value={selectedLabel}
           onChange={onChange}
           disabled={block}
         >
-          {children}
+          {options.map((option) => (
+            <option key={option.id} value={option.id}>
+              {option.label}
+            </option>
+          ))}
         </select>
       </div>
       {/* Secondary Label */}
@@ -61,7 +83,7 @@ export default function Select({
               {
                 "text-right": secondaryLabelAlign === "right",
                 "text-left": secondaryLabelAlign === "left",
-              },
+              }
             )}
           >
             {secondaryLabel}

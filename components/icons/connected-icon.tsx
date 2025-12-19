@@ -1,4 +1,4 @@
-import { Icon } from "@/components";
+import Icon from "../core/icon";
 
 const ConnectedIcon = ({ color = "#A3E635" }: { color?: string }) => (
   <Icon color={color} stroke={color} className="lucide lucide-circle-icon lucide-circle">

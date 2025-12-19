@@ -1,3 +1,4 @@
+import { useIsMobile } from "@/hooks/use-is-mobile";
 import clsx from "clsx";
 import { XIcon as CloseIcon } from "lucide-react";
 import React from "react";
@@ -24,28 +25,56 @@ export default function Modal({
   actions?: () => React.ReactNode;
   blockClose?: boolean;
 }) {
+  const isMobile = useIsMobile();
+
   if (!open) return null;
 
   const modalContent = (
     <div
-      className="fixed inset-0 bg-black/50 backdrop-blur-sm flex items-end sm:items-center justify-center z-[9999] p-0 sm:p-4"
+      className={clsx(
+        "fixed inset-0 bg-black/50 backdrop-blur-[2px] flex justify-center z-[9999]",
+        isMobile ? "items-end p-0" : "items-center p-4"
+      )}
       onClick={blockClose ? undefined : onClose}
     >
       <div
         className={clsx(
-          "rounded-t-2xl sm:rounded-2xl p-4 sm:p-6 w-full max-w-2xl mx-0 sm:mx-4 border overflow-hidden \
-          bg-textDark border-secondary animate-slideUp sm:animate-none",
-          className,
+          "w-full max-w-2xl border-2 overflow-hidden \
+          bg-white border-secondary animate-slideUp",
+          isMobile ? "rounded-t-2xl p-4 mx-0" : "rounded-2xl p-6 mx-4",
+          className
         )}
         onClick={(e) => e.stopPropagation()}
       >
-        <div className="flex justify-between items-center mb-3 sm:mb-4">
+        <div
+          className={clsx(
+            "flex justify-between items-center",
+            isMobile ? "mb-4" : "mb-3"
+          )}
+        >
           <div className="flex items-center flex-1 min-w-0">
-            {icon && <div className="mr-2 sm:mr-4 flex-shrink-0">{icon}</div>}
-            <h3 className="font-montserrat font-bold text-lg sm:text-2xl leading-none text-textLight truncate">
+            {icon && (
+              <div
+                className={clsx("flex-shrink-0", isMobile ? "mr-4" : "mr-2")}
+              >
+                {icon}
+              </div>
+            )}
+            <h3
+              className={clsx(
+                "font-montserrat font-bold leading-none text-textLight truncate",
+                isMobile ? "text-2xl" : "text-lg"
+              )}
+            >
               {title}
             </h3>
-            {statusIcon && <div className="ml-2 sm:ml-4 flex-shrink-0">{statusIcon}</div>}
+            {statusIcon && (
+              <div
+                className={clsx("flex-shrink-0", isMobile ? "ml-4" : "ml-2")}
+              >
+                {statusIcon}
+              </div>
+            )}
           </div>
           <button
             onClick={blockClose ? undefined : onClose}
@@ -55,10 +84,22 @@ export default function Modal({
             <CloseIcon className="w-5 h-5 transition-all stroke-[1] group-hover:stroke-[2]" />
           </button>
         </div>
-        <div className="space-y-3 sm:space-y-4 overflow-y-auto max-h-[75vh] sm:max-h-[80vh]">
+        <div
+          className={clsx(
+            "overflow-y-auto",
+            isMobile ? "space-y-4 max-h-[80vh]" : "space-y-3 max-h-[75vh]"
+          )}
+        >
           {children}
           {actions && (
-            <div className="flex flex-row space-x-2 sm:space-x-3 w-full">{actions()}</div>
+            <div
+              className={clsx(
+                "flex flex-row w-full",
+                isMobile ? "space-x-3" : "space-x-2"
+              )}
+            >
+              {actions()}
+            </div>
           )}
         </div>
       </div>

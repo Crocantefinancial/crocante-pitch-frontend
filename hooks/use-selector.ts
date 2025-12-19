@@ -11,10 +11,11 @@ export function useSelector<T>(
     onReset?: () => void;
     onChange?: () => void;
     onChangeReactive?: (selectedRow: T) => void;
-  },
+  }
 ) {
   const defaultSelection = options[Object.keys(options)[defaultIndex]];
   const [selectedRow, setSelectedRow] = useState<T>(defaultSelection);
+  const [selectedIndex, setSelectedIndex] = useState(defaultIndex);
 
   // Auto-select first option when options change from empty to populated
   useEffect(() => {
@@ -24,16 +25,21 @@ export function useSelector<T>(
   }, [options]);
 
   const change = useCallback(
-    (key: string) => {
+    (key: string | React.ChangeEvent<HTMLSelectElement>) => {
+      if (typeof key !== "string") {
+        key = key.target.value;
+      }
       setSelectedRow(options[key]);
+      setSelectedIndex(Object.keys(options).indexOf(key));
       opts && opts.onChange?.();
       opts && opts.onChangeReactive?.(options[key]);
     },
-    [options, opts],
+    [options, opts]
   );
 
   const reset = useCallback(() => {
     setSelectedRow(defaultSelection);
+    setSelectedIndex(defaultIndex);
     opts && opts.onReset?.();
   }, [options, defaultIndex, opts]);
 
@@ -48,5 +54,5 @@ export function useSelector<T>(
     return options[nextKey];
   }, [options, selectedRow]);
 
-  return { selectedRow, getNextRow, change, reset };
+  return { selectedRow, selectedIndex, getNextRow, change, reset };
 }

@@ -1,4 +1,4 @@
-import { LoadingField } from "@/components";
+import LoadingField from "./loading-field";
 
 export default function Skeleton({ lines = 1 }: { lines?: number }) {
   return (

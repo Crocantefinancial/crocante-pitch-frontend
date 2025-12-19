@@ -1,6 +1,6 @@
-import { LoadingField } from "@/components";
 import clsx from "clsx";
 import React from "react";
+import LoadingField from "./loading-field";
 
 interface LabelProps {
   label: React.ReactNode;
