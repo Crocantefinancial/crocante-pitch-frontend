@@ -1,4 +1,7 @@
+import { Button } from "@/components/index";
 import { useSession } from "@/context/session-provider";
+import { useIsMobile } from "@/hooks/use-is-mobile";
+import clsx from "clsx";
 import {
   Activity,
   BarChart3,
@@ -7,6 +10,7 @@ import {
   CreditCard,
   FileText,
   Lock,
+  Menu,
   Shield,
   Zap,
 } from "lucide-react";
@@ -37,6 +41,7 @@ export default function NavBar({
 }: NavBarProps) {
   const { user } = useSession();
   const router = useRouter();
+  const isMobile = useIsMobile();
 
   return (
     <div
@@ -45,11 +50,21 @@ export default function NavBar({
       } bg-white border-r border-neutral-200 transition-all duration-300 flex flex-col`}
     >
       {/* Logo */}
-      <div className="px-6 py-4 border-b border-neutral-200 flex items-center justify-between">
+      <div className="px-3 py-4 border-b border-neutral-200 flex items-center justify-center">
+        {!isMobile && (
+          <Button
+            variant="secondary"
+            onClick={() => setSidebarOpen(!sidebarOpen)}
+            className={clsx("flex items-center !px-0")}
+          >
+            <Menu className="w-4 h-4" />
+          </Button>
+        )}
         <div
-          className={`flex items-center ${
+          className={clsx(
+            "flex items-center",
             !sidebarOpen && "justify-center w-full"
-          }`}
+          )}
         >
           {sidebarOpen ? (
             <img
@@ -59,9 +74,9 @@ export default function NavBar({
             />
           ) : (
             <img
-              src="/images/design-mode/1X_Full-Color.png"
+              src="/images/design-mode/1X_Logo.png"
               alt="Crocante Logo"
-              className="h-8 w-8 object-contain"
+              className="h-6 w-auto"
             />
           )}
         </div>
