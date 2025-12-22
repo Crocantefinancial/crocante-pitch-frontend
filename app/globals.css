@@ -232,3 +232,13 @@ button:focus {
 .animate-slideUp {
   animation: slideUp 0.3s ease-out;
 }
+
+/* Hide scrollbar for mobile table scrolling */
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
