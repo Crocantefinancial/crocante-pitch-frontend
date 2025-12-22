@@ -24,8 +24,6 @@ export default function DepositModal({
   tokenSelector,
   networkSelector,
 }: DepositModalProps) {
-  /* const chainLogo = getChainLogo(network.chain);
-  const chainName = network.chain.name; */
   const isMobile = useIsMobile();
   const shortAddress = getShortAddress(evmAddress);
   const [isAddressCopied, setIsAddressCopied] = useState(false);
