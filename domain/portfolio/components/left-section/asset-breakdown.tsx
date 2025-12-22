@@ -23,20 +23,25 @@ export default function AssetBreakdown() {
           className="w-full mb-4"
           variant="secondary"
         >
-          <div className="w-full flex items-center justify-between">
+          <div className="w-full flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               {openCryptoCurrencies ? (
                 <ChevronDown className="w-5 h-5 text-muted-foreground" />
               ) : (
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               )}
-              <span className="text-foreground font-normal">
+              <span className="text-foreground font-semibold">
                 Cryptocurrencies
               </span>
             </div>
-            <span className="text-foreground font-semibold">
-              {cryptocurrencies}
-            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground font-normal">
+                Total:
+              </span>
+              <span className="text-foreground font-semibold">
+                {cryptocurrencies}
+              </span>
+            </div>
           </div>
         </Button>
 
@@ -50,16 +55,23 @@ export default function AssetBreakdown() {
           className="w-full mb-4"
           variant="secondary"
         >
-          <div className="w-full flex items-center justify-between">
+          <div className="w-full flex flex-wrap items-center justify-between gap-2">
             <div className="flex items-center gap-2">
               {openCurrencies ? (
                 <ChevronDown className="w-5 h-5 text-muted-foreground" />
               ) : (
                 <ChevronRight className="w-5 h-5 text-muted-foreground" />
               )}
-              <span className="text-foreground font-normal">Currencies</span>
+              <span className="text-foreground font-semibold">Currencies</span>
             </div>
-            <span className="text-foreground font-semibold">{currencies}</span>
+            <div className="flex items-center gap-2">
+              <span className="text-sm text-muted-foreground font-normal">
+                Total:
+              </span>
+              <span className="text-foreground font-semibold">
+                {currencies}
+              </span>
+            </div>
           </div>
         </Button>
 
