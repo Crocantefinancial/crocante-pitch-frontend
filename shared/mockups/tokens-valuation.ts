@@ -1,4 +1,4 @@
-import { TokenValuation } from "@/services/api/types/conversion-data";
+import { TokenValuation } from "@/services/hooks/types/conversion-data";
 
 export const TOKENS_VALUATION: TokenValuation[] = [
   {

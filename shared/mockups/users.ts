@@ -1,8 +1,8 @@
-import { User } from "@/services/api/types/user-data";
+import { User } from "@/services/hooks/types/user-data";
 
 export const USERS_DATA: User[] = [
   {
-    id: 1,
+    id: "1",
     fullName: "María García Rodríguez",
     avatar: "M",
     email: "maria.garcia@crocante.com",
@@ -11,7 +11,7 @@ export const USERS_DATA: User[] = [
     status: "Active",
   },
   {
-    id: 2,
+    id: "2",
     fullName: "Carlos López Martínez",
     avatar: "C",
     email: "carlos.lopez@crocante.com",
@@ -20,7 +20,7 @@ export const USERS_DATA: User[] = [
     status: "Registered",
   },
   {
-    id: 3,
+    id: "3",
     fullName: "Elena Fernández Silva",
     avatar: "E",
     email: "elena.fernandez@crocante.com",
@@ -29,7 +29,7 @@ export const USERS_DATA: User[] = [
     status: "Active",
   },
   {
-    id: 4,
+    id: "4",
     fullName: "Diego Moreno Ruiz",
     avatar: "D",
     email: "diego.moreno@crocante.com",
@@ -38,7 +38,7 @@ export const USERS_DATA: User[] = [
     status: "Active",
   },
   {
-    id: 5,
+    id: "5",
     fullName: "Sofía Jiménez Gómez",
     avatar: "S",
     email: "sofia.jimenez@crocante.com",
@@ -47,7 +47,7 @@ export const USERS_DATA: User[] = [
     status: "Active",
   },
   {
-    id: 6,
+    id: "6",
     fullName: "Javier Sánchez Pérez",
     avatar: "J",
     email: "javier.sanchez@crocante.com",
@@ -56,7 +56,7 @@ export const USERS_DATA: User[] = [
     status: "Invited",
   },
   {
-    id: 7,
+    id: "7",
     fullName: "Laura Domínguez López",
     avatar: "L",
     email: "laura.dominguez@crocante.com",
@@ -65,7 +65,7 @@ export const USERS_DATA: User[] = [
     status: "Active",
   },
   {
-    id: 8,
+    id: "8",
     fullName: "Roberto Vázquez Torres",
     avatar: "R",
     email: "roberto.vazquez@crocante.com",
@@ -74,7 +74,7 @@ export const USERS_DATA: User[] = [
     status: "Disabled",
   },
   {
-    id: 9,
+    id: "9",
     fullName: "Natalia Ortiz Castillo",
     avatar: "N",
     email: "natalia.ortiz@crocante.com",
@@ -83,7 +83,7 @@ export const USERS_DATA: User[] = [
     status: "Active",
   },
   {
-    id: 10,
+    id: "10",
     fullName: "Pablo Ramírez Alonso",
     avatar: "P",
     email: "pablo.ramirez@crocante.com",

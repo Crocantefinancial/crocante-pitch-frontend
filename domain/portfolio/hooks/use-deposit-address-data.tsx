@@ -1,9 +1,6 @@
-import { SelectOption } from "@/components/core/select";
-import { AvatarIcon } from "@/components/index";
 import { POLL_TOKENS_NETWORKS_DATA_INTERVAL } from "@/config/constants";
 import { getNetworkConfig, NetworkConfig } from "@/lib/network";
-import { useDepositAddress } from "@/services/api/use-deposit-address";
-import { useTokensNetworks } from "@/services/api/use-tokens-networks";
+import { useDepositAddress } from "@/services/hooks/use-deposit-address";
 import { useMemo } from "react";
 
 export type NetworkTokenType = {
