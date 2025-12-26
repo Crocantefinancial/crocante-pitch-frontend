@@ -1,5 +1,5 @@
 import { POLL_TOKEN_CONVERSION_INTERVAL } from "@/config/constants";
-import { useTokenValuation } from "@/services/api/use-token-valuation";
+import { useTokenValuation } from "@/services/hooks/use-token-valuation";
 import { useCallback } from "react";
 
 export function useTokenConversion(token: string) {

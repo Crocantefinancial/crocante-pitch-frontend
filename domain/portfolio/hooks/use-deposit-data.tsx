@@ -2,7 +2,7 @@ import { SelectOption } from "@/components/core/select";
 import { AvatarIcon } from "@/components/index";
 import { POLL_CURRENCY_DEPOSIT_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
-import { useCurrencyDeposit } from "@/services/api/use-currency-deposit";
+import { useCurrencyDeposit } from "@/services/hooks/use-currency-deposit";
 import { useMemo } from "react";
 
 export type DepositTokenType = {

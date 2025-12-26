@@ -1,6 +1,7 @@
 import { Button } from "@/components/index";
 import { useSession } from "@/context/session-provider";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useLogout } from "@/services/hooks/mutations/use-logout";
 import clsx from "clsx";
 import {
   Activity,
@@ -10,6 +11,7 @@ import {
   CreditCard,
   FileText,
   Lock,
+  LogOut,
   Menu,
   Shield,
   Zap,
@@ -42,7 +44,7 @@ export default function NavBar({
   const { user } = useSession();
   const router = useRouter();
   const isMobile = useIsMobile();
-
+  const { mutate: logoutMutation } = useLogout();
   return (
     <div
       className={`${
@@ -88,38 +90,54 @@ export default function NavBar({
           const Icon = item.icon;
           const isActive = activeMenu === item.id;
           return (
-            <button
+            <Button
               key={item.id}
+              variant="nav"
+              isActive={isActive}
               onClick={() => {
                 router.push(`/${item.id}`);
               }}
-              className={`w-full px-6 py-3 flex items-center gap-3 text-sm font-normal transition-all duration-200 ${
-                isActive
-                  ? "bg-primary/10 text-primary border-l-4 border-primary"
-                  : "text-neutral-700 hover:bg-neutral-50"
-              } ${!sidebarOpen && "px-0 justify-center"}`}
+              className={clsx(!sidebarOpen && "px-0 justify-center")}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
               {sidebarOpen && <span>{item.label}</span>}
-            </button>
+            </Button>
           );
         })}
       </nav>
 
       {/* User Info */}
       <div className="p-6 border-t border-neutral-200">
-        <div className="flex items-center gap-3">
-          <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center font-normal text-primary flex-shrink-0">
-            {user?.avatar}
-          </div>
-          {sidebarOpen && (
-            <div className="min-w-0">
-              <p className="font-normal text-sm truncate text-neutral-900">
-                {user?.fullName}
-              </p>
-              <p className="text-xs text-neutral-500">{user?.email}</p>
-            </div>
+        <div
+          className={clsx(
+            "flex flex-col gap-3",
+            !sidebarOpen ? "items-center" : "items-start"
           )}
+        >
+          <Button
+            variant="outline"
+            className={clsx(
+              "w-full text-sm flex flex-row",
+              !sidebarOpen ? "justify-center" : "justify-start gap-4"
+            )}
+            onClick={() => logoutMutation()}
+          >
+            <LogOut className="w-5 h-5 flex-shrink-0" />
+            {sidebarOpen && <span>Logout</span>}
+          </Button>
+          <div className="flex items-center gap-3 w-full">
+            <div className="w-10 h-10 bg-primary/20 rounded-full flex items-center justify-center font-normal text-primary flex-shrink-0">
+              {user?.avatar}
+            </div>
+            {sidebarOpen && (
+              <div className="min-w-0">
+                <p className="font-normal text-sm truncate text-neutral-900">
+                  {user?.fullName}
+                </p>
+                <p className="text-xs text-neutral-500">{user?.email}</p>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>
