@@ -1,5 +1,4 @@
 import ProvidersWrapper from "@/context/providers-wrapper";
-import { Analytics } from "@vercel/analytics/next";
 import type { Metadata } from "next";
 import type React from "react";
 import "./globals.css";
@@ -26,10 +25,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`font-sans antialiased`}>
-        <ProvidersWrapper>
-          {children}
-          <Analytics />
-        </ProvidersWrapper>
+        <ProvidersWrapper>{children}</ProvidersWrapper>
       </body>
     </html>
   );
