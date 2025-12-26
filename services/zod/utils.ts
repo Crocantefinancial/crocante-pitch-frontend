@@ -1,11 +1,11 @@
-import { api } from "@/services/api/utils";
+import { HttpService } from "@/services/api/http-service";
 import { ZodSchema } from "zod";
 
 export async function getValidated<T>(
   url: string,
   schema: ZodSchema<T>
 ): Promise<T> {
-  const { data } = await api.get<T>(url);
+  const data = await HttpService.get<T>(url);
   return schema.parse(data);
 }
 
@@ -14,7 +14,7 @@ export async function postValidated<T>(
   data: unknown,
   schema: ZodSchema<T>
 ): Promise<T> {
-  const { data: responseData } = await api.post<T>(url, data);
+  const responseData = await HttpService.post<T>(url, data);
   return schema.parse(responseData);
 }
 
@@ -23,6 +23,6 @@ export async function putValidated<T>(
   data: unknown,
   schema: ZodSchema<T>
 ): Promise<T> {
-  const { data: responseData } = await api.put<T>(url, data);
+  const responseData = await HttpService.put<T>(url, data);
   return schema.parse(responseData);
 }

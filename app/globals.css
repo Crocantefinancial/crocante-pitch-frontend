@@ -200,6 +200,23 @@ button:focus {
   @apply outline-none;
 }
 
+/* Base Input Styles */
+input {
+  @apply w-full h-10 sm:h-12 rounded-lg font-normal text-sm sm:text-base leading-none transition-all duration-200 px-3 sm:px-4 border border-secondary text-foreground;
+}
+
+input:hover {
+  @apply bg-secondary border-secondary text-foreground;
+}
+
+input:focus {
+  @apply border-primary text-foreground outline-none ring-0;
+}
+
+input:disabled {
+  @apply bg-disabled border-disabled text-muted-foreground;
+}
+
 /* Added category accent colors for Invest section */
 :root {
   --btc-accent: #C8A24A;

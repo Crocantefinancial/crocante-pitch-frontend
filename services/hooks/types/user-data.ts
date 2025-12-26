@@ -90,7 +90,9 @@ export function getFormattedClientResponse(response: ClientResponse): User {
   return userSchema.parse({
     id: response.data.id,
     fullName: `${response.data.user.firstName} ${response.data.user.lastName}`,
-    avatar: response.data.user.referralCode,
+    avatar: `${response.data.user.firstName
+      .charAt(0)
+      .toUpperCase()}${response.data.user.lastName.charAt(0).toUpperCase()}`,
     email: response.data.user.userName,
     phoneNumber: response.data.alias,
     userRole: response.data.user.langCode,

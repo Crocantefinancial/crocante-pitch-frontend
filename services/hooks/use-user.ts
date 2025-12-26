@@ -1,3 +1,6 @@
+"use client";
+
+import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
 import ServiceError from "@/services/api/errors/service-error";
 import { getValidated } from "@/services/zod/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -16,15 +19,24 @@ export function useUser(
   return useQuery<User>({
     queryKey: ["user", "me"],
     queryFn: async () => {
+      const sessionMode =
+        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "real";
+
+      // 1) Explicit mock mode: skip backend, always mock
+      if (sessionMode === "mock") {
+        return getMockedDefaultUserData();
+      }
+
+      // 2) Real mode (or initial, no mode): talk to backend
       try {
         const clientResponse = await getValidated<ClientResponse>(
           "/private/client",
           clientResponseSchema
         );
-        //throw new Error("test");
         return getFormattedClientResponse(clientResponse);
       } catch (err) {
-        // If auth fails, rethrow so the authExpired flow (meta: authSensitive) triggers.
+        // Auth errors: always bubble up in real mode so the global
+        // auth-sensitive handler can dispatch "auth-expired"
         if (
           err instanceof ServiceError &&
           (err.status === 401 || err.status === 403)
@@ -32,7 +44,7 @@ export function useUser(
           throw err;
         }
 
-        // Optional fallback for non-auth errors only (network, 5xx, schema mismatch, etc.)
+        // Non-auth errors: optionally fall back to mock
         if (fallbackToMockOnNonAuthError) {
           console.warn(
             "Non-auth error fetching /private/client, using mock:",

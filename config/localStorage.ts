@@ -1,9 +1,6 @@
 export enum LocalStorageKeys {
   TOKEN = "crocante_token",
-  LANG = "crocante_lang",
-  USERNAME = "crocante_username",
-  TOKEN_REGISTER = "crocante_token_register",
-  CLIENT = "crocante_client_info",
+  SESSION_MODE = "crocante_session_mode",
 }
 
 export const LocalStorageManager = {
@@ -25,6 +22,6 @@ export const LocalStorageManager = {
   },
   clearLocalStorage() {
     localStorage.removeItem(LocalStorageKeys.TOKEN);
-    localStorage.removeItem(LocalStorageKeys.CLIENT);
+    localStorage.removeItem(LocalStorageKeys.SESSION_MODE);
   },
 };
