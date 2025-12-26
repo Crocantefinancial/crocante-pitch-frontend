@@ -1,4 +1,4 @@
-import { Fund } from "@/services/api/types/fund-data";
+import { Fund } from "@/services/hooks/types/fund-data";
 
 export const FUNDS_DATA: Fund[] = [
   {

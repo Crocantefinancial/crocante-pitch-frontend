@@ -27,7 +27,7 @@ import {
   YAxis,
 } from "recharts";
 
-import type { Fund } from "@/services/api/types/fund-data";
+import type { Fund } from "@/services/hooks/types/fund-data";
 import { FUNDS_DATA } from "@/shared/mockups/funds";
 
 const getCategoryStyles = (category: Fund["category"]) => {

@@ -1,57 +1,76 @@
 "use client";
-import { POLL_USER_DATA_INTERVAL } from "@/config/constants";
-import { User } from "@/services/api/types/user-data";
-import { useUser } from "@/services/api/use-user";
-import type React from "react";
-import { createContext, useContext, useEffect, useState } from "react";
 
-const SessionContext = createContext<SessionContextType | undefined>(undefined);
+import { POLL_USER_DATA_INTERVAL } from "@/config/constants";
+import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
+import type { User } from "@/services/hooks/types/user-data";
+import { useUser } from "@/services/hooks/use-user";
+import { queryClient } from "@/services/react-query/query-client";
+import React, {
+  createContext,
+  useCallback,
+  useContext,
+  useEffect,
+  useMemo,
+} from "react";
+
 type SessionContextType = {
   isSignedIn: boolean;
-  user: User | undefined;
+  user: User | null;
+  isLoading: boolean;
   logout: () => void;
-  login: (user: User) => void;
+  setToken: (token: string) => void;
 };
 
+const SessionContext = createContext<SessionContextType | undefined>(undefined);
+
 export function SessionProvider({ children }: { children: React.ReactNode }) {
-  const defaultUserId = "1";
-  const { data: userData, isLoading } = useUser(
-    defaultUserId,
-    POLL_USER_DATA_INTERVAL
+  const {
+    data: user,
+    isLoading,
+    isError,
+    error,
+  } = useUser(POLL_USER_DATA_INTERVAL);
+
+  const isSignedIn = !!user && !isError;
+
+  const setToken = useCallback((token: string) => {
+    LocalStorageManager.setItem(LocalStorageKeys.TOKEN, token);
+    queryClient.invalidateQueries({ queryKey: ["user", "me"] });
+  }, []);
+
+  const logout = useCallback(() => {
+    LocalStorageManager.clearLocalStorage();
+    queryClient.removeQueries({ queryKey: ["user", "me"] });
+  }, []);
+
+  const value = useMemo(
+    () => ({
+      isSignedIn,
+      user: user ?? null,
+      isLoading,
+      logout,
+      setToken,
+    }),
+    [isSignedIn, user, isLoading, logout, setToken]
   );
 
-  const [user, setUser] = useState<User | undefined>(userData?.user);
-  const logout = () => {
-    setUser(undefined);
-  };
-  const login = (user: User) => {
-    setUser(user);
-  };
-
   useEffect(() => {
-    if (!isLoading && userData) {
-      setUser(userData.user);
-    }
-  }, [isLoading, userData, user]);
+    const handler = () => {
+      LocalStorageManager.clearLocalStorage();
+      queryClient.removeQueries({ queryKey: ["user", "me"] });
+    };
+    window.addEventListener("auth-expired", handler as any);
+    return () => window.removeEventListener("auth-expired", handler as any);
+  }, []);
 
   return (
-    <SessionContext.Provider
-      value={{
-        isSignedIn: user ? true : false,
-        user,
-        logout,
-        login,
-      }}
-    >
-      {children}
-    </SessionContext.Provider>
+    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
   );
 }
 
 export function useSession() {
   const context = useContext(SessionContext);
-  if (!context) {
+  if (!context)
     throw new Error("useSession must be used within a SessionProvider");
-  }
   return context;
 }

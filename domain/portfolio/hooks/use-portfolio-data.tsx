@@ -3,7 +3,7 @@ import { AvatarIcon } from "@/components/index";
 import { POLL_PORTFOLIO_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { formatCurrency } from "@/lib/utils";
-import { usePortfolio } from "@/services/api/use-portfolio";
+import { usePortfolio } from "@/services/hooks/use-portfolio";
 import { Lock } from "lucide-react";
 import { useMemo } from "react";
 
@@ -145,12 +145,3 @@ export function usePortfolioData() {
     toOptions,
   };
 }
-
-/* 
-
-wallets: custodiansFrom,
-    walletsOptions: fromOptions,
-    exchanges: custodiansTo,
-    exchangesOptions: toOptions,
-
-*/
