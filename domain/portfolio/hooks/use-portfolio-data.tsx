@@ -71,7 +71,7 @@ export function usePortfolioData() {
     portfolioData.custodiansData.forEach((custodianData) => {
       const custodian: FromType = {
         symbol: custodianData.name,
-        icon: <Lock className="w-5 h-5 text-muted-foreground" />,
+        icon: <Lock className="w-5 h-5 text-muted-foreground ml-2" />,
       };
       custodiansRecord[custodianData.name] = custodian;
       options.push({

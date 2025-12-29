@@ -1,7 +1,7 @@
 import { Modal } from "@/components/index";
 import { AlertCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Account, Info, OTP, RegisterHeader } from "./register";
+import { Account, Fondos, Info, OTP, RegisterHeader } from "./index";
 
 interface RegisterModalProps {
   open: boolean;
@@ -9,14 +9,21 @@ interface RegisterModalProps {
   onCancel: () => void;
 }
 
+// Define valid register step indices as a const array
+// This ensures type safety and exhaustiveness checking
+const REGISTER_STEP_INDICES = [0, 1, 2, 3, 4] as const;
+type RegisterStepIndex = (typeof REGISTER_STEP_INDICES)[number];
+
 export default function RegisterModal({
   open,
   onClose,
   onCancel,
 }: RegisterModalProps) {
-  const [selectedIndex, setSelectedIndex] = useState<number | undefined>(
-    undefined
-  );
+  const navLength = REGISTER_STEP_INDICES.length;
+
+  const [selectedIndex, setSelectedIndex] = useState<
+    RegisterStepIndex | undefined
+  >(undefined);
   interface CurrentComponent {
     title: string;
     subtitle: string;
@@ -30,7 +37,7 @@ export default function RegisterModal({
   };
   const currentComponentRef = useRef<CurrentComponent>(defaultComponent);
 
-  const handleSelect = (index: number) => {
+  const handleSelect = (index: RegisterStepIndex) => {
     updateCurrentRegisterStepComponentByIndex(index);
     setSelectedIndex(index);
   };
@@ -48,8 +55,25 @@ export default function RegisterModal({
     handleSelect(1);
   };
 
-  const updateCurrentRegisterStepComponentByIndex = (index: number) => {
-    switch (index) {
+  const handleInfo = () => {
+    handleSelect(3);
+  };
+
+  const handleAssets = () => {
+    handleSelect(4);
+  };
+
+  const updateCurrentRegisterStepComponentByIndex = (
+    index: RegisterStepIndex
+  ): void => {
+    // Clamp index to valid range [0, navLength]
+    const clampedIndex = Math.max(
+      0,
+      Math.min(index, navLength)
+    ) as RegisterStepIndex;
+
+    // TypeScript will error if switch doesn't handle all cases
+    switch (clampedIndex) {
       case 0:
         currentComponentRef.current.title = "Register New Account";
         currentComponentRef.current.subtitle =
@@ -71,16 +95,35 @@ export default function RegisterModal({
         );
         break;
       case 2:
-        currentComponentRef.current.title = "Complete Registration";
+        currentComponentRef.current.title = "Personal Information";
         currentComponentRef.current.subtitle =
-          "Please fill in the following information to complete your registration.";
+          "Please fill in the following information.";
         currentComponentRef.current.component = (
-          <Info onCancel={onCancel} onRegister={handleRegister} />
+          <Info onCancel={onCancel} onRegister={handleInfo} />
         );
         break;
-      default:
+      case 3:
+        currentComponentRef.current.title = "Assets Origin";
+        currentComponentRef.current.subtitle =
+          "Please select the origin of your assets.";
+        currentComponentRef.current.component = (
+          <Fondos onCancel={onCancel} onRegister={handleAssets} />
+        );
+        break;
+      case 4:
+        currentComponentRef.current.title = "KYC Documents";
+        currentComponentRef.current.subtitle =
+          "Please upload the following documents.";
+        currentComponentRef.current.component = (
+          <Fondos onCancel={onCancel} onRegister={handleAssets} />
+        );
+        break;
+      default: {
+        // Exhaustiveness check: TypeScript will error if a case is missing
+        const _exhaustive: never = clampedIndex;
         currentComponentRef.current = defaultComponent;
         break;
+      }
     }
   };
 
@@ -103,7 +146,10 @@ export default function RegisterModal({
           <RegisterHeader
             title={currentComponentRef.current.subtitle}
             selectedIndex={selectedIndex}
-            onSelect={handleSelect}
+            onSelect={(index: number) =>
+              handleSelect(index as RegisterStepIndex)
+            }
+            navLength={navLength}
           />
 
           {currentComponentRef.current.component}

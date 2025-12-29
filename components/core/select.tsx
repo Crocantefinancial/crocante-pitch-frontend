@@ -47,9 +47,9 @@ export default function Select({
           {label}
         </label>
       )}
-      <div className={clsx("relative border border-gray-200 rounded-lg p-3")}>
+      <div className={clsx("relative border border-gray-200 rounded-lg p-1")}>
         {hasIcon && (
-          <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2">
+          <div className="absolute top-1/2 transform -translate-y-1/2">
             {options[selectedIndex].icon}
           </div>
         )}
@@ -58,7 +58,7 @@ export default function Select({
         </div>
         <select
           className={clsx(
-            "appearance-none focus:outline-none pr-12 sm:pr-16",
+            "custom-select",
             className,
             hasIcon ? "pl-8 sm:pl-10" : "pl-3 sm:pl-4"
           )}

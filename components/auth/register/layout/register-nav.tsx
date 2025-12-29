@@ -4,11 +4,12 @@ import clsx from "clsx";
 export default function RegisterNav({
   selectedIndex,
   onSelect,
+  navLength,
 }: {
   selectedIndex: number;
   onSelect: (index: number) => void;
+  navLength: number;
 }) {
-  const navLength = 4;
   return (
     <div className="flex flex-row justify-between mt-4 gap-2">
       {Array.from({ length: navLength }).map((_, index) => (

@@ -161,9 +161,18 @@
 }
 
 @layer base {
+
+  /* Global border color, but no default outline on everything */
   * {
-    @apply border-border outline-ring/50;
+    @apply border-border;
   }
+
+  /* If you want a default focus outline for everything, use this:
+  *:focus-visible {
+    @apply outline-ring/50;
+  }
+  */
+
   body {
     @apply bg-background text-foreground;
   }
@@ -171,29 +180,33 @@
 
 /* Explicit pie chart segment colors with !important to override any global styles */
 .portfolio-segment-0 path {
-  fill: #3B82F6 !important; /* BTC - Blue */
+  fill: #3b82f6 !important;
+  /* BTC - Blue */
 }
 
 .portfolio-segment-1 path {
-  fill: #A855F7 !important; /* ETH - Purple */
+  fill: #a855f7 !important;
+  /* ETH - Purple */
 }
 
 .portfolio-segment-2 path {
-  fill: #22C55E !important; /* Stables - Green */
+  fill: #22c55e !important;
+  /* Stables - Green */
 }
 
 .portfolio-segment-3 path {
-  fill: #64748B !important; /* Fiat - Slate Gray */
+  fill: #64748b !important;
+  /* Fiat - Slate Gray */
 }
 
 .portfolio-segment-4 path {
-  fill: #F97316 !important; /* Others - Orange */
+  fill: #f97316 !important;
+  /* Others - Orange */
 }
 
 /* Base Button Styles */
 button {
-  /*@apply px-3 sm:px-4 py-2 rounded-3xl border-2 transition-all duration-200 flex items-center justify-center gap-2 sm:gap-3 font-medium text-sm sm:text-base leading-none text-center;*/
-  @apply items-center gap-2 px-4 py-2 rounded-lg font-normal transition-colors hover:cursor-pointer
+  @apply items-center gap-2 px-4 py-2 rounded-lg font-normal transition-colors hover:cursor-pointer;
 }
 
 button:focus {
@@ -219,19 +232,19 @@ input:disabled {
 
 /* Added category accent colors for Invest section */
 :root {
-  --btc-accent: #C8A24A;
-  --eth-accent: #7C88C2;
-  --defi-accent: #5FA6A1;
-  --tbill-accent: #7FA38F;
-  --stable-accent: #7C8A99;
+  --btc-accent: #c8a24a;
+  --eth-accent: #7c88c2;
+  --defi-accent: #5fa6a1;
+  --tbill-accent: #7fa38f;
+  --stable-accent: #7c8a99;
 }
 
 /* Added custody provider accent colors */
 :root {
-  --custody-btc: #C8A24A;
-  --custody-eth: #7C88C2;
-  --custody-stable: #7C8A99;
-  --custody-defi: #5FA6A1;
+  --custody-btc: #c8a24a;
+  --custody-eth: #7c88c2;
+  --custody-stable: #7c8a99;
+  --custody-defi: #5fa6a1;
 }
 
 /* Slide up animation for mobile modals */
@@ -240,6 +253,7 @@ input:disabled {
     transform: translateY(100%);
     opacity: 0;
   }
+
   to {
     transform: translateY(0);
     opacity: 1;
@@ -258,4 +272,37 @@ input:disabled {
 
 .scrollbar-hide::-webkit-scrollbar {
   display: none;
+}
+
+/* ========================= */
+/* Custom select overrides   */
+/* ========================= */
+
+@layer components {
+
+  /* Base select style – NO background, NO chevron, NO outline */
+  select.custom-select {
+    @apply appearance-none w-full rounded-lg border-none text-foreground text-sm sm:text-base py-2 pr-12 sm:pr-16 bg-transparent;
+    background-image: none !important;
+    background-repeat: no-repeat;
+    background-position: right 0.75rem center;
+    background-size: 0;
+    /* ensures no visible icon */
+    outline: none !important;
+    box-shadow: none !important;
+    /* kill Flowbite / browser focus rings */
+  }
+
+  select.custom-select::-ms-expand {
+    display: none;
+  }
+
+  /* Focus/active: keep EXACT same look, no bg, no ring, no border change */
+  select.custom-select:focus,
+  select.custom-select:focus-visible,
+  select.custom-select:active {
+    @apply outline-none ring-0 border-none;
+    background-color: transparent !important;
+    box-shadow: none !important;
+  }
 }

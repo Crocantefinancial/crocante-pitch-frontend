@@ -1,6 +1,6 @@
 import { useModal } from "@/hooks/use-modal";
 import LoginModal from "./login-modal";
-import RegisterModal from "./register-modal";
+import RegisterModal from "./register/register-modal";
 
 interface AuthModalProps {
   isOpenAuthModal: boolean;
