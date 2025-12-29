@@ -1,7 +1,7 @@
 import { Modal } from "@/components/index";
 import { AlertCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Account, OTP, RegisterHeader } from "./register";
+import { Account, Info, OTP, RegisterHeader } from "./register";
 
 interface RegisterModalProps {
   open: boolean;
@@ -68,6 +68,14 @@ export default function RegisterModal({
             onVerify={handleVerify}
             onResend={handleResend}
           />
+        );
+        break;
+      case 2:
+        currentComponentRef.current.title = "Complete Registration";
+        currentComponentRef.current.subtitle =
+          "Please fill in the following information to complete your registration.";
+        currentComponentRef.current.component = (
+          <Info onCancel={onCancel} onRegister={handleRegister} />
         );
         break;
       default:
