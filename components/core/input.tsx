@@ -5,7 +5,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import CircledExclamationIcon from "../icons/circled-exclamation-icon";
 import Button from "./button";
 import Tooltip from "./tooltip";
@@ -31,26 +31,29 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   noBottomSpace?: boolean;
 }
 
-export default function Input({
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-  disabled = false,
-  label = "",
-  noEdit = false,
-  max,
-  onMaxClick,
-  validation = null,
-  validationMessage = "",
-  secondaryLabel,
-  secondaryLabelAlign = "left",
-  complexLabel,
-  leftIcon,
-  className,
-  noBottomSpace = false,
-  ...props
-}: InputProps) {
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    type = "text",
+    value,
+    onChange,
+    placeholder,
+    disabled = false,
+    label = "",
+    noEdit = false,
+    max,
+    onMaxClick,
+    validation = null,
+    validationMessage = "",
+    secondaryLabel,
+    secondaryLabelAlign = "left",
+    complexLabel,
+    leftIcon,
+    className,
+    noBottomSpace = false,
+    ...props
+  },
+  ref
+) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
   const inputType = isPassword && showPassword ? "text" : type;
@@ -79,6 +82,7 @@ export default function Input({
         )}
         <input
           {...props}
+          ref={ref}
           type={inputType}
           value={value}
           onChange={onChange}
@@ -210,4 +214,6 @@ export default function Input({
       )}
     </div>
   );
-}
+});
+
+export default Input;
