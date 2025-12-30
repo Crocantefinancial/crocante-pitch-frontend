@@ -1,4 +1,5 @@
 import ProvidersWrapper from "@/context/providers-wrapper";
+import "flowbite/dist/flowbite.css";
 import type { Metadata } from "next";
 import type React from "react";
 import "./globals.css";

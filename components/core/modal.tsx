@@ -76,13 +76,15 @@ export default function Modal({
               </div>
             )}
           </div>
-          <button
-            onClick={blockClose ? undefined : onClose}
-            type="button"
-            className="p-1 bg-transparent border-0 outline-none hover:outline-none focus:outline-none active:outline-none group flex-shrink-0 ml-2"
-          >
-            <CloseIcon className="w-5 h-5 transition-all stroke-[1] group-hover:stroke-[2]" />
-          </button>
+          {!blockClose && (
+            <button
+              onClick={onClose}
+              type="button"
+              className="p-1 bg-transparent border-0 outline-none hover:outline-none focus:outline-none active:outline-none group flex-shrink-0 ml-2"
+            >
+              <CloseIcon className="w-5 h-5 transition-all stroke-[1] group-hover:stroke-[2]" />
+            </button>
+          )}
         </div>
         <div
           className={clsx(

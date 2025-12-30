@@ -43,24 +43,28 @@ export default function Select({
   return (
     <div className={clsx("flex flex-col", className)}>
       {label && (
-        <label className="block mb-1 sm:mb-2 font-montserrat font-normal text-xs sm:text-sm leading-none text-neutral h-[1.2em]">
+        <label className="block mb-1 font-montserrat font-normal text-xs leading-none text-neutral h-[1.2em]">
           {label}
         </label>
       )}
-      <div className={clsx("relative border border-gray-200 rounded-lg p-3")}>
+      <div
+        className={clsx(
+          "relative border border-gray-200 rounded-lg p-1 hover:bg-secondary"
+        )}
+      >
         {hasIcon && (
-          <div className="absolute left-3 sm:left-4 top-1/2 transform -translate-y-1/2">
+          <div className="absolute top-1/2 transform -translate-y-1/2">
             {options[selectedIndex].icon}
           </div>
         )}
-        <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
           <ChevronDownIcon className="w-4 h-4 text-neutral" />
         </div>
         <select
           className={clsx(
-            "appearance-none focus:outline-none pr-12 sm:pr-16",
+            "custom-select",
             className,
-            hasIcon ? "pl-8 sm:pl-10" : "pl-3 sm:pl-4"
+            hasIcon ? "pl-8" : "pl-3"
           )}
           {...props}
           value={selectedLabel}
@@ -76,10 +80,10 @@ export default function Select({
       </div>
       {/* Secondary Label */}
       {secondaryLabel && (
-        <div className="mt-1 sm:mt-2 h-4 sm:h-5 items-center">
+        <div className="mt-1 h-4 items-center">
           <div
             className={clsx(
-              "font-montserrat font-normal text-[0.625rem] sm:text-xs leading-none text-neutral",
+              "font-montserrat font-normal text-[0.625rem] leading-none text-neutral",
               {
                 "text-right": secondaryLabelAlign === "right",
                 "text-left": secondaryLabelAlign === "left",
