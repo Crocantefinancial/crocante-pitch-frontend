@@ -1,8 +1,8 @@
-import { Button, Label } from "@/components/index";
-import { UploadIcon } from "lucide-react";
+import { Button, Dropzone } from "@/components/index";
+import { useState } from "react";
 
 export interface DocumentsConfirmProps {
-  documents: string[];
+  documents: File[];
 }
 
 interface DocumentsComponentProps {
@@ -14,6 +14,10 @@ export default function Documents({
   onCancel,
   onConfirm,
 }: DocumentsComponentProps) {
+  const [idFront, setIdFront] = useState<File | null>(null);
+  const [idBack, setIdBack] = useState<File | null>(null);
+  const [proofOfAddress, setProofOfAddress] = useState<File | null>(null);
+
   return (
     <div className="space-y-4">
       <div className="flex flex-col mt-8">
@@ -21,18 +25,21 @@ export default function Documents({
           Documents
         </label>
         <div className="flex flex-col gap-2">
-          <Button variant="outline" className="w-full">
-            <UploadIcon className="w-4 h-4" />
-            ID Front
-          </Button>
-          <Button variant="outline" className="w-full">
-            <UploadIcon className="w-4 h-4" />
-            ID Back
-          </Button>
-          <Button variant="outline" className="w-full">
-            <UploadIcon className="w-4 h-4" />
-            Driver's Lic. or Proof of Address
-          </Button>
+          <Dropzone
+            label="ID Front"
+            onFileSelect={setIdFront}
+            accept="image/*,.pdf"
+          />
+          <Dropzone
+            label="ID Back"
+            onFileSelect={setIdBack}
+            accept="image/*,.pdf"
+          />
+          <Dropzone
+            label="Driver's Lic. or Proof of Address"
+            onFileSelect={setProofOfAddress}
+            accept="image/*,.pdf"
+          />
         </div>
       </div>
 
@@ -40,8 +47,11 @@ export default function Documents({
         <Button
           variant="primary"
           onClick={() => {
+            const documents = [idFront, idBack, proofOfAddress].filter(
+              Boolean
+            ) as File[];
             onConfirm({
-              documents: [],
+              documents,
             });
           }}
         >

@@ -2,6 +2,7 @@
 export { default as Button } from "./core/button";
 export { default as Card } from "./core/card";
 export { default as DatePicker } from "./core/date-picker";
+export { default as Dropzone } from "./core/dropzone";
 export { default as Icon } from "./core/icon";
 export { default as Input } from "./core/input";
 export { default as Label } from "./core/label";
