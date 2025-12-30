@@ -2,16 +2,21 @@ import { DateValueType } from "@/components/core/date-picker";
 import { Button, DatePicker, Input } from "@/components/index";
 import { useState } from "react";
 
+export interface InfoConfirmProps {
+  birthday: Date;
+  city: string;
+  country: string;
+  address: string;
+  zipCode: string;
+  phoneNumber: string;
+}
 interface InfoComponentProps {
   onCancel: () => void;
-  onConfirm: () => void;
+  onConfirm: (props: InfoConfirmProps) => void;
 }
 
 export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
-  const [birthday, setBirthday] = useState<DateValueType>({
-    startDate: null,
-    endDate: null,
-  });
+  const [birthday, setBirthday] = useState<DateValueType>(null);
   const [city, setCity] = useState("");
   const [country, setCountry] = useState("");
   const [address, setAddress] = useState("");
@@ -22,6 +27,7 @@ export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
     <div className="space-y-4">
       <div className="flex flex-col mt-8">
         <DatePicker
+          placeholder="Birthdate"
           value={birthday}
           onChange={setBirthday}
           onVisibilityChange={(isVisible) => setCalendarVisible(isVisible)}
@@ -61,16 +67,23 @@ export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
       <div className="flex flex-row justify-between mt-4 gap-2">
         <Button
           variant="primary"
-          disabled={!birthday.startDate || calendarVisible}
+          disabled={!birthday || calendarVisible}
           onClick={() => {
-            onConfirm();
+            onConfirm({
+              birthday: birthday,
+              city: city,
+              country: country,
+              address: address,
+              zipCode: zipCode,
+              phoneNumber: phoneNumber,
+            } as InfoConfirmProps);
           }}
         >
           Confirm
         </Button>
         <Button
           variant="secondary"
-          disabled={!birthday.startDate || calendarVisible}
+          disabled={calendarVisible}
           onClick={() => {
             onCancel();
           }}

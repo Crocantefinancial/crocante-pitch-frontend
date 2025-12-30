@@ -32,8 +32,8 @@ const assetsOriginOptionsRecord: Record<string, SelectOption> =
   Object.fromEntries(assetsOriginOptions.map((option) => [option.id, option]));
 
 const politicallyExposedOptions: Array<SelectOption> = [
-  { id: "Yes", label: "Yes", value: "Yes" },
   { id: "No", label: "No", value: "No" },
+  { id: "Yes", label: "Yes", value: "Yes" },
 ];
 
 const politicallyExposedOptionsRecord: Record<string, SelectOption> =
