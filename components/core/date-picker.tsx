@@ -8,10 +8,7 @@ import {
 } from "flowbite-react";
 import { useEffect, useRef } from "react";
 
-export interface DateValueType {
-  startDate: Date | null;
-  endDate: Date | null;
-}
+export type DateValueType = Date | null;
 
 interface DatePickerProps {
   value: DateValueType;
@@ -187,13 +184,8 @@ export default function DatePicker({
   return (
     <div ref={rootRef} className={clsx("w-full mb-6 relative", className)}>
       <FlowbiteDatepicker
-        value={value.startDate ?? null}
-        onChange={(date: Date | null) =>
-          onChange({
-            startDate: date,
-            endDate: date,
-          })
-        }
+        value={value ?? null}
+        onChange={onChange}
         placeholder={placeholder}
         autoHide
         theme={crocTheme}
