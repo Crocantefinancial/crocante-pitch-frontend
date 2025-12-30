@@ -11,6 +11,7 @@ import {
 } from "./index";
 import { AssetsOriginConfirmProps } from "./steps/assets-origin";
 import { DocumentsConfirmProps } from "./steps/documents";
+import { InfoConfirmProps } from "./steps/info";
 
 interface RegisterModalProps {
   open: boolean;
@@ -64,7 +65,8 @@ export default function RegisterModal({
     handleSelect(1);
   };
 
-  const handleInfo = () => {
+  const handleInfo = (props: InfoConfirmProps) => {
+    console.log("handleInfo", props);
     handleSelect(3);
   };
 
