@@ -5,7 +5,7 @@ import {
   Eye,
   EyeOff,
 } from "lucide-react";
-import React, { useState } from "react";
+import React, { forwardRef, useState } from "react";
 import CircledExclamationIcon from "../icons/circled-exclamation-icon";
 import Button from "./button";
 import Tooltip from "./tooltip";
@@ -31,26 +31,29 @@ interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   noBottomSpace?: boolean;
 }
 
-export default function Input({
-  type = "text",
-  value,
-  onChange,
-  placeholder,
-  disabled = false,
-  label = "",
-  noEdit = false,
-  max,
-  onMaxClick,
-  validation = null,
-  validationMessage = "",
-  secondaryLabel,
-  secondaryLabelAlign = "left",
-  complexLabel,
-  leftIcon,
-  className,
-  noBottomSpace = false,
-  ...props
-}: InputProps) {
+const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
+  {
+    type = "text",
+    value,
+    onChange,
+    placeholder,
+    disabled = false,
+    label = "",
+    noEdit = false,
+    max,
+    onMaxClick,
+    validation = null,
+    validationMessage = "",
+    secondaryLabel,
+    secondaryLabelAlign = "left",
+    complexLabel,
+    leftIcon,
+    className,
+    noBottomSpace = false,
+    ...props
+  },
+  ref
+) {
   const [showPassword, setShowPassword] = useState(false);
   const isPassword = type === "password";
   const inputType = isPassword && showPassword ? "text" : type;
@@ -59,26 +62,27 @@ export default function Input({
     "!border-invalid": validation === "invalid",
     "!border-success": validation === "success",
     "!bg-disabled !border-secondary !text-neutral": noEdit, // noEdit is disabled input forced to default styles
-    "!pl-10 sm:!pl-12": leftIcon,
-    "!pr-10 sm:!pr-12": isPassword && !validation && !max,
-    "!pr-20 sm:!pr-24": isPassword && (validation || max),
+    "!pl-10": leftIcon,
+    "!pr-10": isPassword && !validation && !max,
+    "!pr-20": isPassword && (validation || max),
   });
 
   return (
     <div className={className}>
       {label && (
-        <label className="block mb-1 sm:mb-2 font-normal text-xs sm:text-sm leading-none text-neutral h-[1.2em]">
+        <label className="block mb-1 font-normal text-xs leading-none text-neutral h-[1.2em]">
           {label}
         </label>
       )}
       <div className="relative">
         {leftIcon && (
-          <div className="absolute left-2 sm:left-3 top-1/2 transform -translate-y-1/2">
+          <div className="absolute left-2 top-1/2 transform -translate-y-1/2">
             {leftIcon}
           </div>
         )}
         <input
           {...props}
+          ref={ref}
           type={inputType}
           value={value}
           onChange={onChange}
@@ -93,13 +97,13 @@ export default function Input({
             type="button"
             onClick={() => setShowPassword(!showPassword)}
             disabled={disabled || noEdit}
-            className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="absolute right-3 top-1/2 transform -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
             aria-label={showPassword ? "Hide password" : "Show password"}
           >
             {showPassword ? (
-              <EyeOff className="w-4 h-4 sm:w-5 sm:h-5" />
+              <EyeOff className="w-4 h-4" />
             ) : (
-              <Eye className="w-4 h-4 sm:w-5 sm:h-5" />
+              <Eye className="w-4 h-4" />
             )}
           </button>
         )}
@@ -109,10 +113,10 @@ export default function Input({
           <div
             className={clsx(
               "absolute top-1/2 transform -translate-y-1/2",
-              isPassword ? "right-10 sm:right-12" : "right-3 sm:right-4"
+              isPassword ? "right-10" : "right-3"
             )}
           >
-            <AlertIcon className="text-invalid sm:w-4 sm:h-4" size={14} />
+            <AlertIcon className="text-invalid" size={14} />
           </div>
         )}
 
@@ -120,10 +124,10 @@ export default function Input({
           <div
             className={clsx(
               "absolute top-1/2 transform -translate-y-1/2",
-              isPassword ? "right-10 sm:right-12" : "right-3 sm:right-4"
+              isPassword ? "right-10" : "right-3"
             )}
           >
-            <CheckIcon className="text-success sm:w-3.5 sm:h-3.5" size={12} />
+            <CheckIcon className="text-success" size={12} />
           </div>
         )}
 
@@ -131,14 +135,14 @@ export default function Input({
           <div
             className={clsx(
               "absolute top-1/2 transform -translate-y-1/2",
-              isPassword ? "right-10 sm:right-12" : "right-2 sm:right-3"
+              isPassword ? "right-10" : "right-2"
             )}
           >
             <Button
               onClick={onMaxClick}
               variant="secondary"
               disabled={noEdit}
-              className="w-8 sm:w-10 h-4 sm:h-5 !rounded text-[0.625rem] sm:text-xs"
+              className="w-8 h-4 !rounded text-[0.625rem]"
             >
               max.
             </Button>
@@ -148,12 +152,12 @@ export default function Input({
 
       {/* Always reserve space for bottom content */}
       {!noBottomSpace && (
-        <div className="mt-1 sm:mt-2 h-4 sm:h-5 items-center">
+        <div className="mt-1 h-4 items-center">
           {/* Validation Message */}
           {validation && validationMessage && (
             <div
               className={clsx(
-                "font-inter font-normal text-xs sm:text-sm leading-none tracking-wider",
+                "font-inter font-normal text-xs leading-none tracking-wider",
                 {
                   "text-invalid": validation === "invalid",
                   "text-success": validation === "success",
@@ -168,7 +172,7 @@ export default function Input({
           {secondaryLabel && !validation && (
             <div
               className={clsx(
-                "font-normal text-[0.625rem] sm:text-xs leading-none text-neutral",
+                "font-normal text-[0.625rem] leading-none text-neutral",
                 {
                   "text-right": secondaryLabelAlign === "right",
                   "text-left": secondaryLabelAlign === "left",
@@ -183,7 +187,7 @@ export default function Input({
           {complexLabel && !validation && (
             <div
               className={clsx(
-                "font-normal text-[0.625rem] sm:text-xs leading-none flex items-center gap-1 sm:gap-2",
+                "font-normal text-[0.625rem] leading-none flex items-center gap-1",
                 {
                   "justify-end": complexLabel.align === "right",
                   "justify-start": complexLabel.align === "left",
@@ -210,4 +214,6 @@ export default function Input({
       )}
     </div>
   );
-}
+});
+
+export default Input;

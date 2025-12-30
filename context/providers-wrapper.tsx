@@ -1,7 +1,7 @@
 "use client";
 
+import AuthModal from "@/components/auth/auth-modal";
 import { AuthExpiredListener } from "@/context/auth-expired-listener";
-import LoginModal from "@/context/components/login-modal";
 import { useModal } from "@/hooks/use-modal";
 import useMounted from "@/hooks/use-mounted";
 import { queryClient } from "@/services/react-query/query-client";
@@ -13,23 +13,24 @@ function ProvidersInner({ children }: { children: React.ReactNode }) {
   const mounted = useMounted();
 
   const {
-    isOpen: isOpenSessionExpiredModal,
-    open: openSessionExpiredModalAction,
-    close: closeSessionExpiredModal,
+    isOpen: isOpenAuthModal,
+    open: openAuthModalAction,
+    close: closeAuthModal,
   } = useModal(false, {});
 
   return (
     <>
       <AuthExpiredListener
-        onOpen={openSessionExpiredModalAction}
-        isOpen={isOpenSessionExpiredModal}
+        onOpen={openAuthModalAction}
+        isOpen={isOpenAuthModal}
       />
       <SessionProvider>{children}</SessionProvider>
 
       {mounted && (
-        <LoginModal
-          open={isOpenSessionExpiredModal}
-          onClose={closeSessionExpiredModal}
+        <AuthModal
+          isOpenAuthModal={isOpenAuthModal}
+          onCloseAuthModal={closeAuthModal}
+          onOpenAuthModal={openAuthModalAction}
         />
       )}
     </>

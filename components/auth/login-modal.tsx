@@ -7,9 +7,11 @@ import { useEffect, useState } from "react";
 export default function LoginModal({
   open,
   onClose,
+  onRegister,
 }: {
   open: boolean;
   onClose: () => void;
+  onRegister: () => void;
 }) {
   const { mutate: loginMutation } = useLogin();
   const { mutate: mockMutation } = useMock();
@@ -75,7 +77,7 @@ export default function LoginModal({
             variant="outline"
             onClick={() => {
               onClose();
-              // TODO: Implement register new account
+              onRegister();
             }}
           >
             Register new account
