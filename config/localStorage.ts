@@ -8,7 +8,7 @@ export const LocalStorageManager = {
     try {
       localStorage.setItem(key, JSON.stringify(item));
     } catch (error) {
-      console.error(`Error al guardar en localStorage: ${error}`);
+      console.error(`Failed while saving to localStorage: ${error}`);
     }
   },
   getItem(key: string) {
@@ -16,7 +16,7 @@ export const LocalStorageManager = {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
     } catch (error) {
-      console.error(`Error al obtener de localStorage: ${error}`);
+      console.error(`Failed while getting from localStorage: ${error}`);
       return null;
     }
   },

@@ -1,10 +1,14 @@
 import { SelectOption } from "@/components/core/select";
-import { Button, Select } from "@/components/index";
+import { Button, Label, RadioGroup, Select } from "@/components/index";
 import { useSelector } from "@/hooks/use-selector";
 
+export interface AssetsOriginConfirmProps {
+  assetsOrigin: string;
+  politicallyExposed: boolean;
+}
 interface AssetsOriginComponentProps {
   onCancel: () => void;
-  onRegister: () => void;
+  onConfirm: (props: AssetsOriginConfirmProps) => void;
 }
 
 enum AssetsOriginType {
@@ -24,26 +28,34 @@ const assetsOriginOptions: Array<SelectOption> = Object.values(
   value: assetsOrigin,
 }));
 
+const assetsOriginOptionsRecord: Record<string, SelectOption> =
+  Object.fromEntries(assetsOriginOptions.map((option) => [option.id, option]));
+
+const politicallyExposedOptions: Array<SelectOption> = [
+  { id: "Yes", label: "Yes", value: "Yes" },
+  { id: "No", label: "No", value: "No" },
+];
+
+const politicallyExposedOptionsRecord: Record<string, SelectOption> =
+  Object.fromEntries(
+    politicallyExposedOptions.map((option) => [option.id, option])
+  );
+
 export default function AssetsOrigin({
   onCancel,
-  onRegister,
+  onConfirm,
 }: AssetsOriginComponentProps) {
   const {
     selectedRow: selectedAssetsOrigin,
     selectedIndex: selectedAssetsOriginIndex,
     change: changeAssetsOriginSelection,
-  } = useSelector<SelectOption>(
-    assetsOriginOptions.reduce((acc, assetsOrigin) => {
-      acc[assetsOrigin.id] = assetsOrigin;
-      return acc;
-    }, {} as Record<string, SelectOption>),
-    0,
-    {
-      onChange: () => {
-        console.log("selectedAssetsOrigin", selectedAssetsOrigin);
-      },
-    }
-  );
+  } = useSelector<SelectOption>(assetsOriginOptionsRecord, 0, {});
+
+  const {
+    selectedRow: selectedPoliticallyExposed,
+    selectedIndex: selectedPoliticallyExposedIndex,
+    change: changePoliticallyExposedSelection,
+  } = useSelector<SelectOption>(politicallyExposedOptionsRecord, 0, {});
 
   return (
     <div className="space-y-4">
@@ -57,16 +69,27 @@ export default function AssetsOrigin({
             onChange: changeAssetsOriginSelection,
           }}
         />
+
+        <RadioGroup
+          className="w-full mt-8 mb-4"
+          label="Politically exposed"
+          options={politicallyExposedOptions}
+          selectedIndex={selectedPoliticallyExposedIndex}
+          onChange={changePoliticallyExposedSelection}
+        />
       </div>
 
       <div className="flex flex-row justify-between mt-4 gap-2">
         <Button
           variant="primary"
           onClick={() => {
-            onRegister();
+            onConfirm({
+              assetsOrigin: selectedAssetsOrigin?.value ?? "",
+              politicallyExposed: selectedPoliticallyExposed?.value === "Yes",
+            });
           }}
         >
-          Register
+          Confirm
         </Button>
         <Button
           variant="secondary"

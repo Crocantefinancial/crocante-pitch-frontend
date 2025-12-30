@@ -1,7 +1,15 @@
 import { Modal } from "@/components/index";
 import { AlertCircle } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
-import { Account, Fondos, Info, OTP, RegisterHeader } from "./index";
+import {
+  Account,
+  AssetsOrigin,
+  Documents,
+  Info,
+  OTP,
+  RegisterHeader,
+} from "./index";
+import { AssetsOriginConfirmProps } from "./steps/assets-origin";
 
 interface RegisterModalProps {
   open: boolean;
@@ -42,7 +50,7 @@ export default function RegisterModal({
     setSelectedIndex(index);
   };
 
-  const handleRegister = () => {
+  const handleAccount = () => {
     handleSelect(1);
   };
 
@@ -59,8 +67,21 @@ export default function RegisterModal({
     handleSelect(3);
   };
 
-  const handleAssets = () => {
+  const handleAssets = ({
+    assetsOrigin,
+    politicallyExposed,
+  }: AssetsOriginConfirmProps) => {
+    console.log(
+      "handleAssets",
+      assetsOrigin,
+      "politicallyExposed",
+      politicallyExposed
+    );
     handleSelect(4);
+  };
+
+  const handleDocuments = () => {
+    onClose();
   };
 
   const updateCurrentRegisterStepComponentByIndex = (
@@ -79,7 +100,7 @@ export default function RegisterModal({
         currentComponentRef.current.subtitle =
           "Please fill in the following information to register a new account.";
         currentComponentRef.current.component = (
-          <Account onCancel={onCancel} onRegister={handleRegister} />
+          <Account onCancel={onCancel} onConfirm={handleAccount} />
         );
         break;
       case 1:
@@ -99,7 +120,7 @@ export default function RegisterModal({
         currentComponentRef.current.subtitle =
           "Please fill in the following information.";
         currentComponentRef.current.component = (
-          <Info onCancel={onCancel} onRegister={handleInfo} />
+          <Info onCancel={onCancel} onConfirm={handleInfo} />
         );
         break;
       case 3:
@@ -107,7 +128,7 @@ export default function RegisterModal({
         currentComponentRef.current.subtitle =
           "Please select the origin of your assets.";
         currentComponentRef.current.component = (
-          <Fondos onCancel={onCancel} onRegister={handleAssets} />
+          <AssetsOrigin onCancel={onCancel} onConfirm={handleAssets} />
         );
         break;
       case 4:
@@ -115,7 +136,7 @@ export default function RegisterModal({
         currentComponentRef.current.subtitle =
           "Please upload the following documents.";
         currentComponentRef.current.component = (
-          <Fondos onCancel={onCancel} onRegister={handleAssets} />
+          <Documents onCancel={onCancel} onConfirm={handleDocuments} />
         );
         break;
       default: {

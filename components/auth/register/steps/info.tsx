@@ -4,10 +4,10 @@ import { useState } from "react";
 
 interface InfoComponentProps {
   onCancel: () => void;
-  onRegister: () => void;
+  onConfirm: () => void;
 }
 
-export default function Info({ onCancel, onRegister }: InfoComponentProps) {
+export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
   const [birthday, setBirthday] = useState<DateValueType>({
     startDate: null,
     endDate: null,
@@ -57,10 +57,10 @@ export default function Info({ onCancel, onRegister }: InfoComponentProps) {
         <Button
           variant="primary"
           onClick={() => {
-            onRegister();
+            onConfirm();
           }}
         >
-          Register
+          Confirm
         </Button>
         <Button
           variant="secondary"

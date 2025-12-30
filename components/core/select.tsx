@@ -47,7 +47,11 @@ export default function Select({
           {label}
         </label>
       )}
-      <div className={clsx("relative border border-gray-200 rounded-lg p-1")}>
+      <div
+        className={clsx(
+          "relative border border-gray-200 rounded-lg p-1 hover:bg-secondary"
+        )}
+      >
         {hasIcon && (
           <div className="absolute top-1/2 transform -translate-y-1/2">
             {options[selectedIndex].icon}

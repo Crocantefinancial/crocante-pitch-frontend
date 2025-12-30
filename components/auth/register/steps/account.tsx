@@ -3,12 +3,12 @@ import { useState } from "react";
 
 interface AccountComponentProps {
   onCancel: () => void;
-  onRegister: () => void;
+  onConfirm: () => void;
 }
 
 export default function Account({
   onCancel,
-  onRegister,
+  onConfirm,
 }: AccountComponentProps) {
   const [firstName, setFirstName] = useState("");
   const [lastName, setLastName] = useState("");
@@ -55,10 +55,10 @@ export default function Account({
         <Button
           variant="primary"
           onClick={() => {
-            onRegister();
+            onConfirm();
           }}
         >
-          Register
+          Confirm
         </Button>
         <Button
           variant="secondary"
