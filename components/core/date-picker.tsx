@@ -1,6 +1,5 @@
 "use client";
 
-import "@/components/custom-styles/date-picker.css";
 import clsx from "clsx";
 import { useEffect, useRef } from "react";
 
