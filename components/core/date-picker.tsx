@@ -1,6 +1,11 @@
 "use client";
 
+import "@/components/custom-styles/date-picker.css";
 import clsx from "clsx";
+import {
+  Datepicker as FlowbiteDatepicker,
+  type DatepickerTheme,
+} from "flowbite-react";
 import { useEffect, useRef } from "react";
 
 export interface DateValueType {
@@ -11,11 +16,103 @@ export interface DateValueType {
 interface DatePickerProps {
   value: DateValueType;
   onChange: (newValue: DateValueType) => void;
-  className?: string;
-  inputClassName?: string;
+  className?: string; // wrapper
+  inputClassName?: string; // input
   placeholder?: string;
   onVisibilityChange?: (isVisible: boolean) => void;
 }
+
+/**
+ * Theme wiring: attaches .croc-... classes
+ * from date-picker.css to flowbite-react's internal structure.
+ */
+const crocTheme: Partial<DatepickerTheme> = {
+  root: {
+    base: "croc-datepicker-root",
+  },
+  popup: {
+    root: {
+      base: "croc-datepicker-popup",
+      inline: "croc-datepicker-popup-inline",
+      inner: "croc-datepicker-inner",
+    },
+    header: {
+      base: "croc-datepicker-header",
+      title: "croc-datepicker-title",
+      selectors: {
+        base: "croc-datepicker-header-controls",
+        button: {
+          base: "croc-datepicker-nav-button",
+          prev: "",
+          next: "",
+          view: "croc-datepicker-month-label",
+        },
+      },
+    },
+    view: {
+      base: "croc-datepicker-view",
+    },
+    footer: {
+      base: "croc-datepicker-footer",
+      button: {
+        base: "croc-datepicker-footer-btn",
+        today: "croc-datepicker-footer-btn--today",
+        clear: "croc-datepicker-footer-btn--clear",
+      },
+    },
+  },
+  views: {
+    // DAYS VIEW (main calendar grid)
+    days: {
+      header: {
+        base: "croc-datepicker-dow-row",
+        title: "croc-datepicker-dow",
+      },
+      items: {
+        base: "croc-datepicker-grid",
+        item: {
+          base: "croc-datepicker-cell",
+          selected: "croc-datepicker-cell--selected",
+          disabled: "croc-datepicker-cell--disabled",
+          today: "croc-datepicker-cell--today",
+        },
+      },
+    },
+    // MONTHS VIEW (used when clicking on month title)
+    months: {
+      items: {
+        base: "croc-datepicker-grid",
+        item: {
+          base: "croc-datepicker-cell",
+          selected: "croc-datepicker-cell--selected",
+          disabled: "croc-datepicker-cell--disabled",
+        },
+      },
+    },
+    // YEARS VIEW
+    years: {
+      items: {
+        base: "croc-datepicker-grid",
+        item: {
+          base: "croc-datepicker-cell",
+          selected: "croc-datepicker-cell--selected",
+          disabled: "croc-datepicker-cell--disabled",
+        },
+      },
+    },
+    // DECADES VIEW
+    decades: {
+      items: {
+        base: "croc-datepicker-grid",
+        item: {
+          base: "croc-datepicker-cell",
+          selected: "croc-datepicker-cell--selected",
+          disabled: "croc-datepicker-cell--disabled",
+        },
+      },
+    },
+  },
+};
 
 export default function DatePicker({
   value,
@@ -25,177 +122,82 @@ export default function DatePicker({
   placeholder = "Select date",
   onVisibilityChange,
 }: DatePickerProps) {
-  const ref = useRef<HTMLInputElement | null>(null);
-  const datepickerInstanceRef = useRef<any>(null);
-  const visibilityCleanupRef = useRef<(() => void) | null>(null);
+  const rootRef = useRef<HTMLDivElement>(null);
+  const observerRef = useRef<MutationObserver | null>(null);
 
   useEffect(() => {
-    if (!ref.current) return;
+    if (!onVisibilityChange || !rootRef.current) return;
 
-    let instance: any;
-    const inputEl = ref.current;
-
-    let handleChangeDate: ((e: any) => void) | null = null;
-
-    (async () => {
-      // Dynamic import
-      // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-      // @ts-expect-error: no official TS types for this module
-      const DatepickerModule = await import("flowbite-datepicker/Datepicker");
-      const Datepicker =
-        (DatepickerModule as any).default || (DatepickerModule as any);
-
-      instance = new Datepicker(inputEl, {
-        autohide: true,
-        format: "yyyy-mm-dd",
-        orientation: "bottom auto",
-      });
-
-      // Listen to the DOM changeDate event
-      handleChangeDate = (event: any) => {
-        // Get the selected date from the event or from the instance
-        const selected: Date | undefined =
-          event?.detail?.date ||
-          (instance && typeof instance.getDate === "function"
-            ? instance.getDate()
-            : undefined);
-
-        if (selected) {
-          // Immediately update the input value to ensure it's visible
-          const dateStr = selected.toISOString().split("T")[0];
-          if (inputEl && inputEl.value !== dateStr) {
-            inputEl.value = dateStr;
-          }
-
-          // Also ensure the datepicker instance has the date set
-          if (instance && typeof instance.setDate === "function") {
-            instance.setDate(selected);
-          }
-
-          // Update the parent component state
-          onChange({
-            startDate: selected,
-            endDate: selected,
-          });
-
-          // Hide the calendar after selecting a date
-          requestAnimationFrame(() => {
-            setTimeout(() => {
-              // Remove active class from datepicker element to hide it
-              const activeDatepicker =
-                document.querySelector(".datepicker.active");
-              if (activeDatepicker) {
-                activeDatepicker.classList.remove("active");
-              }
-            }, 100);
-          });
-        }
-      };
-
-      inputEl.addEventListener("changeDate", handleChangeDate);
-      datepickerInstanceRef.current = instance;
-
-      // Watch for calendar visibility changes
-      if (onVisibilityChange) {
-        const checkVisibility = () => {
-          const datepickerElement = document.querySelector(".datepicker");
-          if (datepickerElement) {
-            const isVisible = datepickerElement.classList.contains("active");
-            onVisibilityChange(isVisible);
-          }
-        };
-
-        // Use MutationObserver to watch for class changes on the datepicker
-        const observer = new MutationObserver(checkVisibility);
-
-        // Observe the document body for datepicker element changes
-        const observeDatepicker = () => {
-          const datepickerElement = document.querySelector(".datepicker");
-          if (datepickerElement) {
-            observer.observe(datepickerElement, {
-              attributes: true,
-              attributeFilter: ["class"],
-            });
-            checkVisibility(); // Initial check
-          } else {
-            // If datepicker doesn't exist yet, check again after a short delay
-            setTimeout(observeDatepicker, 100);
-          }
-        };
-
-        // Also listen to click events to detect when calendar opens
-        const handleClick = (e: MouseEvent) => {
-          const target = e.target as HTMLElement;
-          if (inputEl.contains(target)) {
-            // Input was clicked, check visibility after a short delay
-            setTimeout(checkVisibility, 50);
-          } else if (!document.querySelector(".datepicker")?.contains(target)) {
-            // Clicked outside, calendar should be hidden
-            setTimeout(checkVisibility, 50);
-          }
-        };
-
-        document.addEventListener("click", handleClick);
-        observeDatepicker();
-
-        // Store cleanup function in ref
-        visibilityCleanupRef.current = () => {
-          observer.disconnect();
-          document.removeEventListener("click", handleClick);
-        };
-      }
-    })();
-
-    return () => {
-      if (handleChangeDate && inputEl) {
-        inputEl.removeEventListener("changeDate", handleChangeDate);
-      }
-      if (instance && typeof instance.destroy === "function") {
-        instance.destroy();
-      }
-      // Cleanup visibility observer
-      if (visibilityCleanupRef.current) {
-        visibilityCleanupRef.current();
-        visibilityCleanupRef.current = null;
+    const checkVisibility = () => {
+      const popup = rootRef.current?.querySelector(".croc-datepicker-popup");
+      if (popup) {
+        const style = window.getComputedStyle(popup);
+        const isVisible =
+          style.display !== "none" &&
+          style.visibility !== "hidden" &&
+          style.opacity !== "0";
+        onVisibilityChange(isVisible);
+      } else {
+        onVisibilityChange(false);
       }
     };
-  }, [onChange, onVisibilityChange]);
 
-  // Keep input & datepicker in sync with external value
-  useEffect(() => {
-    const inputEl = ref.current;
-    const instance = datepickerInstanceRef.current;
+    // Use MutationObserver to watch for popup changes
+    observerRef.current = new MutationObserver(() => {
+      checkVisibility();
+    });
 
-    if (!inputEl) return;
+    // Observe the root element for changes
+    observerRef.current.observe(rootRef.current, {
+      childList: true,
+      subtree: true,
+      attributes: true,
+      attributeFilter: ["style", "class"],
+    });
 
-    if (value?.startDate) {
-      const dateStr = value.startDate.toISOString().split("T")[0];
+    // Also listen to click events to detect when calendar opens/closes
+    const handleClick = (e: MouseEvent) => {
+      const target = e.target as HTMLElement;
+      const input = rootRef.current?.querySelector("input");
+      const popup = rootRef.current?.querySelector(".croc-datepicker-popup");
 
-      if (inputEl.value !== dateStr) {
-        inputEl.value = dateStr;
+      if (input?.contains(target)) {
+        // Input was clicked, check visibility after a short delay
+        setTimeout(checkVisibility, 100);
+      } else if (popup && popup.contains(target)) {
+        // Clicked inside popup, it should be visible
+        setTimeout(checkVisibility, 50);
+      } else {
+        // Clicked outside, calendar should be hidden
+        setTimeout(checkVisibility, 50);
       }
+    };
 
-      if (instance && typeof instance.setDate === "function") {
-        instance.setDate(value.startDate);
+    document.addEventListener("click", handleClick);
+    checkVisibility(); // Initial check
+
+    return () => {
+      if (observerRef.current) {
+        observerRef.current.disconnect();
       }
-    } else {
-      inputEl.value = "";
-      if (instance && typeof instance.clear === "function") {
-        instance.clear();
-      }
-    }
-  }, [value]);
+      document.removeEventListener("click", handleClick);
+    };
+  }, [onVisibilityChange]);
 
   return (
-    <div className={clsx("w-full mb-6 relative", className)}>
-      <input
-        ref={ref}
-        type="text"
-        className={clsx(
-          "w-full h-12 px-4 py-3 border rounded-2xl text-base leading-normal font-normal text-foreground focus:outline-none focus:border-primary transition-colors",
-          inputClassName
-        )}
+    <div ref={rootRef} className={clsx("w-full mb-6 relative", className)}>
+      <FlowbiteDatepicker
+        value={value.startDate ?? null}
+        onChange={(date: Date | null) =>
+          onChange({
+            startDate: date,
+            endDate: date,
+          })
+        }
         placeholder={placeholder}
+        autoHide
+        theme={crocTheme}
+        className={clsx("w-full h-10 text-sm leading-normal", inputClassName)}
       />
     </div>
   );

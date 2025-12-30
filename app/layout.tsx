@@ -1,4 +1,3 @@
-import "@/components/custom-styles/date-picker.css";
 import ProvidersWrapper from "@/context/providers-wrapper";
 import "flowbite/dist/flowbite.css";
 import type { Metadata } from "next";
