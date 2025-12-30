@@ -10,6 +10,7 @@ import {
   RegisterHeader,
 } from "./index";
 import { AssetsOriginConfirmProps } from "./steps/assets-origin";
+import { DocumentsConfirmProps } from "./steps/documents";
 
 interface RegisterModalProps {
   open: boolean;
@@ -80,7 +81,8 @@ export default function RegisterModal({
     handleSelect(4);
   };
 
-  const handleDocuments = () => {
+  const handleDocuments = (documents: DocumentsConfirmProps) => {
+    console.log("handleDocuments", documents);
     onClose();
   };
 
