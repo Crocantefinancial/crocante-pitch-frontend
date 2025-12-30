@@ -1,306 +1,319 @@
-/* Flowbite Datepicker Styles */
-.datepicker {
-  display: none;
+/* Ensure input field inherits base input styles from globals.css */
+.croc-datepicker-root input,
+.croc-datepicker-root input[type="text"] {
+  /* Base styles from globals.css will apply via the input selector */
+  /* Only override what's different for date-picker */
+  width: 100%; /* w-full */
+  height: 2.5rem; /* h-10 - matches base input height */
+  border-radius: 0.7rem;
+  font-size: 0.875rem; /* text-sm */
+  line-height: 1.25; /* leading-normal */
+  padding-left: 1rem; /* px-4 */
+  padding-right: 2.5rem; /* pr-10 for icon on right */
+  padding-top: 0.5rem; /* adjusted for h-10 */
+  padding-bottom: 0.5rem; /* adjusted for h-10 */
+  background-color: transparent; /* no bg color */
 }
 
-.datepicker.active {
-  display: block;
+/* Placeholder styling - no special color */
+.croc-datepicker-root input::placeholder,
+.croc-datepicker-root input[type="text"]::placeholder {
+  color: var(--foreground);
+  opacity: 1;
 }
 
-.datepicker-dropdown {
-  position: absolute;
+/* Move Flowbite datepicker input icon from left to right */
+/* Only target icons that are siblings of the input, not in the popup */
+.croc-datepicker-root > div:has(input) svg,
+.croc-datepicker-root > div:has(input) > svg,
+.croc-datepicker-root > div:has(input) button > svg {
+  position: absolute !important;
+  right: 0.75rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: auto !important;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Alternative for browsers that don't support :has() */
+.croc-datepicker-root input + svg,
+.croc-datepicker-root input ~ svg {
+  position: absolute !important;
+  right: 0.75rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  left: auto !important;
+  pointer-events: none;
+  z-index: 10;
+}
+
+/* Ensure the wrapper is positioned relative for absolute icon positioning */
+.croc-datepicker-root > div {
+  position: relative;
+}
+
+/* Root wrapper around the whole datepicker */
+.croc-datepicker-root {
+  position: relative;
+}
+
+/* Popup container (absolute to the input) */
+.croc-datepicker-popup {
+  position: absolute !important;
+  top: 100% !important;
+  margin-top: 0rem !important;
+  left: 0;
+  z-index: 50;
+}
+
+/* Inline popup (if ever used) */
+.croc-datepicker-popup-inline {
+  position: relative;
   top: 0;
   left: 0;
-  z-index: 9999 !important;
-  padding-top: 4px;
+  z-index: auto;
 }
 
-.datepicker-dropdown.datepicker-orient-top {
-  padding-top: 0;
-  padding-bottom: 4px;
-}
-
-.datepicker-picker {
+/* Inner panel (card) */
+.croc-datepicker-inner {
   display: inline-block;
-  border-radius: 8px;
-  background-color: white;
+  border-radius: 0.75rem;
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border: 1px solid var(--border);
+  box-shadow:
+    0 12px 30px color-mix(in srgb, var(--primary) 18%, transparent),
+    0 4px 10px color-mix(in srgb, var(--primary) 14%, transparent);
+  padding: 0.75rem;
+  min-width: 15.75rem;
+  margin-top: 0 !important;
 }
 
-.datepicker-dropdown .datepicker-picker {
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 25%, transparent),
-    0 2px 4px color-mix(in srgb, var(--primary) 15%, transparent);
-  border: 2px solid var(--border);
-  border-radius: 8px;
-}
+/* ============================
+   Header
+   ============================ */
 
-.datepicker-picker span {
-  display: block;
-  flex: 1;
-  border: 0;
-  border-radius: 4px;
-  cursor: default;
-  text-align: center;
-  -webkit-touch-callout: none;
-  -webkit-user-select: none;
-  -moz-user-select: none;
-  -ms-user-select: none;
-  user-select: none;
-}
-
-.datepicker-main {
-  padding: 2px;
-}
-
-.datepicker-footer {
-  box-shadow: 0 4px 12px color-mix(in srgb, var(--primary) 25%, transparent),
-    0 2px 4px color-mix(in srgb, var(--primary) 15%, transparent);
-  background-color: whitesmoke;
-}
-
-.datepicker-controls,
-.datepicker-view,
-.datepicker-view .days-of-week,
-.datepicker-grid {
+.croc-datepicker-header {
   display: flex;
+  flex-direction: column;
 }
 
-.datepicker-grid {
-  flex-wrap: wrap;
-}
-
-.datepicker-view .dow,
-.datepicker-view .days .datepicker-cell {
-  flex-basis: 14.28571%;
-}
-
-.datepicker-view.datepicker-grid .datepicker-cell {
-  flex-basis: 25%;
-}
-
-.datepicker-view .week,
-.datepicker-cell {
-  height: 2.25rem;
-  line-height: 2.25rem;
-}
-
-.datepicker-title {
-  box-shadow: inset 0 -1px 1px rgba(10, 10, 10, 0.1);
-  background-color: whitesmoke;
-  padding: 0.375rem 0.75rem;
+.croc-datepicker-title {
+  padding: 0.35rem 0.75rem;
   text-align: center;
-  font-weight: 700;
+  font-weight: 600;
+  font-size: 0.9rem;
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
+  margin-bottom: 0.4rem;
 }
 
-.datepicker-header .datepicker-controls {
-  padding: 2px 2px 0;
+/* Header controls: prev / month-year / next */
+.croc-datepicker-header-controls {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.15rem 0.15rem 0.25rem;
 }
 
-.datepicker-controls .button {
+/* Base header button */
+.croc-datepicker-nav-button {
   display: inline-flex;
-  position: relative;
   align-items: center;
   justify-content: center;
   margin: 0;
-  border: 1px solid #dbdbdb;
-  border-radius: 4px;
-  box-shadow: none;
-  background-color: white;
+  border-radius: 9999px;
+  border: 1px solid var(--border);
+  background-color: #ffffff;
   cursor: pointer;
-  padding: calc(0.375em - 1px) 0.75em;
-  height: 2.25em;
-  vertical-align: top;
-  text-align: center;
-  line-height: 1.5;
-  white-space: nowrap;
-  color: #363636;
-  font-size: 1rem;
+  padding: 0.35rem 0.55rem;
+  min-width: 2rem;
+  min-height: 2rem;
+  font-size: 0.8rem;
+  color: var(--foreground);
+  transition: background-color 0.15s ease, border-color 0.15s ease;
 }
 
-.datepicker-controls .button:focus,
-.datepicker-controls .button:active {
+.croc-datepicker-nav-button:hover {
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border) 65%);
+  background-color: #f9fafb;
+}
+
+.croc-datepicker-nav-button:focus-visible {
   outline: none;
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--primary) 35%, transparent);
 }
 
-.datepicker-controls .button:hover {
-  border-color: #b5b5b5;
-  color: #363636;
+/* View switch (month + year) */
+.croc-datepicker-month-label {
+  flex: 1;
+  text-align: center;
+  font-weight: 600;
+  font-size: 0.9rem;
+  padding: 0.25rem 0.5rem;
+  border-radius: 9999px;
+  border: 1px solid transparent;
+  cursor: default;
 }
 
-.datepicker-controls .button:focus {
-  border-color: #3273dc;
-  color: #363636;
+/* ============================
+   Days of week row
+   ============================ */
+
+.croc-datepicker-dow-row {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  margin-bottom: 0.25rem;
+  gap: 0.1rem;
 }
 
-.datepicker-controls .button:focus:not(:active) {
-  box-shadow: 0 0 0 0.125em rgba(50, 115, 220, 0.25);
+.croc-datepicker-dow {
+  height: 1.5rem;
+  line-height: 1.5rem;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+  color: var(--muted-foreground);
 }
 
-.datepicker-controls .button:active {
-  border-color: #4a4a4a;
-  color: #363636;
+/* ============================
+   Days grid
+   ============================ */
+
+.croc-datepicker-view {
+  padding: 0.15rem 0.25rem;
 }
 
-.datepicker-controls .button[disabled] {
+/* Main day grid */
+.croc-datepicker-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  width: 15.75rem;
+  gap: 0.1rem;
+  row-gap: 0.005rem;
+}
+
+/* Day cell base */
+.croc-datepicker-cell {
+  height: 2.25rem;
+  line-height: 2.25rem;
+  font-size: 0.8rem;
+  border-radius: 9999px;
+  text-align: center;
+  cursor: pointer;
+  color: var(--foreground);
+  background: transparent;
+  transition:
+    background-color 0.12s ease,
+    color 0.12s ease,
+    box-shadow 0.12s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Hover state */
+.croc-datepicker-cell:hover {
+  background-color: color-mix(in srgb, var(--primary) 10%, #f9fafb);
+}
+
+/* Selected day */
+.croc-datepicker-cell--selected {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  font-weight: 600;
+  box-shadow:
+    0 0 0 1px color-mix(in srgb, var(--primary) 50%, transparent),
+    0 2px 4px color-mix(in srgb, var(--primary) 35%, transparent);
+}
+
+/* Today (if not selected) */
+.croc-datepicker-cell--today {
+  border: 1px solid var(--primary);
+}
+
+/* Disabled day */
+.croc-datepicker-cell--disabled {
+  color: var(--muted-foreground);
+  opacity: 0.5;
   cursor: not-allowed;
 }
 
-.datepicker-header .datepicker-controls .button {
-  border-color: transparent;
-  font-weight: bold;
+/* ============================
+   Footer
+   ============================ */
+
+.croc-datepicker-footer {
+  display: flex;
+  gap: 0.4rem;
+  margin-top: 0.5rem;
+  padding: 0.25rem 0.35rem 0.1rem;
+  background-color: #f5f5f5;
+  border-radius: 0.5rem;
 }
 
-.datepicker-header .datepicker-controls .button:hover {
-  background-color: #f9f9f9;
-}
-
-.datepicker-header .datepicker-controls .button:focus:not(:active) {
-  box-shadow: 0 0 0 0.125em rgba(255, 255, 255, 0.25);
-}
-
-.datepicker-header .datepicker-controls .button:active {
-  background-color: #f2f2f2;
-}
-
-.datepicker-header .datepicker-controls .button[disabled] {
-  box-shadow: none;
-}
-
-.datepicker-footer .datepicker-controls .button {
-  margin: calc(0.375rem - 1px) 0.375rem;
-  border-radius: 2px;
-  width: 100%;
-  font-size: 0.75rem;
-}
-
-.datepicker-controls .view-switch {
-  flex: auto;
-}
-
-.datepicker-controls .prev-btn,
-.datepicker-controls .next-btn {
-  padding-right: 0.375rem;
-  padding-left: 0.375rem;
-  width: 2.25rem;
-}
-
-.datepicker-controls .prev-btn.disabled,
-.datepicker-controls .next-btn.disabled {
-  visibility: hidden;
-}
-
-.datepicker-view .dow {
-  height: 1.5rem;
-  line-height: 1.5rem;
-  font-size: 0.875rem;
-  font-weight: 700;
-}
-
-.datepicker-view .week {
-  width: 2.25rem;
-  color: #b5b5b5;
-  font-size: 0.75rem;
-}
-
-.datepicker-grid {
-  width: 15.75rem;
-}
-
-.datepicker-cell:not(.disabled):hover {
-  background-color: #f9f9f9;
+/* Base footer button */
+.croc-datepicker-footer-btn {
+  flex: 1;
+  border-radius: 0.4rem;
+  font-size: 0.7rem;
+  line-height: 1.5;
+  padding: 0.3rem 0.5rem;
+  border: 1px solid transparent;
+  background-color: #ffffff;
+  color: var(--foreground);
   cursor: pointer;
+  text-align: center;
+  transition:
+    background-color 0.15s ease,
+    border-color 0.15s ease,
+    color 0.15s ease;
 }
 
-.datepicker-cell.focused:not(.selected) {
-  background-color: #e8e8e8;
+/* "Today" button */
+.croc-datepicker-footer-btn--today {
+  background-color: var(--primary);
+  color: var(--primary-foreground);
+  border-color: var(--primary);
 }
 
-.datepicker-cell.selected,
-.datepicker-cell.selected:hover {
-  background-color: #3273dc;
-  color: #fff;
-  font-weight: 600;
+.croc-datepicker-footer-btn--today:hover {
+  background-color: color-mix(in srgb, var(--primary) 85%, #000000 15%);
 }
 
-.datepicker-cell.disabled {
-  color: #dbdbdb;
+/* "Clear" button */
+.croc-datepicker-footer-btn--clear {
+  border-color: var(--border);
+  background-color: #ffffff;
 }
 
-.datepicker-cell.prev:not(.disabled),
-.datepicker-cell.next:not(.disabled) {
-  color: #7a7a7a;
+.croc-datepicker-footer-btn--clear:hover {
+  border-color: color-mix(in srgb, var(--primary) 35%, var(--border) 65%);
+  background-color: #f9fafb;
 }
 
-.datepicker-cell.prev.selected,
-.datepicker-cell.next.selected {
-  color: #e6e6e6;
+/* ============================
+   Dark mode tweaks
+   ============================ */
+
+.dark .croc-datepicker-inner {
+  background-color: var(--card);
+  color: var(--card-foreground);
+  border-color: var(--border);
+  box-shadow:
+    0 12px 30px color-mix(in srgb, var(--primary) 25%, transparent),
+    0 4px 10px color-mix(in srgb, var(--primary) 18%, transparent);
 }
 
-.datepicker-cell.highlighted:not(.selected):not(.range):not(.today) {
-  border-radius: 0;
-  background-color: whitesmoke;
+.dark .croc-datepicker-title {
+  background-color: var(--secondary);
 }
 
-.datepicker-cell.highlighted:not(.selected):not(.range):not(.today):not(.disabled):hover {
-  background-color: #eeeeee;
+.dark .croc-datepicker-footer {
+  background-color: var(--secondary);
 }
 
-.datepicker-cell.highlighted:not(.selected):not(.range):not(.today).focused {
-  background-color: #e8e8e8;
-}
-
-.datepicker-cell.today:not(.selected) {
-  background-color: #00d1b2;
-}
-
-.datepicker-cell.today:not(.selected):not(.disabled) {
-  color: #fff;
-}
-
-.datepicker-cell.today.focused:not(.selected) {
-  background-color: #00c4a7;
-}
-
-.datepicker-cell.range-start:not(.selected),
-.datepicker-cell.range-end:not(.selected) {
-  background-color: #b5b5b5;
-  color: #fff;
-}
-
-.datepicker-cell.range-start.focused:not(.selected),
-.datepicker-cell.range-end.focused:not(.selected) {
-  background-color: #afafaf;
-}
-
-.datepicker-cell.range-start {
-  border-radius: 4px 0 0 4px;
-}
-
-.datepicker-cell.range-end {
-  border-radius: 0 4px 4px 0;
-}
-
-.datepicker-cell.range {
-  border-radius: 0;
-  background-color: #dbdbdb;
-}
-
-.datepicker-cell.range:not(.disabled):not(.focused):not(.today):hover {
-  background-color: #d5d5d5;
-}
-
-.datepicker-cell.range.disabled {
-  color: #c2c2c2;
-}
-
-.datepicker-cell.range.focused {
-  background-color: #cfcfcf;
-}
-
-.datepicker-view.datepicker-grid .datepicker-cell {
-  height: 4.5rem;
-  line-height: 4.5rem;
-}
-
-.datepicker-input.in-edit {
-  border-color: #2366d1;
+.dark .croc-datepicker-cell:hover {
+  background-color: color-mix(in srgb, var(--primary) 15%, var(--background) 85%);
 }
