@@ -36,7 +36,7 @@ export default function RadioGroup({
 
   return (
     <div className={clsx("flex flex-col gap-2", className)}>
-      <label className="block  font-montserrat font-normal text-xs sm:text-sm leading-none text-neutral h-[1.2em]">
+      <label className="block  font-montserrat font-normal text-xs leading-none text-neutral h-[1.2em]">
         {label}
       </label>
       <RadioGroupPrimitive.Root

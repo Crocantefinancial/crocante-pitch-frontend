@@ -17,7 +17,7 @@ export default function Documents({
   return (
     <div className="space-y-4">
       <div className="flex flex-col mt-8">
-        <label className="block mb-1 sm:mb-2 font-montserrat font-normal text-xs sm:text-sm leading-none text-neutral h-[1.2em]">
+        <label className="block mb-1 font-montserrat font-normal text-xs leading-none text-neutral h-[1.2em]">
           Documents
         </label>
         <div className="flex flex-col gap-2">

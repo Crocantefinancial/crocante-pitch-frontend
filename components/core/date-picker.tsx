@@ -15,6 +15,7 @@ interface DatePickerProps {
   className?: string;
   inputClassName?: string;
   placeholder?: string;
+  onVisibilityChange?: (isVisible: boolean) => void;
 }
 
 export default function DatePicker({
@@ -23,9 +24,11 @@ export default function DatePicker({
   className,
   inputClassName,
   placeholder = "Select date",
+  onVisibilityChange,
 }: DatePickerProps) {
   const ref = useRef<HTMLInputElement | null>(null);
   const datepickerInstanceRef = useRef<any>(null);
+  const visibilityCleanupRef = useRef<(() => void) | null>(null);
 
   useEffect(() => {
     if (!ref.current) return;
@@ -92,6 +95,56 @@ export default function DatePicker({
 
       inputEl.addEventListener("changeDate", handleChangeDate);
       datepickerInstanceRef.current = instance;
+
+      // Watch for calendar visibility changes
+      if (onVisibilityChange) {
+        const checkVisibility = () => {
+          const datepickerElement = document.querySelector(".datepicker");
+          if (datepickerElement) {
+            const isVisible = datepickerElement.classList.contains("active");
+            onVisibilityChange(isVisible);
+          }
+        };
+
+        // Use MutationObserver to watch for class changes on the datepicker
+        const observer = new MutationObserver(checkVisibility);
+
+        // Observe the document body for datepicker element changes
+        const observeDatepicker = () => {
+          const datepickerElement = document.querySelector(".datepicker");
+          if (datepickerElement) {
+            observer.observe(datepickerElement, {
+              attributes: true,
+              attributeFilter: ["class"],
+            });
+            checkVisibility(); // Initial check
+          } else {
+            // If datepicker doesn't exist yet, check again after a short delay
+            setTimeout(observeDatepicker, 100);
+          }
+        };
+
+        // Also listen to click events to detect when calendar opens
+        const handleClick = (e: MouseEvent) => {
+          const target = e.target as HTMLElement;
+          if (inputEl.contains(target)) {
+            // Input was clicked, check visibility after a short delay
+            setTimeout(checkVisibility, 50);
+          } else if (!document.querySelector(".datepicker")?.contains(target)) {
+            // Clicked outside, calendar should be hidden
+            setTimeout(checkVisibility, 50);
+          }
+        };
+
+        document.addEventListener("click", handleClick);
+        observeDatepicker();
+
+        // Store cleanup function in ref
+        visibilityCleanupRef.current = () => {
+          observer.disconnect();
+          document.removeEventListener("click", handleClick);
+        };
+      }
     })();
 
     return () => {
@@ -101,8 +154,13 @@ export default function DatePicker({
       if (instance && typeof instance.destroy === "function") {
         instance.destroy();
       }
+      // Cleanup visibility observer
+      if (visibilityCleanupRef.current) {
+        visibilityCleanupRef.current();
+        visibilityCleanupRef.current = null;
+      }
     };
-  }, [onChange]);
+  }, [onChange, onVisibilityChange]);
 
   // Keep input & datepicker in sync with external value
   useEffect(() => {
@@ -135,7 +193,7 @@ export default function DatePicker({
         ref={ref}
         type="text"
         className={clsx(
-          "w-full h-12 px-4 py-3 border rounded-2xl text-base leading-normal font-normal text-foreground placeholder:text-muted-foreground focus:outline-none focus:border-primary transition-colors",
+          "w-full h-12 px-4 py-3 border rounded-2xl text-base leading-normal font-normal text-foreground focus:outline-none focus:border-primary transition-colors",
           inputClassName
         )}
         placeholder={placeholder}

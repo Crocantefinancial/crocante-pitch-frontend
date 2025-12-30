@@ -167,7 +167,7 @@
     @apply border-border;
   }
 
-  /* If you want a default focus outline for everything, use this:
+  /* Default focus outline for everything:
   *:focus-visible {
     @apply outline-ring/50;
   }
@@ -215,7 +215,7 @@ button:focus {
 
 /* Base Input Styles */
 input {
-  @apply w-full h-10 sm:h-12 rounded-lg font-normal text-sm sm:text-base leading-none transition-all duration-200 px-3 sm:px-4 border border-secondary text-foreground;
+  @apply w-full h-10 rounded-lg font-normal text-sm leading-none transition-all duration-200 px-3 border border-secondary text-foreground;
 }
 
 input:hover {
@@ -282,7 +282,7 @@ input:disabled {
 
   /* Base select style – NO background, NO chevron, NO outline */
   select.custom-select {
-    @apply appearance-none w-full rounded-lg border-none text-foreground text-sm sm:text-base px-3 sm:px-4 py-2 pr-12 sm:pr-16 bg-transparent cursor-pointer;
+    @apply appearance-none w-full rounded-lg border-none text-foreground text-sm px-3 py-2 pr-12 bg-transparent cursor-pointer;
     background-image: none !important;
     background-repeat: no-repeat;
     background-position: right 0.75rem center;

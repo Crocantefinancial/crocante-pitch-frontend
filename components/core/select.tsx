@@ -43,7 +43,7 @@ export default function Select({
   return (
     <div className={clsx("flex flex-col", className)}>
       {label && (
-        <label className="block mb-1 sm:mb-2 font-montserrat font-normal text-xs sm:text-sm leading-none text-neutral h-[1.2em]">
+        <label className="block mb-1 font-montserrat font-normal text-xs leading-none text-neutral h-[1.2em]">
           {label}
         </label>
       )}
@@ -57,14 +57,14 @@ export default function Select({
             {options[selectedIndex].icon}
           </div>
         )}
-        <div className="absolute right-3 sm:right-4 top-1/2 transform -translate-y-1/2 pointer-events-none">
+        <div className="absolute right-3 top-1/2 transform -translate-y-1/2 pointer-events-none">
           <ChevronDownIcon className="w-4 h-4 text-neutral" />
         </div>
         <select
           className={clsx(
             "custom-select",
             className,
-            hasIcon ? "pl-8 sm:pl-10" : "pl-3 sm:pl-4"
+            hasIcon ? "pl-8" : "pl-3"
           )}
           {...props}
           value={selectedLabel}
@@ -80,10 +80,10 @@ export default function Select({
       </div>
       {/* Secondary Label */}
       {secondaryLabel && (
-        <div className="mt-1 sm:mt-2 h-4 sm:h-5 items-center">
+        <div className="mt-1 h-4 items-center">
           <div
             className={clsx(
-              "font-montserrat font-normal text-[0.625rem] sm:text-xs leading-none text-neutral",
+              "font-montserrat font-normal text-[0.625rem] leading-none text-neutral",
               {
                 "text-right": secondaryLabelAlign === "right",
                 "text-left": secondaryLabelAlign === "left",

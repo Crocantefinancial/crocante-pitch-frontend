@@ -17,10 +17,15 @@ export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
   const [address, setAddress] = useState("");
   const [zipCode, setZipCode] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [calendarVisible, setCalendarVisible] = useState(false);
   return (
     <div className="space-y-4">
       <div className="flex flex-col mt-8">
-        <DatePicker value={birthday} onChange={setBirthday} />
+        <DatePicker
+          value={birthday}
+          onChange={setBirthday}
+          onVisibilityChange={(isVisible) => setCalendarVisible(isVisible)}
+        />
         <Input
           type="text"
           placeholder="City"
@@ -56,6 +61,7 @@ export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
       <div className="flex flex-row justify-between mt-4 gap-2">
         <Button
           variant="primary"
+          disabled={!birthday.startDate || calendarVisible}
           onClick={() => {
             onConfirm();
           }}
@@ -64,6 +70,7 @@ export default function Info({ onCancel, onConfirm }: InfoComponentProps) {
         </Button>
         <Button
           variant="secondary"
+          disabled={!birthday.startDate || calendarVisible}
           onClick={() => {
             onCancel();
           }}
