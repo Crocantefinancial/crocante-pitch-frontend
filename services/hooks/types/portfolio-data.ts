@@ -1,5 +1,6 @@
 import {
   ASSET_ALLOCATION,
+  ASSET_ALLOCATION_COLORS,
   BANKS_DATA,
   CRYPTOCURRENCIES,
   CURRENCIES,
@@ -9,6 +10,7 @@ import {
   OTC_DESKS_DATA,
   PORTFOLIO_DATA,
 } from "@/shared/mockups/portfolio";
+import { NetWorthData } from "./net-worth-data";
 
 export interface PortfolioDataResponse {
   totalBalance: number;
@@ -77,7 +79,7 @@ export interface PortfolioDataResponse {
   }>;
 }
 
-export function getNullMockedPortfolioData(): PortfolioDataResponse {
+export function getMockedPortfolioData(): PortfolioDataResponse {
   return {
     totalBalance: PORTFOLIO_DATA.totalBalance,
     cryptocurrencies: PORTFOLIO_DATA.cryptocurrencies,
@@ -92,4 +94,81 @@ export function getNullMockedPortfolioData(): PortfolioDataResponse {
     cryptocurrenciesData: CRYPTOCURRENCIES,
     assetAllocationData: ASSET_ALLOCATION,
   };
+}
+
+export function getNullPortfolioData(): PortfolioDataResponse {
+  return {
+    totalBalance: 0,
+    cryptocurrencies: 0,
+    currencies: 0,
+    commodities: 0,
+    banksData: [],
+    custodiansData: [],
+    exchangesData: [],
+    internalWalletsData: [],
+    otcDesksData: [],
+    currenciesData: [],
+    cryptocurrenciesData: [],
+    assetAllocationData: [],
+  };
+}
+
+export function getFormattedPortfolioData(
+  response: NetWorthData
+): PortfolioDataResponse {
+  //const nullPortfolioData = getNullPortfolioData();
+  const nullPortfolioData = getMockedPortfolioData();
+  nullPortfolioData.totalBalance = parseFloat(response.estTotalValue);
+  nullPortfolioData.cryptocurrencies = parseFloat(
+    response.assets.estTotalValue
+  );
+  nullPortfolioData.cryptocurrenciesData = response.assets.assets.map(
+    (asset) => {
+      return {
+        code: asset.currency.id,
+        name: asset.currency.name,
+        amount: asset.total,
+        value: asset.estValue,
+        change: "0",
+      };
+    }
+  );
+  nullPortfolioData.assetAllocationData = [];
+  response.assets.assets
+    .slice(0, ASSET_ALLOCATION_COLORS.length - 1)
+    .forEach((asset, index) => {
+      const value = (
+        (parseFloat(asset.estValue) / nullPortfolioData.cryptocurrencies) *
+        100
+      ).toFixed(2);
+      nullPortfolioData.assetAllocationData.push({
+        name: asset.currency.id,
+        value: parseFloat(value),
+        color: ASSET_ALLOCATION_COLORS[index],
+        amount: parseFloat(asset.estValue),
+      });
+    });
+
+  nullPortfolioData.assetAllocationData.push({
+    name: "Others",
+    value: 0,
+    color: ASSET_ALLOCATION_COLORS[ASSET_ALLOCATION_COLORS.length - 1],
+    amount: 0,
+  });
+  let othersAmount = 0;
+  response.assets.assets
+    .slice(ASSET_ALLOCATION_COLORS.length - 1)
+    .forEach((asset) => {
+      othersAmount += parseFloat(asset.estValue);
+    });
+  nullPortfolioData.assetAllocationData[
+    nullPortfolioData.assetAllocationData.length - 1
+  ].amount = othersAmount;
+  nullPortfolioData.assetAllocationData[
+    nullPortfolioData.assetAllocationData.length - 1
+  ].value = parseFloat(
+    ((othersAmount / nullPortfolioData.cryptocurrencies) * 100).toFixed(2)
+  );
+
+  return nullPortfolioData;
 }

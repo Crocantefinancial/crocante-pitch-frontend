@@ -5,12 +5,45 @@ export const PORTFOLIO_DATA = {
   commodities: 510000,
 };
 
+export const ASSET_ALLOCATION_COLORS: string[] = [
+  "#3B82F6",
+  "#A855F7",
+  "#22C55E",
+  "#64748B",
+  "#F97316",
+];
+
 export const ASSET_ALLOCATION = [
-  { name: "BTC", value: 66.1, color: "#3B82F6", amount: 84865850 },
-  { name: "ETH", value: 27.9, color: "#A855F7", amount: 35851500 },
-  { name: "Stables", value: 3.5, color: "#22C55E", amount: 4497500 },
-  { name: "Fiat", value: 1.91, color: "#64748B", amount: 2454350 },
-  { name: "Others", value: 0.59, color: "#F97316", amount: 758150 },
+  {
+    name: "BTC",
+    value: 66.1,
+    color: ASSET_ALLOCATION_COLORS[0],
+    amount: 84865850,
+  },
+  {
+    name: "ETH",
+    value: 27.9,
+    color: ASSET_ALLOCATION_COLORS[1],
+    amount: 35851500,
+  },
+  {
+    name: "Stables",
+    value: 3.5,
+    color: ASSET_ALLOCATION_COLORS[2],
+    amount: 4497500,
+  },
+  {
+    name: "Fiat",
+    value: 1.91,
+    color: ASSET_ALLOCATION_COLORS[3],
+    amount: 2454350,
+  },
+  {
+    name: "Others",
+    value: 0.59,
+    color: ASSET_ALLOCATION_COLORS[4],
+    amount: 758150,
+  },
 ];
 
 export const CRYPTOCURRENCIES = [

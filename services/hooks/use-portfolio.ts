@@ -1,31 +1,26 @@
-import envParsed from "@/config/envParsed";
+import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
 import { useQuery } from "@tanstack/react-query";
 import {
-  getNullMockedPortfolioData,
+  getFormattedPortfolioData,
+  getMockedPortfolioData,
   PortfolioDataResponse,
 } from "./types/portfolio-data";
+import { useNetWorth } from "./use-net-worth";
 
 export function usePortfolio(userId: string, pollInterval: number) {
-  const { API_GATEWAY } = envParsed();
-
+  const { data: netWorthData } = useNetWorth(userId, pollInterval);
   return useQuery<PortfolioDataResponse>({
-    queryKey: ["portfolioData", userId],
+    queryKey: ["portfolioData"],
     queryFn: async () => {
-      if (typeof userId !== "string" || userId.trim() === "") {
-        console.warn("No user ID provided");
-        return getNullMockedPortfolioData();
-      }
-      try {
-        //throw new Error("test");
+      const sessionMode =
+        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "real";
 
-        const portfolio: PortfolioDataResponse | null = null;
-        return portfolio || getNullMockedPortfolioData();
-      } catch (error) {
-        console.warn("Error fetching portfolio data:", error);
-        return getNullMockedPortfolioData();
+      if (sessionMode === "mock" || !netWorthData) {
+        return getMockedPortfolioData();
       }
+      return getFormattedPortfolioData(netWorthData);
     },
-    enabled: typeof userId === "string" && userId.trim() !== "",
+    enabled: !!netWorthData,
     staleTime: 1000 * 60 * 5, // 5 minutes - data is considered fresh for 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes - keep unused data in cache for 10 minutes
     refetchInterval: pollInterval,
