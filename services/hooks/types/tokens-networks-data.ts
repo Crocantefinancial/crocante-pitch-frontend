@@ -4,41 +4,43 @@ import {
   ETH_TOKEN_NETWORKS,
   USDT_TOKEN_NETWORKS,
 } from "@/shared/mockups/tokens-networks";
+import z from "zod";
+import { currencyDepositSchema } from "./currency-deposit-data";
 
-export type TokensNetworksDataResponse =
-  | typeof USDT_TOKEN_NETWORKS
-  | typeof ETH_TOKEN_NETWORKS
-  | typeof AVAX_TOKEN_NETWORKS
-  | typeof BTC_TOKEN_NETWORKS;
+export const networkSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  mainCurrencyID: z.string(),
+  minConfirms: z.number(),
+});
 
-export type TokensNetworksData = {
-  currencyId: string;
-  networkId: string;
-  allowDeposits: boolean;
-  allowWithdrawals: boolean;
-  withdrawalFeeValue: string;
-  withdrawalMin: string;
-  depositMin: string;
-  currency: {
-    id: string;
-    name: string;
-    decimals: number;
-    allowTransfers: boolean;
-    disabled: boolean;
-    priority: number;
-  };
-  network: {
-    id: string;
-    name: string;
-    mainCurrencyID: string;
-    minConfirms: number;
-  };
-  withdrawalFee: string;
-};
+export const tokensNetworksSchema = z.object({
+  currencyId: z.string(),
+  networkId: z.string(),
+  allowDeposits: z.boolean(),
+  allowWithdrawals: z.boolean(),
+  withdrawalFeeValue: z.string(),
+  withdrawalMin: z.string(),
+  depositMin: z.string(),
+  currency: currencyDepositSchema,
+  network: networkSchema,
+  withdrawalFee: z.string(),
+});
 
-export function getNullMockedTokensNetworksData(
+export type TokensNetworksData = z.infer<typeof tokensNetworksSchema>;
+
+export const tokensNetworksResponseSchema = z.object({
+  data: z.array(tokensNetworksSchema),
+  status: z.number(),
+});
+
+export type TokensNetworksResponse = z.infer<
+  typeof tokensNetworksResponseSchema
+>;
+
+export function getMockedTokensNetworksData(
   currencyId: string
-): TokensNetworksDataResponse {
+): TokensNetworksData[] {
   switch (currencyId) {
     case "USDT":
       return USDT_TOKEN_NETWORKS;

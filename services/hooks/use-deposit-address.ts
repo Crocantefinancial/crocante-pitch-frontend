@@ -1,14 +1,18 @@
 import envParsed from "@/config/envParsed";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { useQuery } from "@tanstack/react-query";
+import { getValidated } from "../zod/utils";
 import {
-  DepositAddressDataResponse,
+  DepositAddress,
+  DepositAddressResponse,
+  depositAddressResponseSchema,
   getMockedDepositAddressData,
 } from "./types/deposit-address-data";
 
 export function useDepositAddress(networkId: string, pollInterval: number) {
-  const { API_GATEWAY } = envParsed();
-
-  return useQuery<DepositAddressDataResponse>({
+  const { EP_DEPOSIT_ADDRESS } = envParsed();
+  const { sessionMode } = useSessionMode();
+  return useQuery<DepositAddress>({
     queryKey: ["depositAddressData", networkId],
     queryFn: async () => {
       if (typeof networkId !== "string" || networkId.trim() === "") {
@@ -16,11 +20,15 @@ export function useDepositAddress(networkId: string, pollInterval: number) {
         return getMockedDepositAddressData(networkId);
       }
       try {
-        //throw new Error("test");
+        if (sessionMode === "mock") {
+          return getMockedDepositAddressData(networkId);
+        }
 
-        const depositAddressData: DepositAddressDataResponse | undefined =
-          undefined;
-        return depositAddressData || getMockedDepositAddressData(networkId);
+        const response = await getValidated<DepositAddressResponse>(
+          `${EP_DEPOSIT_ADDRESS}`.replace("%NETWORK", networkId),
+          depositAddressResponseSchema
+        );
+        return response.data;
       } catch (error) {
         console.warn("Error fetching deposit address data:", error);
         return getMockedDepositAddressData(networkId);
@@ -29,13 +37,13 @@ export function useDepositAddress(networkId: string, pollInterval: number) {
     enabled:
       typeof networkId === "string" &&
       networkId.trim() !== "" &&
-      typeof networkId === "string" &&
-      networkId.trim() !== "",
+      sessionMode !== "none", // Disable when logged out
     staleTime: 1000 * 60 * 5, // 5 minutes - data is considered fresh for 5 minutes
     gcTime: 1000 * 60 * 10, // 10 minutes - keep unused data in cache for 10 minutes
     refetchInterval: pollInterval,
     refetchIntervalInBackground: true,
     refetchOnMount: true, // Only refetch if data is stale (respects staleTime)
     //refetchOnMount: "always" // Always refetch when component mounts,
+    meta: { silent: true }, // Errors are handled gracefully with fallback to mock
   });
 }

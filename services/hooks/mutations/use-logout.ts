@@ -6,6 +6,13 @@ export function useLogout() {
   return useMutation({
     mutationFn: LoginService.logout,
     onSettled: () => {
+      // Remove queries that might refetch and cause errors
+      queryClient.removeQueries({ queryKey: ["tokensNetworksData"] });
+      queryClient.removeQueries({ queryKey: ["depositAddressData"] });
+      queryClient.removeQueries({ queryKey: ["user"] });
+      queryClient.removeQueries({ queryKey: ["netWorth"] });
+      queryClient.removeQueries({ queryKey: ["portfolioData"] });
+
       // Clear query cache
       queryClient.clear();
 

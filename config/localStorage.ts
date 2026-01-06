@@ -5,6 +5,7 @@ export enum LocalStorageKeys {
 
 export const LocalStorageManager = {
   setItem(key: string, item: any) {
+    if (typeof window === "undefined") return;
     try {
       localStorage.setItem(key, JSON.stringify(item));
     } catch (error) {
@@ -12,6 +13,7 @@ export const LocalStorageManager = {
     }
   },
   getItem(key: string) {
+    if (typeof window === "undefined") return null;
     try {
       const item = localStorage.getItem(key);
       return item ? JSON.parse(item) : null;
@@ -21,6 +23,7 @@ export const LocalStorageManager = {
     }
   },
   clearLocalStorage() {
+    if (typeof window === "undefined") return;
     localStorage.removeItem(LocalStorageKeys.TOKEN);
     localStorage.removeItem(LocalStorageKeys.SESSION_MODE);
   },

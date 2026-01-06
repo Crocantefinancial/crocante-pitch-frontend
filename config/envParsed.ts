@@ -4,6 +4,13 @@ const env = {
   API_GATEWAY: process.env.NEXT_PUBLIC_API_GATEWAY,
   API_PROXY_ORIGIN: process.env.NEXT_PUBLIC_API_PROXY_ORIGIN,
   APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+  EP_NET_WORTH: process.env.NEXT_PUBLIC_EP_NET_WORTH,
+  EP_AUTH_LOGIN: process.env.NEXT_PUBLIC_EP_AUTH_LOGIN,
+  EP_AUTH_LOGOUT: process.env.NEXT_PUBLIC_EP_AUTH_LOGOUT,
+  EP_CLIENT: process.env.NEXT_PUBLIC_EP_CLIENT,
+  EP_CURRENCY_DEPOSIT: process.env.NEXT_PUBLIC_EP_CURRENCY_DEPOSIT,
+  EP_CURRENCY_NETWORKS: process.env.NEXT_PUBLIC_EP_CURRENCY_NETWORKS,
+  EP_DEPOSIT_ADDRESS: process.env.NEXT_PUBLIC_EP_DEPOSIT_ADDRESS,
 };
 
 const envSchema = z
@@ -20,6 +27,14 @@ const envSchema = z
       .enum(["development", "staging", "production"])
       .optional()
       .transform((v) => (v === "staging" ? undefined : v)),
+
+    EP_NET_WORTH: z.string(),
+    EP_AUTH_LOGIN: z.string(),
+    EP_AUTH_LOGOUT: z.string(),
+    EP_CLIENT: z.string(),
+    EP_CURRENCY_DEPOSIT: z.string(),
+    EP_CURRENCY_NETWORKS: z.string(),
+    EP_DEPOSIT_ADDRESS: z.string(),
   })
   .required();
 
