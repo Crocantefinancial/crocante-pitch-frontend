@@ -1,4 +1,5 @@
-import { AvatarIcon, Skeleton, Table } from "@/components/index";
+import { Skeleton, Table } from "@/components/index";
+import { getTokenLogo } from "@/components/token-icons";
 import { usePortfolioData } from "@/domain/portfolio/hooks/use-portfolio-data";
 
 export default function TokensTable() {
@@ -41,9 +42,9 @@ export default function TokensTable() {
             subtitle: currency.name,
             leftIcon: () => {
               return (
-                <AvatarIcon
-                  initials={currency.code.charAt(0)}
-                  color="primary"
+                <img
+                  src={getTokenLogo(currency.code)}
+                  className="w-7 h-7 rounded-full"
                 />
               );
             },

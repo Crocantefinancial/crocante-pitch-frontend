@@ -1,7 +1,8 @@
 import { SelectorProps } from "@/components/core/select";
 import { Button, Label, Modal, Select } from "@/components/index";
+import { getTokenLogo } from "@/components/token-icons";
 import { useIsMobile } from "@/hooks/use-is-mobile";
-import { getChainLogo, getShortAddress, NetworkConfig } from "@/lib/network";
+import { getShortAddress, NetworkConfig } from "@/lib/network";
 import clsx from "clsx";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -34,6 +35,10 @@ export default function DepositModal({
       setIsAddressCopied(false);
     }, 2000);
   };
+
+  const tokenLogo = getTokenLogo(
+    tokenSelector.options[tokenSelector.selectedIndex]?.label || ""
+  );
 
   return (
     <Modal
@@ -111,7 +116,7 @@ export default function DepositModal({
           <div className="relative">
             <QRCodeSVG value={evmAddress} size={200} level="L" />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-[5px] border-white bg-white rounded-full shadow-md">
-              <img className="w-14 h-14" src={getChainLogo(network.chain)} />
+              <img className="w-14 h-14" src={tokenLogo} />
             </div>
           </div>
         )}
