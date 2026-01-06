@@ -40,7 +40,7 @@ export default function InputToken({
               className="h-12"
               noBottomSpace={true}
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-normal text-foreground flex items-center gap-1">
+            <div className="absolute right-3 -mt-7 -translate-y-1/2 text-sm font-normal text-foreground flex items-center gap-1">
               <AvatarIcon initials="$" color="primary" className="!w-6 !h-6" />
               USD
             </div>
@@ -53,10 +53,8 @@ export default function InputToken({
               className="h-12"
               noBottomSpace={true}
             />
-            <div className="absolute right-3 top-1/2 -translate-y-1/2 text-sm font-normal text-foreground">
-              {tokenIcon && (
-                <div className="inline-block mr-1">{tokenIcon}</div>
-              )}
+            <div className="absolute right-3 -mt-7 -translate-y-1/2 text-sm font-normal text-foreground flex items-center gap-1">
+              {tokenIcon && tokenIcon}
               {tokenCode} &nbsp;
             </div>
           </div>

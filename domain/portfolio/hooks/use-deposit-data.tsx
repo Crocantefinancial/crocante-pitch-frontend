@@ -1,5 +1,5 @@
 import { SelectOption } from "@/components/core/select";
-import { AvatarIcon } from "@/components/index";
+import { getTokenLogo } from "@/components/token-icons";
 import { POLL_CURRENCY_DEPOSIT_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { useCurrencyDeposit } from "@/services/hooks/use-currency-deposit";
@@ -30,7 +30,12 @@ export function useDepositData() {
     depositData.forEach((currency) => {
       const token: DepositTokenType = {
         symbol: currency.id,
-        icon: <AvatarIcon initials={currency.id.charAt(0)} color="primary" />,
+        icon: (
+          <img
+            src={getTokenLogo(currency.id)}
+            className="w-7 h-7 rounded-full"
+          />
+        ),
       };
       tokensRecord[currency.id] = token;
       options.push({
