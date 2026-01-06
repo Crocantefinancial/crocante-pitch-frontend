@@ -5,8 +5,12 @@ import { useMutation } from "@tanstack/react-query";
 export function useLogin() {
   return useMutation({
     mutationFn: LoginService.login,
-    onSuccess: () =>
-      queryClient.invalidateQueries({ queryKey: ["user", "me"] }),
+    onSuccess: () => {
+      // Small delay to ensure sessionMode state has updated
+      setTimeout(() => {
+        queryClient.invalidateQueries({ queryKey: ["user", "me"] });
+      }, 0);
+    },
     onError: (error) => {
       // Clear query cache
       queryClient.clear();

@@ -13,7 +13,9 @@ function shouldTriggerAuthExpired(error: unknown) {
     msg.includes("token is expired") ||
     msg.includes("token has invalid claims") ||
     msg.includes("SESSION_INVALID") ||
-    msg.includes("authorization header not found")
+    msg.includes("authorization header not found") ||
+    msg.includes("Not authenticated") ||
+    error.code === "NOT_AUTHENTICATED"
   );
 }
 
@@ -25,7 +27,12 @@ export const queryClient = new QueryClient({
       const authSensitive = meta?.authSensitive === true; // opt-in
       const silent = meta?.silent === true;
 
-      if (!silent && authSensitive && shouldTriggerAuthExpired(error)) {
+      // Skip all error handling if query is marked as silent
+      if (silent) {
+        return;
+      }
+
+      if (authSensitive && shouldTriggerAuthExpired(error)) {
         triggerAuthExpired();
       }
 

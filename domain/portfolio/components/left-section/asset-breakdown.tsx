@@ -10,7 +10,7 @@ export default function AssetBreakdown() {
     useModal(true);
   const { isOpen: openCurrencies, toggle: toggleCurrencies } = useModal(true);
 
-  if (isLoading || !cryptocurrencies || !currencies) {
+  if (isLoading) {
     return <Skeleton lines={3} />;
   }
 

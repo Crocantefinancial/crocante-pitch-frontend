@@ -37,7 +37,7 @@ export default function DepositModal({
 
   return (
     <Modal
-      title="Send Tokens"
+      title="Deposit Tokens"
       open={isOpen}
       onClose={onClose}
       actions={() =>
