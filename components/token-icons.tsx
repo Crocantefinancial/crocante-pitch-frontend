@@ -7,6 +7,20 @@ export const usdtTokenLogo = "/images/tokens/usdt.png";
 export const daiTokenLogo = "/images/tokens/dai.png";
 export const worldcoinTokenLogo = "/images/tokens/worldcoin.jpeg";
 export const tronTokenLogo = "/images/tokens/tron-trx-logo.png";
+export const btcTokenLogo = "/images/tokens/bitcoin-btc-logo.svg";
+export const solanaTokenLogo = "/images/tokens/solana-sol-logo.svg";
+export const polkadotTokenLogo = "/images/tokens/polkadot-new-dot-logo.svg";
+export const chainLinkTokenLogo = "/images/tokens/chainlink-link-logo.svg";
+export const uniswapTokenLogo = "/images/tokens/uniswap-uni-logo.svg";
+export const polygonTokenLogo = "/images/tokens/polygon-matic-logo.svg";
+export const cardanoTokenLogo = "/images/tokens/cardano-ada-logo.svg";
+export const litecoinTokenLogo = "/images/tokens/litecoin-ltc-logo.svg";
+export const aaveTokenLogo = "/images/tokens/aave-aave-logo.svg";
+export const chzTokenLogo = "/images/tokens/Chiliz.svg";
+export const sandTokenLogo = "/images/tokens/the-sandbox-sand-logo.svg";
+export const decentralandTokenLogo =
+  "/images/tokens/decentraland-mana-logo.svg";
+export const sonicTokenLogo = "/images/tokens/Sonic.svg";
 
 export const getTokenLogo = (token: string) => {
   if (token.toLowerCase().startsWith("avax")) return avalancheChainLogo;
@@ -15,6 +29,19 @@ export const getTokenLogo = (token: string) => {
   if (token.toLowerCase().startsWith("usdt")) return usdtTokenLogo;
   if (token.toLowerCase().startsWith("dai")) return daiTokenLogo;
   if (token.toLowerCase().startsWith("worldcoin")) return worldcoinTokenLogo;
-  if (token.toLowerCase().startsWith("tron")) return tronTokenLogo;
+  if (token.toLowerCase().startsWith("trx")) return tronTokenLogo;
+  if (token.toLowerCase().startsWith("btc")) return btcTokenLogo;
+  if (token.toLowerCase().startsWith("sol")) return solanaTokenLogo;
+  if (token.toLowerCase().startsWith("dot")) return polkadotTokenLogo;
+  if (token.toLowerCase().startsWith("link")) return chainLinkTokenLogo;
+  if (token.toLowerCase().startsWith("uni")) return uniswapTokenLogo;
+  if (token.toLowerCase().startsWith("pol")) return polygonTokenLogo;
+  if (token.toLowerCase().startsWith("ada")) return cardanoTokenLogo;
+  if (token.toLowerCase().startsWith("ltc")) return litecoinTokenLogo;
+  if (token.toLowerCase().startsWith("aave")) return aaveTokenLogo;
+  if (token.toLowerCase().startsWith("chz")) return chzTokenLogo;
+  if (token.toLowerCase().startsWith("sand")) return sandTokenLogo;
+  if (token.toLowerCase().startsWith("mana")) return decentralandTokenLogo;
+  if (token.toLowerCase().startsWith("s")) return sonicTokenLogo;
   return ethereumChainLogo;
 };

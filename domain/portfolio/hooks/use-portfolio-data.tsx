@@ -1,5 +1,6 @@
 import { SelectOption } from "@/components/core/select";
 import { AvatarIcon } from "@/components/index";
+import { getTokenLogo } from "@/components/token-icons";
 import { POLL_PORTFOLIO_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { formatCurrency } from "@/lib/utils";
@@ -42,7 +43,12 @@ export function usePortfolioData() {
     portfolioData.cryptocurrenciesData.forEach((currency) => {
       const token: TokenType = {
         symbol: currency.code,
-        icon: <AvatarIcon initials={currency.code.charAt(0)} color="primary" />,
+        icon: (
+          <img
+            src={getTokenLogo(currency.code)}
+            className="w-7 h-7 rounded-full"
+          />
+        ),
       };
       tokensRecord[currency.code] = token;
       options.push({
