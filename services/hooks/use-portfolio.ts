@@ -1,4 +1,4 @@
-import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { useQuery } from "@tanstack/react-query";
 import {
   getFormattedPortfolioData,
@@ -9,12 +9,10 @@ import { useNetWorth } from "./use-net-worth";
 
 export function usePortfolio(userId: string, pollInterval: number) {
   const { data: netWorthData } = useNetWorth(userId, pollInterval);
+  const { sessionMode } = useSessionMode();
   return useQuery<PortfolioDataResponse>({
     queryKey: ["portfolioData"],
     queryFn: async () => {
-      const sessionMode =
-        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "real";
-
       if (sessionMode === "mock" || !netWorthData) {
         return getMockedPortfolioData();
       }

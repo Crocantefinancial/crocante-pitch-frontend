@@ -116,8 +116,7 @@ export function getNullPortfolioData(): PortfolioDataResponse {
 export function getFormattedPortfolioData(
   response: NetWorthData
 ): PortfolioDataResponse {
-  //const nullPortfolioData = getNullPortfolioData();
-  const nullPortfolioData = getMockedPortfolioData();
+  const nullPortfolioData = getNullPortfolioData();
   nullPortfolioData.totalBalance = parseFloat(response.estTotalValue);
   nullPortfolioData.cryptocurrencies = parseFloat(
     response.assets.estTotalValue

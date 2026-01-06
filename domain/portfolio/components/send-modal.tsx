@@ -1,5 +1,6 @@
 import { SelectorProps } from "@/components/core/select";
 import { Button, InputToken, Modal, Select } from "@/components/index";
+import { useSession } from "@/context/session-provider";
 import { useTokenConversion } from "@/hooks/use-token-conversion";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { parseValue } from "@/lib/utils";
@@ -37,7 +38,13 @@ export default function SendModal({
 
   const parsedMaxValue = parseValue(rawMaxValue);
 
-  const { convertToUSD, convertFromUSD } = useTokenConversion(tokenLabel);
+  const { user } = useSession();
+  const userId = user?.id.toString() || "";
+
+  const { convertToUSD, convertFromUSD } = useTokenConversion(
+    userId,
+    tokenLabel
+  );
 
   const handleChangeUSD = (usdValue: string) => {
     setValueUSD(usdValue);

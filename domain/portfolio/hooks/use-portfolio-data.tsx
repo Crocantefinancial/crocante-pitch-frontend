@@ -48,7 +48,7 @@ export function usePortfolioData() {
       options.push({
         label: currency.code,
         id: currency.code,
-        value: currency.value,
+        value: currency.amount, // amount - token units
         icon: token.icon,
       });
     });
@@ -121,13 +121,13 @@ export function usePortfolioData() {
     isLoading: isLoadingPortfolio,
     totalBalance: portfolioData?.totalBalance
       ? formatCurrency(portfolioData.totalBalance)
-      : undefined,
+      : 0,
     cryptocurrencies: portfolioData?.cryptocurrencies
       ? formatCurrency(portfolioData.cryptocurrencies)
-      : undefined,
+      : 0,
     currencies: portfolioData?.currencies
       ? formatCurrency(portfolioData.currencies)
-      : undefined,
+      : 0,
     commodities: portfolioData?.commodities,
     banksData: portfolioData?.banksData,
     custodiansData: portfolioData?.custodiansData,

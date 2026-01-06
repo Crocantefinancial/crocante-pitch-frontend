@@ -1,24 +1,38 @@
-import envParsed from "@/config/envParsed";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { useQuery } from "@tanstack/react-query";
 import {
   getMockedTokenConversionByToken,
   TokenValuation,
 } from "./types/conversion-data";
+import { useNetWorth } from "./use-net-worth";
 
-export function useTokenValuation(token: string, pollInterval: number) {
-  const { API_GATEWAY } = envParsed();
-
+export function useTokenValuation(
+  userId: string,
+  token: string,
+  pollInterval: number
+) {
+  const { data: netWorthData } = useNetWorth(userId, pollInterval);
+  const { sessionMode } = useSessionMode();
   return useQuery<TokenValuation>({
-    queryKey: ["tokenConversion", token],
+    queryKey: ["tokenConversion", userId, token],
     queryFn: async () => {
       if (typeof token !== "string" || token.trim() === "") {
         console.warn("No token provided");
         return getMockedTokenConversionByToken(token);
       }
       try {
-        //throw new Error("test");
+        if (sessionMode === "mock" || !netWorthData) {
+          return getMockedTokenConversionByToken(token);
+        }
 
-        return getMockedTokenConversionByToken(token);
+        return {
+          label: token,
+          value: Number(
+            netWorthData.assets.assets.find(
+              (asset) => asset.currency.id === token
+            )?.estPrice
+          ),
+        };
       } catch (error) {
         console.warn("Error fetching token conversion:", error);
         return getMockedTokenConversionByToken(token);

@@ -1,12 +1,17 @@
 import envParsed from "@/config/envParsed";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { useQuery } from "@tanstack/react-query";
+import { getValidated } from "../zod/utils";
 import {
   CurrencyDeposit,
+  CurrencyDepositResponse,
+  currencyDepositResponseSchema,
   getMockedCurrencyDepositData,
 } from "./types/currency-deposit-data";
 
 export function useCurrencyDeposit(userId: string, pollInterval: number) {
-  const { API_GATEWAY } = envParsed();
+  const { EP_CURRENCY_DEPOSIT: EP_DEPOSIT } = envParsed();
+  const { sessionMode } = useSessionMode();
 
   return useQuery<CurrencyDeposit[]>({
     queryKey: ["currencyDeposit", userId],
@@ -16,10 +21,15 @@ export function useCurrencyDeposit(userId: string, pollInterval: number) {
         return getMockedCurrencyDepositData();
       }
       try {
-        //throw new Error("test");
+        if (sessionMode === "mock") {
+          return getMockedCurrencyDepositData();
+        }
 
-        const currencyDeposit: CurrencyDeposit[] | null = null;
-        return currencyDeposit || getMockedCurrencyDepositData();
+        const response = await getValidated<CurrencyDepositResponse>(
+          `${EP_DEPOSIT}`,
+          currencyDepositResponseSchema
+        );
+        return response.data;
       } catch (error) {
         console.warn("Error fetching currency deposit data:", error);
         return getMockedCurrencyDepositData();

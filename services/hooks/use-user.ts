@@ -1,6 +1,8 @@
 "use client";
 
+import envParsed from "@/config/envParsed";
 import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import ServiceError from "@/services/api/errors/service-error";
 import { getValidated } from "@/services/zod/utils";
 import { useQuery } from "@tanstack/react-query";
@@ -16,21 +18,33 @@ export function useUser(
   pollIntervalMs: number,
   fallbackToMockOnNonAuthError = true
 ) {
-  return useQuery<User>({
-    queryKey: ["user", "me"],
+  const { EP_CLIENT } = envParsed();
+  const { sessionMode } = useSessionMode();
+  return useQuery<User | null>({
+    queryKey: ["user", "me", sessionMode],
     queryFn: async () => {
-      const sessionMode =
-        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "real";
+      // Read sessionMode directly from localStorage to ensure we get the latest value
+      const currentSessionMode =
+        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "none";
 
       // 1) Explicit mock mode: skip backend, always mock
-      if (sessionMode === "mock") {
+      if (currentSessionMode === "mock") {
         return getMockedDefaultUserData();
       }
 
-      // 2) Real mode (or initial, no mode): talk to backend
+      // 2) No session mode: throw 401 error to trigger login modal
+      if (currentSessionMode === "none") {
+        throw new ServiceError({
+          message: "Not authenticated",
+          code: "NOT_AUTHENTICATED",
+          status: 401,
+        });
+      }
+
+      // 3) Real mode: talk to backend
       try {
         const clientResponse = await getValidated<ClientResponse>(
-          "/private/client",
+          `${EP_CLIENT}`,
           clientResponseSchema
         );
         return getFormattedClientResponse(clientResponse);
@@ -46,10 +60,7 @@ export function useUser(
 
         // Non-auth errors: optionally fall back to mock
         if (fallbackToMockOnNonAuthError) {
-          console.warn(
-            "Non-auth error fetching /private/client, using mock:",
-            err
-          );
+          console.warn("Non-auth error fetching user data, using mock:", err);
           return getMockedDefaultUserData();
         }
 

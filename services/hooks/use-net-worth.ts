@@ -1,6 +1,7 @@
 "use client";
 
-import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
+import envParsed from "@/config/envParsed";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { getValidated } from "@/services/zod/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
@@ -16,18 +17,17 @@ export function useNetWorth(
   pollIntervalMs: number,
   fallbackToMockOnNonAuthError = true
 ) {
+  const { EP_NET_WORTH } = envParsed();
+  const { sessionMode } = useSessionMode();
   return useQuery<NetWorthData>({
     queryKey: ["netWorth", userId],
     queryFn: async () => {
-      const sessionMode =
-        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "real";
-
       if (sessionMode === "mock") {
         return getMockedNetWorthData();
       }
       try {
         const netWorthDataResponse = await getValidated<NetWorthDataResponse>(
-          "/private/statement/net-worth",
+          `${EP_NET_WORTH}`,
           netWorthDataResponseSchema
         );
         return getFormattedNetWorthData(netWorthDataResponse);
