@@ -12,3 +12,4 @@ export { default as CurrencyTable } from "./left-section/currency-table";
 export { default as TokensTable } from "./left-section/tokens-table";
 export { default as AssetAllocation } from "./right-section/asset-allocation";
 export { default as SendModal } from "./send-modal";
+export { default as SwapModal } from "./swap-modal";

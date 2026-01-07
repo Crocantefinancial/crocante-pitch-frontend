@@ -20,7 +20,7 @@ export const chzTokenLogo = "/images/tokens/Chiliz.svg";
 export const sandTokenLogo = "/images/tokens/the-sandbox-sand-logo.svg";
 export const decentralandTokenLogo =
   "/images/tokens/decentraland-mana-logo.svg";
-export const sonicTokenLogo = "/images/tokens/Sonic.svg";
+export const sonicTokenLogo = "/images/tokens/sonic.svg";
 
 export const getTokenLogo = (token: string) => {
   if (token.toLowerCase().startsWith("avax")) return avalancheChainLogo;

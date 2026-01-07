@@ -1,5 +1,9 @@
 import { Button } from "@/components/index";
-import { DepositModal, SendModal } from "@/domain/portfolio/components";
+import {
+  DepositModal,
+  SendModal,
+  SwapModal,
+} from "@/domain/portfolio/components";
 import { DepositTokenType } from "@/domain/portfolio/hooks/use-deposit-data";
 import {
   FromType,
@@ -11,7 +15,15 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useModal } from "@/hooks/use-modal";
 import { useSelector } from "@/hooks/use-selector";
 import clsx from "clsx";
-import { ArrowUp, ArrowUpDown, Eye, MenuIcon, Send, XIcon } from "lucide-react";
+import {
+  ArrowUp,
+  ArrowUpDown,
+  Eye,
+  MenuIcon,
+  Send,
+  Repeat as Swap,
+  XIcon,
+} from "lucide-react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
 import { useDepositAddressData } from "../hooks/use-deposit-address-data";
@@ -87,7 +99,7 @@ export default function CustomAdditionalHeader() {
     change: changeNetworkSelection,
   } = useSelector<NetworkTokenType>(networks || {}, 0, {});
 
-  const handleResetSelectors = () => {
+  const handleResetSendSelectors = () => {
     resetAssetSelector();
     resetFromSelector();
     resetToSelector();
@@ -97,13 +109,34 @@ export default function CustomAdditionalHeader() {
     isOpen: sendModalOpen,
     setIsOpen: setSendModalOpen,
     open: openSendModal,
-  } = useModal(false, { onOpen: handleResetSelectors });
+  } = useModal(false, { onOpen: handleResetSendSelectors });
 
   const {
     isOpen: depositModalOpen,
     setIsOpen: setDepositModalOpen,
     open: openDepositModal,
   } = useModal(false, {});
+
+  const {
+    selectedRow: selectedSwapAsset,
+    selectedIndex: selectedSwapAssetIndex,
+    reset: resetSwapAssetSelector,
+    change: changeSwapAssetSelection,
+  } = useSelector<TokenType>(tokens || {}, 0, {
+    onReset: handleResetValues,
+    onChange: handleResetValues,
+  });
+
+  const handleResetSwapSelectors = () => {
+    resetAssetSelector();
+    resetSwapAssetSelector();
+  };
+
+  const {
+    isOpen: swapModalOpen,
+    setIsOpen: setSwapModalOpen,
+    open: openSwapModal,
+  } = useModal(false, { onOpen: handleResetSwapSelectors });
 
   const { isOpen: mobileMenuOpen, toggle: toggleMobileMenu } = useModal(
     false,
@@ -135,11 +168,28 @@ export default function CustomAdditionalHeader() {
       onClick: openDepositModal,
       variant: "primary",
     },
+    {
+      label: "Swap",
+      icon: <Swap className="h-4 w-auto" />,
+      onClick: openSwapModal,
+      variant: "primary",
+    },
   ];
 
   const handleSend = () => {
     console.log(
       "SEND",
+      selectedAsset,
+      selectedFrom,
+      selectedTo,
+      value,
+      valueUSD + " USD"
+    );
+  };
+
+  const handleSwap = () => {
+    console.log(
+      "SWAP",
       selectedAsset,
       selectedFrom,
       selectedTo,
@@ -262,6 +312,27 @@ export default function CustomAdditionalHeader() {
             selectedIndex: selectedNetworkIndex,
             onChange: changeNetworkSelection,
             options: networksOptions,
+          }}
+        />
+      )}
+      {swapModalOpen && (
+        <SwapModal
+          swapModalOpen={swapModalOpen}
+          setSwapModalOpen={setSwapModalOpen}
+          handleSwap={handleSwap}
+          value={value}
+          valueReceive={valueUSD}
+          setValue={setValue}
+          setValueReceive={setValueUSD}
+          assetSelector={{
+            selectedIndex: selectedAssetIndex,
+            onChange: changeAssetSelection,
+            options: tokensOptions,
+          }}
+          assetSwapSelector={{
+            selectedIndex: selectedSwapAssetIndex,
+            onChange: changeSwapAssetSelection,
+            options: tokensOptions,
           }}
         />
       )}

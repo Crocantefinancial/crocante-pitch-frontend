@@ -60,7 +60,7 @@ export default function InputToken({
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-1 -mt-1">
+      <div className="flex items-center gap-1 -mt-4">
         <Button
           variant="outline"
           className="text-xs mt-1.5"
