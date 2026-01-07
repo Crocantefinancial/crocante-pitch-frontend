@@ -1,5 +1,5 @@
-import { POLL_TOKEN_CONVERSION_INTERVAL } from "@/config/constants";
-import { useTokenValuation } from "@/services/hooks/use-token-valuation";
+import { POLL_QUOTE_INTERVAL } from "@/config/constants";
+import { useQuote } from "@/services/hooks/use-quote";
 import { useCallback } from "react";
 
 export function useTokenSwap(
@@ -7,26 +7,17 @@ export function useTokenSwap(
   tokenFrom: string,
   tokenTo: string
 ) {
-  // TODO: This is a workaround, we should use the conversion rate from the API
-  const { data: tokenValuationFrom } = useTokenValuation(
+  const { data: quote } = useQuote(
     userId,
     tokenFrom,
-    POLL_TOKEN_CONVERSION_INTERVAL
-  );
-  // TODO: This is a workaround, we should use the conversion rate from the API
-  const { data: tokenValuationTo } = useTokenValuation(
-    userId,
     tokenTo,
-    POLL_TOKEN_CONVERSION_INTERVAL
+    POLL_QUOTE_INTERVAL
   );
 
-  // TODO: This is a workaround, we should use the conversion rate from the API
   const conversionRateFrom =
-    (tokenValuationFrom?.value || 0) / (tokenValuationTo?.value || 1);
-
-  // TODO: This is a workaround, we should use the conversion rate from the API
-  const conversionRateTo =
-    (tokenValuationTo?.value || 0) / (tokenValuationFrom?.value || 1);
+    quote?.edge.side === "SELL"
+      ? Number(quote?.estPrice || 0)
+      : 1 / Number(quote?.estPrice || 1);
 
   const convertTo = useCallback(
     (valueFrom: string): string => {
@@ -39,18 +30,17 @@ export function useTokenSwap(
 
   const convertFrom = useCallback(
     (valueTo: string): string => {
-      if (!valueTo || conversionRateTo === 0) return "0";
-      const result = Number(valueTo) / conversionRateTo;
+      if (!valueTo || conversionRateFrom === 0) return "0";
+      const result = Number(valueTo) / conversionRateFrom;
       return isNaN(result) || !isFinite(result) ? "0" : result.toString();
     },
-    [conversionRateTo]
+    [conversionRateFrom]
   );
 
   return {
     convertTo,
     convertFrom,
     conversionRateFrom,
-    conversionRateTo,
-    isLoading: !tokenValuationFrom || !tokenValuationTo,
+    isLoading: !quote,
   };
 }

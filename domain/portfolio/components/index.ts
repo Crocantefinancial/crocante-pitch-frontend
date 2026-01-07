@@ -5,11 +5,14 @@ export { default as InternalWalletsTable } from "./bottom-section/internal-walle
 export { default as OTCDesksTable } from "./bottom-section/otc-desks-table";
 export { default as TabsSection } from "./bottom-section/tabs-section";
 export { default as CustomAdditionalHeader } from "./custom-additional-header";
-export { default as DepositModal } from "./deposit-modal";
 export { default as Header } from "./header";
+export { default as DepositAction } from "./header-actions/deposit-action";
+export { default as DepositModal } from "./header-actions/deposit-modal";
+export { default as SendAction } from "./header-actions/send-action";
+export { default as SendModal } from "./header-actions/send-modal";
+export { default as SwapAction } from "./header-actions/swap-action";
+export { default as SwapModal } from "./header-actions/swap-modal";
 export { default as AssetBreakdown } from "./left-section/asset-breakdown";
 export { default as CurrencyTable } from "./left-section/currency-table";
 export { default as TokensTable } from "./left-section/tokens-table";
 export { default as AssetAllocation } from "./right-section/asset-allocation";
-export { default as SendModal } from "./send-modal";
-export { default as SwapModal } from "./swap-modal";

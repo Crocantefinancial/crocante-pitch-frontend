@@ -1,19 +1,11 @@
 import { Button } from "@/components/index";
 import {
-  DepositModal,
-  SendModal,
-  SwapModal,
+  DepositAction,
+  SendAction,
+  SwapAction,
 } from "@/domain/portfolio/components";
-import { DepositTokenType } from "@/domain/portfolio/hooks/use-deposit-data";
-import {
-  FromType,
-  TokenType,
-  ToType,
-  usePortfolioData,
-} from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useModal } from "@/hooks/use-modal";
-import { useSelector } from "@/hooks/use-selector";
 import clsx from "clsx";
 import {
   ArrowUp,
@@ -26,122 +18,17 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { createPortal } from "react-dom";
-import { useDepositAddressData } from "../hooks/use-deposit-address-data";
-import { useDepositData } from "../hooks/use-deposit-data";
-import { NetworkTokenType, useNetworkData } from "../hooks/use-network-data";
 
 export default function CustomAdditionalHeader() {
   const isMobile = useIsMobile();
-  const {
-    tokens,
-    tokensOptions,
-    custodiansFrom,
-    fromOptions,
-    custodiansTo,
-    toOptions,
-  } = usePortfolioData();
-
-  const {
-    depositTokens,
-    depositTokensOptions,
-    isLoading: isLoadingDeposit,
-  } = useDepositData();
-
-  const [value, setValue] = useState("");
-  const [valueUSD, setValueUSD] = useState("");
-
-  const handleResetValues = () => {
-    setValue("");
-    setValueUSD("");
-  };
-
-  const {
-    selectedRow: selectedAsset,
-    selectedIndex: selectedAssetIndex,
-    reset: resetAssetSelector,
-    change: changeAssetSelection,
-  } = useSelector<TokenType>(tokens || {}, 0, {
-    onReset: handleResetValues,
-    onChange: handleResetValues,
-  });
-
-  const {
-    selectedRow: selectedFrom,
-    selectedIndex: selectedFromIndex,
-    reset: resetFromSelector,
-    change: changeFromSelection,
-  } = useSelector<FromType>(custodiansFrom || {}, 0, {});
-
-  const {
-    selectedRow: selectedTo,
-    selectedIndex: selectedToIndex,
-    reset: resetToSelector,
-    change: changeToSelection,
-  } = useSelector<ToType>(custodiansTo || {}, 0, {});
-
-  const {
-    selectedRow: selectedDepositAsset,
-    selectedIndex: selectedDepositAssetIndex,
-    reset: resetDepositAssetSelector,
-    change: changeDepositAssetSelection,
-  } = useSelector<DepositTokenType>(depositTokens || {}, 0, {});
-
-  const {
-    networks,
-    networksOptions,
-    isLoading: isLoadingNetworks,
-  } = useNetworkData(selectedDepositAsset?.symbol || "");
-
-  const {
-    selectedRow: selectedNetwork,
-    selectedIndex: selectedNetworkIndex,
-    reset: resetNetworkSelector,
-    change: changeNetworkSelection,
-  } = useSelector<NetworkTokenType>(networks || {}, 0, {});
-
-  const handleResetSendSelectors = () => {
-    resetAssetSelector();
-    resetFromSelector();
-    resetToSelector();
-  };
-
-  const {
-    isOpen: sendModalOpen,
-    setIsOpen: setSendModalOpen,
-    open: openSendModal,
-  } = useModal(false, { onOpen: handleResetSendSelectors });
-
-  const {
-    isOpen: depositModalOpen,
-    setIsOpen: setDepositModalOpen,
-    open: openDepositModal,
-  } = useModal(false, {});
-
-  const {
-    selectedRow: selectedSwapAsset,
-    selectedIndex: selectedSwapAssetIndex,
-    reset: resetSwapAssetSelector,
-    change: changeSwapAssetSelection,
-  } = useSelector<TokenType>(tokens || {}, 0, {
-    onReset: handleResetValues,
-    onChange: handleResetValues,
-  });
-
-  const handleResetSwapSelectors = () => {
-    resetAssetSelector();
-    resetSwapAssetSelector();
-  };
-
-  const {
-    isOpen: swapModalOpen,
-    setIsOpen: setSwapModalOpen,
-    open: openSwapModal,
-  } = useModal(false, { onOpen: handleResetSwapSelectors });
-
   const { isOpen: mobileMenuOpen, toggle: toggleMobileMenu } = useModal(
     false,
     {}
   );
+
+  const [openSendModal, setOpenSendModal] = useState(false);
+  const [openDepositModal, setOpenDepositModal] = useState(false);
+  const [openSwapModal, setOpenSwapModal] = useState(false);
 
   const menuItems = [
     {
@@ -159,56 +46,22 @@ export default function CustomAdditionalHeader() {
     {
       label: "Send",
       icon: <Send className="h-4 w-auto" />,
-      onClick: openSendModal,
+      onClick: () => setOpenSendModal(true),
       variant: "primary",
     },
     {
       label: "Deposit",
       icon: <ArrowUp className="h-4 w-auto" />,
-      onClick: openDepositModal,
+      onClick: () => setOpenDepositModal(true),
       variant: "primary",
     },
     {
       label: "Swap",
       icon: <Swap className="h-4 w-auto" />,
-      onClick: openSwapModal,
+      onClick: () => setOpenSwapModal(true),
       variant: "primary",
     },
   ];
-
-  const handleSend = () => {
-    console.log(
-      "SEND",
-      selectedAsset,
-      selectedFrom,
-      selectedTo,
-      value,
-      valueUSD + " USD"
-    );
-  };
-
-  const handleSwap = () => {
-    console.log(
-      "SWAP",
-      selectedAsset,
-      selectedFrom,
-      selectedTo,
-      value,
-      valueUSD + " USD"
-    );
-  };
-
-  const {
-    depositAddress,
-    network,
-    isLoading: isLoadingDepositAddress,
-  } = useDepositAddressData(
-    Object.keys(networks || {}).length === 0
-      ? ""
-      : selectedNetwork?.symbol || ""
-  );
-
-  if (!tokens || !custodiansFrom || !custodiansTo) return null;
 
   const menuContent = (
     <div className="fixed inset-0 z-[9999]">
@@ -271,71 +124,11 @@ export default function CustomAdditionalHeader() {
         </>
       )}
 
-      {sendModalOpen && tokens && (
-        <SendModal
-          sendModalOpen={sendModalOpen}
-          setSendModalOpen={setSendModalOpen}
-          handleSend={handleSend}
-          value={value}
-          valueUSD={valueUSD}
-          setValue={setValue}
-          setValueUSD={setValueUSD}
-          assetSelector={{
-            selectedIndex: selectedAssetIndex,
-            onChange: changeAssetSelection,
-            options: tokensOptions,
-          }}
-          fromSelector={{
-            selectedIndex: selectedFromIndex,
-            onChange: changeFromSelection,
-            options: fromOptions,
-          }}
-          toSelector={{
-            selectedIndex: selectedToIndex,
-            onChange: changeToSelection,
-            options: toOptions,
-          }}
-        />
-      )}
-      {depositModalOpen && depositTokens && (
-        <DepositModal
-          isOpen={depositModalOpen}
-          onClose={() => setDepositModalOpen(false)}
-          address={depositAddress || ""}
-          network={network}
-          tokenSelector={{
-            selectedIndex: selectedDepositAssetIndex,
-            onChange: changeDepositAssetSelection,
-            options: depositTokensOptions,
-          }}
-          networkSelector={{
-            selectedIndex: selectedNetworkIndex,
-            onChange: changeNetworkSelection,
-            options: networksOptions,
-          }}
-        />
-      )}
-      {swapModalOpen && (
-        <SwapModal
-          swapModalOpen={swapModalOpen}
-          setSwapModalOpen={setSwapModalOpen}
-          handleSwap={handleSwap}
-          value={value}
-          valueReceive={valueUSD}
-          setValue={setValue}
-          setValueReceive={setValueUSD}
-          assetSelector={{
-            selectedIndex: selectedAssetIndex,
-            onChange: changeAssetSelection,
-            options: tokensOptions,
-          }}
-          assetSwapSelector={{
-            selectedIndex: selectedSwapAssetIndex,
-            onChange: changeSwapAssetSelection,
-            options: tokensOptions,
-          }}
-        />
-      )}
+      <SendAction open={openSendModal} setOpen={setOpenSendModal} />
+
+      <DepositAction open={openDepositModal} setOpen={setOpenDepositModal} />
+
+      <SwapAction open={openSwapModal} setOpen={setOpenSwapModal} />
     </div>
   );
 }
