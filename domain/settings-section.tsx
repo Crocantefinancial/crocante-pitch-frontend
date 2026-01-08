@@ -1,5 +1,6 @@
 "use client";
 
+import { useCustomHeader } from "@/context/custom-header-context";
 import { USERS_DATA } from "@/shared/mockups/users";
 import { useEffect, useState } from "react";
 
@@ -13,13 +14,8 @@ const SETTINGS_TABS = [
   "API",
 ];
 
-interface SettingsSectionProps {
-  setCustomAdditionalHeader: (header: React.ReactNode) => void;
-}
-
-export function SettingsSection({
-  setCustomAdditionalHeader,
-}: SettingsSectionProps) {
+export function SettingsSection() {
+  const { setCustomAdditionalHeader } = useCustomHeader();
   useEffect(() => {
     setCustomAdditionalHeader(
       <button className="px-6 py-2 bg-primary text-primary-foreground rounded font-normal hover:bg-primary/90 transition-colors flex items-center gap-2">

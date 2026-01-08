@@ -1,7 +1,15 @@
 import { Skeleton } from "@/components/index";
+import { useCustomHeader } from "@/context/custom-header-context";
+import { CustomAdditionalHeader } from "@/domain/portfolio/components";
 import { usePortfolioData } from "@/domain/portfolio/hooks/use-portfolio-data";
+import { useEffect } from "react";
 
 export default function Header() {
+  const { setCustomAdditionalHeader } = useCustomHeader();
+  useEffect(() => {
+    setCustomAdditionalHeader(<CustomAdditionalHeader />);
+  }, [setCustomAdditionalHeader]);
+
   const { totalBalance, isLoading } = usePortfolioData();
 
   return (

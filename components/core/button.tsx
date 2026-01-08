@@ -5,7 +5,8 @@ export type ButtonVariant =
   | "tertiary"
   | "outline"
   | "outline-secondary"
-  | "nav";
+  | "nav"
+  | "avatar-outline";
 interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: ButtonVariant;
   isLoading?: boolean;
@@ -45,6 +46,11 @@ export default function Button({
       "bg-transparent border-neutral text-accent \
       hover:bg-neutral hover:border-neutral hover:text-textDark \
       active:bg-secondary active:border-secondary active:text-textDark active:opacity-90 \
+      cursor-pointer",
+    "avatar-outline":
+      "border-primary border-1 text-primary-foreground \
+      hover:bg-primary/10 hover:text-primary-foreground \
+      active:bg-primary/10 active:text-primary active:border-l-2 active:border-primary \
       cursor-pointer",
   };
 
