@@ -49,7 +49,8 @@ export default function Select({
       )}
       <div
         className={clsx(
-          "relative border border-gray-200 rounded-lg p-1 hover:bg-secondary"
+          "relative border border-gray-200 rounded-lg p-1 hover:bg-secondary",
+          className
         )}
       >
         {hasIcon && (

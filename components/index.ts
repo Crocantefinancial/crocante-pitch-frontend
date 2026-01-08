@@ -1,3 +1,6 @@
+// Types
+export type { SelectorProps } from "./core/select";
+
 // Core Components
 export { default as Button } from "./core/button";
 export { default as Card } from "./core/card";
@@ -16,6 +19,8 @@ export { default as Tabs } from "./core/tabs";
 export { default as Tooltip } from "./core/tooltip";
 
 // Custom Components
+export { default as DynamicAvatarButton } from "./custom/dynamic-avatar-button";
+export { default as InputSelectorToken } from "./custom/input-selector-token";
 export { default as InputToken } from "./custom/input-token";
 
 // Icons
