@@ -10,6 +10,7 @@ import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { parseValue } from "@/lib/utils";
 import { ArrowDown, ArrowUpDown, Loader2, Repeat as Swap } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface SwapModalProps {
   isLoading: boolean;
@@ -50,7 +51,9 @@ export default function SwapModal({
   const { user } = useSession();
   const userId = user?.id.toString() || "";
 
-  const { convertTo, convertFrom } = useTokenSwap(
+  const [inputReceiveFocused, setInputReceiveFocused] = useState(false);
+
+  const { convertTo, convertFrom, conversionRateFrom } = useTokenSwap(
     userId,
     tokenLabel,
     tokenSwapLabel,
@@ -76,6 +79,16 @@ export default function SwapModal({
       setValueReceive("0");
     }
   };
+
+  useEffect(() => {
+    if (conversionRateFrom) {
+      if (inputReceiveFocused) {
+        setValue(convertFrom(valueReceive));
+      } else {
+        setValueReceive(convertTo(value));
+      }
+    }
+  }, [conversionRateFrom]);
 
   const { isValid: isValidValue } = useValueVerifier({
     value,
@@ -146,6 +159,12 @@ export default function SwapModal({
             value={valueReceive}
             onChangeValue={(e) => handleChangeValueReceive(e.target.value)}
             selectorProps={assetSwapSelector}
+            onFocus={() => {
+              setInputReceiveFocused(true);
+            }}
+            onBlur={() => {
+              setInputReceiveFocused(false);
+            }}
           />
         )}
       </div>

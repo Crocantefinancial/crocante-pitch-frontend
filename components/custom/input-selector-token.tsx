@@ -8,6 +8,8 @@ interface InputSelectorTokenProps {
   maxValue?: string;
   tokenCode?: string;
   selectorProps: SelectorProps;
+  onFocus?: () => void;
+  onBlur?: () => void;
 }
 export default function InputSelectorToken({
   label,
@@ -17,6 +19,8 @@ export default function InputSelectorToken({
   maxValue,
   tokenCode,
   selectorProps,
+  onFocus,
+  onBlur,
 }: InputSelectorTokenProps) {
   return (
     <div>
@@ -32,6 +36,8 @@ export default function InputSelectorToken({
               onChange={onChangeValue}
               className="h-12"
               noBottomSpace={true}
+              onFocus={onFocus}
+              onBlur={onBlur}
             />
             <div className="absolute right-1 -mt-7 -translate-y-1/2 text-sm font-normal text-foreground flex items-center">
               <Select

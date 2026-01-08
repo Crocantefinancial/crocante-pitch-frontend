@@ -11,6 +11,7 @@ interface InputTokenProps {
   maxValue: string;
   tokenCode: string;
   tokenIcon: React.ReactNode;
+  handleFocus: (convertedInputFocused: boolean) => void;
 }
 export default function InputToken({
   label,
@@ -23,6 +24,7 @@ export default function InputToken({
   maxValue,
   tokenCode,
   tokenIcon,
+  handleFocus,
 }: InputTokenProps) {
   return (
     <div>
@@ -39,6 +41,8 @@ export default function InputToken({
               onChange={onChangeUSD}
               className="h-12"
               noBottomSpace={true}
+              onFocus={() => handleFocus(true)}
+              onBlur={() => handleFocus(false)}
             />
             <div className="absolute right-3 -mt-7 -translate-y-1/2 text-sm font-normal text-foreground flex items-center gap-1">
               <AvatarIcon initials="$" color="primary" className="!w-6 !h-6" />

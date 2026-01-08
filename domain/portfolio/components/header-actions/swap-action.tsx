@@ -38,14 +38,7 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
     reset: resetSwapAssetSelector,
     change: changeSwapAssetSelection,
   } = useSelector<TokenType>(tokensTo || {}, 0, {
-    onReset: () => {
-      handleResetValues();
-      if (swapipingSelectors) {
-        changeSwapAssetSelection(swapipingSelectors);
-        setSwapipingSelectors(undefined);
-      }
-      setIsLoading(false);
-    },
+    onReset: handleResetValues,
     onChange: handleResetValues,
   });
 
@@ -102,6 +95,17 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
       setSelectedTokenFrom(selectedAsset.symbol);
     }
   }, [selectedAsset]);
+
+  // Reset isLoading when tokensTo is available and data loading is complete
+  useEffect(() => {
+    if (tokensTo && !isSwapDataLoading) {
+      if (swapipingSelectors) {
+        changeSwapAssetSelection(swapipingSelectors);
+        setSwapipingSelectors(undefined);
+      }
+      setIsLoading(false);
+    }
+  }, [tokensTo, isSwapDataLoading]);
 
   return (
     swapModalOpen && (

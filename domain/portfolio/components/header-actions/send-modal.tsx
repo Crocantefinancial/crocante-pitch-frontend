@@ -5,6 +5,7 @@ import { useTokenConversion } from "@/hooks/use-token-conversion";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { parseValue } from "@/lib/utils";
 import { Send } from "lucide-react";
+import { useEffect, useState } from "react";
 
 interface SendModalProps {
   sendModalOpen: boolean;
@@ -41,7 +42,9 @@ export default function SendModal({
   const { user } = useSession();
   const userId = user?.id.toString() || "";
 
-  const { convertToUSD, convertFromUSD } = useTokenConversion(
+  const [convertedInputFocused, setConvertedInputFocused] = useState(false);
+
+  const { convertToUSD, convertFromUSD, conversionRate } = useTokenConversion(
     userId,
     tokenLabel
   );
@@ -65,6 +68,16 @@ export default function SendModal({
       setValueUSD("0");
     }
   };
+
+  useEffect(() => {
+    if (conversionRate) {
+      if (convertedInputFocused) {
+        setValue(convertFromUSD(valueUSD));
+      } else {
+        setValueUSD(convertToUSD(value));
+      }
+    }
+  }, [conversionRate]);
 
   const { isValid: isValidValue } = useValueVerifier({
     value,
@@ -120,6 +133,7 @@ export default function SendModal({
           maxValue={rawMaxValue}
           tokenCode={tokenLabel}
           tokenIcon={assetSelector.options[assetSelector.selectedIndex]?.icon}
+          handleFocus={setConvertedInputFocused}
         />
       </div>
     </Modal>
