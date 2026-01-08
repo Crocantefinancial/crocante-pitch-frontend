@@ -23,6 +23,11 @@ export default function TokensTable() {
           className: "text-left",
         },
         {
+          id: "availableHeader",
+          label: "Available",
+          className: "text-left",
+        },
+        {
           id: "valueHeader",
           label: "Value",
           className: "text-right",
@@ -53,6 +58,11 @@ export default function TokensTable() {
           {
             id: "amount",
             value: currency.amount,
+            className: "text-left",
+          },
+          {
+            id: "available",
+            value: currency.available,
             className: "text-left",
           },
           {

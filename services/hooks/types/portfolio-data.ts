@@ -68,6 +68,7 @@ export interface PortfolioDataResponse {
     code: string;
     name: string;
     amount: string;
+    available: string;
     value: string;
     change: string;
   }>;
@@ -127,6 +128,7 @@ export function getFormattedPortfolioData(
         code: asset.currency.id,
         name: asset.currency.name,
         amount: asset.total,
+        available: asset.available,
         value: asset.estValue,
         change: "0",
       };
