@@ -14,13 +14,14 @@ import { useEffect, useState } from "react";
 
 interface SwapModalProps {
   isLoading: boolean;
+  isSwapping: boolean;
   swapModalOpen: boolean;
   setSwapModalOpen: (open: boolean) => void;
   value: string;
   valueReceive: string;
   setValue: (value: string) => void;
   setValueReceive: (value: string) => void;
-  handleSwap: () => void;
+  handleSwap: (userId: string) => void;
   assetSelector: SelectorProps;
   assetSwapSelector: SelectorProps;
   handleSwapSelectors: (tokenLabel: string, tokenSwapLabel: string) => void;
@@ -28,6 +29,7 @@ interface SwapModalProps {
 
 export default function SwapModal({
   isLoading,
+  isSwapping,
   swapModalOpen,
   setSwapModalOpen,
   value,
@@ -53,12 +55,13 @@ export default function SwapModal({
 
   const [inputReceiveFocused, setInputReceiveFocused] = useState(false);
 
-  const { convertTo, convertFrom, conversionRateFrom } = useTokenSwap(
-    userId,
-    tokenLabel,
-    tokenSwapLabel,
-    isLoading
-  );
+  const {
+    convertTo,
+    convertFrom,
+    conversionRateFrom,
+    commissionRate,
+    minAmount,
+  } = useTokenSwap(userId, tokenLabel, tokenSwapLabel, isLoading);
 
   const handleChangeValueReceive = (valueReceive: string) => {
     setValueReceive(valueReceive);
@@ -92,7 +95,7 @@ export default function SwapModal({
 
   const { isValid: isValidValue } = useValueVerifier({
     value,
-    min: 0,
+    min: minAmount ? Number(minAmount) : 0,
     max: Number(parsedMaxValue),
     requireNonZero: true,
   });
@@ -100,7 +103,9 @@ export default function SwapModal({
   const conditionsSuccess =
     isValidValue &&
     assetSelector.options[assetSelector.selectedIndex]?.id !==
-      assetSwapSelector.options[assetSwapSelector.selectedIndex]?.id;
+      assetSwapSelector.options[assetSwapSelector.selectedIndex]?.id &&
+    commissionRate &&
+    minAmount;
 
   return (
     <Modal
@@ -113,12 +118,23 @@ export default function SwapModal({
           variant="primary"
           className="w-full justify-center"
           onClick={() => {
-            handleSwap();
-            setSwapModalOpen(false);
+            handleSwap(userId);
           }}
-          disabled={!conditionsSuccess}
+          disabled={!conditionsSuccess || isSwapping}
         >
-          Swap
+          {isSwapping ? (
+            <div className="flex items-center gap-2">
+              <span className="text-muted-foreground italic">Swapping...</span>
+              <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
+            </div>
+          ) : (
+            "Swap"
+          )}
+          {conditionsSuccess && (
+            <span className="text-secondary-foreground text-xs italic">
+              (Fee: {Number(commissionRate) * Number(value)} {tokenSwapLabel})
+            </span>
+          )}
         </Button>
       )}
     >
@@ -130,6 +146,10 @@ export default function SwapModal({
           onMaxClick={() => handleChangeValue(parsedMaxValue)}
           onChangeValue={(e) => handleChangeValue(e.target.value)}
           maxValue={rawMaxValue}
+          minValue={minAmount}
+          onMinClick={
+            minAmount ? () => handleChangeValue(minAmount) : undefined
+          }
           tokenCode={
             assetSelector.options[assetSelector.selectedIndex]?.label || ""
           }

@@ -14,6 +14,7 @@ const env = {
   EP_CONVERSION_QUOTE: process.env.NEXT_PUBLIC_EP_CONVERSION_QUOTE,
   EP_CONVERSION_PAIRS: process.env.NEXT_PUBLIC_EP_CONVERSION_PAIRS,
   EP_STATEMENT_AVAILABLE: process.env.NEXT_PUBLIC_EP_STATEMENT_AVAILABLE,
+  EP_CONVERSION: process.env.NEXT_PUBLIC_EP_CONVERSION,
 };
 
 const envSchema = z
@@ -41,6 +42,7 @@ const envSchema = z
     EP_CONVERSION_QUOTE: z.string(),
     EP_CONVERSION_PAIRS: z.string(),
     EP_STATEMENT_AVAILABLE: z.string(),
+    EP_CONVERSION: z.string(),
   })
   .required();
 

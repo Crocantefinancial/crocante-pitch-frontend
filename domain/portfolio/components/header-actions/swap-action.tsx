@@ -3,6 +3,7 @@ import { TokenType } from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useSwapData } from "@/domain/portfolio/hooks/use-swap-data";
 import { useModal } from "@/hooks/use-modal";
 import { useSelector } from "@/hooks/use-selector";
+import { usePostConversion } from "@/services/hooks/mutations/use-post-conversion";
 import { useEffect, useState } from "react";
 
 interface SwapActionProps {
@@ -10,6 +11,7 @@ interface SwapActionProps {
   setOpen: (open: boolean) => void;
 }
 export default function SwapAction({ open, setOpen }: SwapActionProps) {
+  const postConversion = usePostConversion();
   const [selectedTokenFrom, setSelectedTokenFrom] = useState("");
   const {
     tokensFrom,
@@ -74,13 +76,36 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
     onClose: () => setOpen(false),
   });
 
-  const handleSwap = () => {
-    console.log(
-      "SWAP",
-      selectedAsset,
-      selectedSwapAsset,
-      value,
-      valueUSD + " USD"
+  const handleSwap = (userId: string) => {
+    const tokenFrom = selectedAsset?.symbol;
+    const tokenTo = selectedSwapAsset?.symbol;
+    const amount = value?.trim();
+
+    if (!userId || !tokenFrom || !tokenTo || !amount) {
+      console.warn("Swap blocked: missing inputs", {
+        userId,
+        tokenFrom,
+        tokenTo,
+        amount,
+      });
+      return;
+    }
+
+    postConversion.mutate(
+      { userId, tokenFrom, tokenTo, amount },
+      {
+        onSuccess: (data) => {
+          console.log("POST CONVERSION SUCCESS", data);
+          //TODO: toast success
+        },
+        onError: (err) => {
+          console.error("POST CONVERSION ERROR", err);
+          //TODO: toast error
+        },
+        onSettled: () => {
+          closeSwapModal();
+        },
+      }
     );
   };
 
@@ -111,6 +136,7 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
     swapModalOpen && (
       <SwapModal
         isLoading={isLoading}
+        isSwapping={postConversion.isPending}
         swapModalOpen={swapModalOpen}
         setSwapModalOpen={closeSwapModal}
         handleSwap={handleSwap}
