@@ -6,12 +6,14 @@ interface DynamicAvatarButtonProps {
   icon: React.ReactNode;
   iconHover: React.ReactNode;
   onClick: () => void;
+  disabled: boolean;
 }
 
 export default function DynamicAvatarButton({
   icon,
   iconHover,
   onClick,
+  disabled,
 }: DynamicAvatarButtonProps) {
   const [currentIcon, setCurrentIcon] = useState(icon);
   const [isRotating, setIsRotating] = useState(false);
@@ -61,6 +63,7 @@ export default function DynamicAvatarButton({
       }}
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
+      disabled={disabled}
     >
       <div
         key={rotationKey}

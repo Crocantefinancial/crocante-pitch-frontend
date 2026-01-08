@@ -16,6 +16,7 @@ export function useQuote(
   userId: string,
   tokenFrom: string,
   tokenTo: string,
+  isLoading: boolean,
   pollIntervalMs: number,
   fallbackToMockOnNonAuthError = true
 ) {
@@ -40,7 +41,7 @@ export function useQuote(
         return getMockedQuoteData();
       }
     },
-    enabled: !!userId && !!tokenFrom && !!tokenTo,
+    enabled: !!userId && !!tokenFrom && !!tokenTo && !isLoading,
     staleTime: 1000 * 60 * 5,
     refetchInterval: pollIntervalMs > 0 ? pollIntervalMs : false,
     refetchIntervalInBackground: pollIntervalMs > 0,

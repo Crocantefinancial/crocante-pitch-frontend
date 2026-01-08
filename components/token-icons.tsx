@@ -21,6 +21,7 @@ export const sandTokenLogo = "/images/tokens/the-sandbox-sand-logo.svg";
 export const decentralandTokenLogo =
   "/images/tokens/decentraland-mana-logo.svg";
 export const sonicTokenLogo = "/images/tokens/sonic.svg";
+export const rippleTokenLogo = "/images/tokens/xrp-xrp-logo.svg";
 
 export const getTokenLogo = (token: string) => {
   if (token.toLowerCase().startsWith("avax")) return avalancheChainLogo;
@@ -43,5 +44,6 @@ export const getTokenLogo = (token: string) => {
   if (token.toLowerCase().startsWith("sand")) return sandTokenLogo;
   if (token.toLowerCase().startsWith("mana")) return decentralandTokenLogo;
   if (token.toLowerCase().startsWith("s")) return sonicTokenLogo;
+  if (token.toLowerCase().startsWith("xrp")) return rippleTokenLogo;
   return ethereumChainLogo;
 };

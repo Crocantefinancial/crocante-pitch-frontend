@@ -1,12 +1,8 @@
 import { SwapModal } from "@/domain/portfolio/components";
-import {
-  TokenType,
-  usePortfolioData,
-} from "@/domain/portfolio/hooks/use-portfolio-data";
+import { TokenType } from "@/domain/portfolio/hooks/use-portfolio-data";
+import { useSwapData } from "@/domain/portfolio/hooks/use-swap-data";
 import { useModal } from "@/hooks/use-modal";
 import { useSelector } from "@/hooks/use-selector";
-
-import { useSwapData } from "@/domain/portfolio/hooks/use-swap-data";
 import { useEffect, useState } from "react";
 
 interface SwapActionProps {
@@ -14,8 +10,19 @@ interface SwapActionProps {
   setOpen: (open: boolean) => void;
 }
 export default function SwapAction({ open, setOpen }: SwapActionProps) {
-  const { tokens, tokensOptions } = usePortfolioData();
-  //const { tokensFrom, tokensTo } = useSwapData(selectedAsset.symbol);
+  const [selectedTokenFrom, setSelectedTokenFrom] = useState("");
+  const {
+    tokensFrom,
+    tokensFromOptions,
+    tokensTo,
+    tokensToOptions,
+    isLoading: isSwapDataLoading,
+  } = useSwapData(selectedTokenFrom);
+
+  const [isLoading, setIsLoading] = useState(isSwapDataLoading);
+  const [swapipingSelectors, setSwapipingSelectors] = useState<
+    string | undefined
+  >(undefined);
 
   const [value, setValue] = useState("");
   const [valueUSD, setValueUSD] = useState("");
@@ -26,24 +33,39 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
   };
 
   const {
-    selectedRow: selectedAsset,
-    selectedIndex: selectedAssetIndex,
-    reset: resetAssetSelector,
-    change: changeAssetSelection,
-  } = useSelector<TokenType>(tokens || {}, 0, {
-    onReset: handleResetValues,
-    onChange: handleResetValues,
-  });
-
-  const {
     selectedRow: selectedSwapAsset,
     selectedIndex: selectedSwapAssetIndex,
     reset: resetSwapAssetSelector,
     change: changeSwapAssetSelection,
-  } = useSelector<TokenType>(tokens || {}, 0, {
-    onReset: handleResetValues,
+  } = useSelector<TokenType>(tokensTo || {}, 0, {
+    onReset: () => {
+      handleResetValues();
+      if (swapipingSelectors) {
+        changeSwapAssetSelection(swapipingSelectors);
+        setSwapipingSelectors(undefined);
+      }
+      setIsLoading(false);
+    },
     onChange: handleResetValues,
   });
+
+  const {
+    selectedRow: selectedAsset,
+    selectedIndex: selectedAssetIndex,
+    reset: resetAssetSelector,
+    change: changeAssetSelection,
+  } = useSelector<TokenType>(tokensFrom || {}, 0, {
+    onReset: handleResetValues,
+    onChange: () => {
+      setIsLoading(true);
+      handleResetValues();
+    },
+  });
+
+  const handleSwapSelectors = (tokenLabel: string, tokenSwapLabel: string) => {
+    changeAssetSelection(tokenSwapLabel);
+    setSwapipingSelectors(tokenLabel);
+  };
 
   const handleResetSwapSelectors = () => {
     resetAssetSelector();
@@ -75,11 +97,16 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
     }
   }, [open]);
 
-  if (!tokens) return null;
+  useEffect(() => {
+    if (selectedAsset) {
+      setSelectedTokenFrom(selectedAsset.symbol);
+    }
+  }, [selectedAsset]);
 
   return (
     swapModalOpen && (
       <SwapModal
+        isLoading={isLoading}
         swapModalOpen={swapModalOpen}
         setSwapModalOpen={closeSwapModal}
         handleSwap={handleSwap}
@@ -87,15 +114,16 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
         valueReceive={valueUSD}
         setValue={setValue}
         setValueReceive={setValueUSD}
+        handleSwapSelectors={handleSwapSelectors}
         assetSelector={{
           selectedIndex: selectedAssetIndex,
           onChange: changeAssetSelection,
-          options: tokensOptions,
+          options: tokensFromOptions,
         }}
         assetSwapSelector={{
           selectedIndex: selectedSwapAssetIndex,
           onChange: changeSwapAssetSelection,
-          options: tokensOptions,
+          options: tokensToOptions,
         }}
       />
     )

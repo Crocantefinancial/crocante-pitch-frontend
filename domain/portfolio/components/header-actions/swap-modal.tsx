@@ -9,9 +9,10 @@ import { useSession } from "@/context/session-provider";
 import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { parseValue } from "@/lib/utils";
-import { ArrowDown, ArrowUpDown, Repeat as Swap } from "lucide-react";
+import { ArrowDown, ArrowUpDown, Loader2, Repeat as Swap } from "lucide-react";
 
 interface SwapModalProps {
+  isLoading: boolean;
   swapModalOpen: boolean;
   setSwapModalOpen: (open: boolean) => void;
   value: string;
@@ -21,9 +22,11 @@ interface SwapModalProps {
   handleSwap: () => void;
   assetSelector: SelectorProps;
   assetSwapSelector: SelectorProps;
+  handleSwapSelectors: (tokenLabel: string, tokenSwapLabel: string) => void;
 }
 
 export default function SwapModal({
+  isLoading,
   swapModalOpen,
   setSwapModalOpen,
   value,
@@ -33,6 +36,7 @@ export default function SwapModal({
   handleSwap,
   assetSelector,
   assetSwapSelector,
+  handleSwapSelectors,
 }: SwapModalProps) {
   const tokenLabel =
     assetSelector.options[assetSelector.selectedIndex]?.label || "";
@@ -49,7 +53,8 @@ export default function SwapModal({
   const { convertTo, convertFrom } = useTokenSwap(
     userId,
     tokenLabel,
-    tokenSwapLabel
+    tokenSwapLabel,
+    isLoading
   );
 
   const handleChangeValueReceive = (valueReceive: string) => {
@@ -83,15 +88,6 @@ export default function SwapModal({
     isValidValue &&
     assetSelector.options[assetSelector.selectedIndex]?.id !==
       assetSwapSelector.options[assetSwapSelector.selectedIndex]?.id;
-
-  const handleSwapSelectors = () => {
-    assetSelector.onChange?.({
-      target: { value: tokenSwapLabel },
-    } as React.ChangeEvent<HTMLSelectElement>);
-    assetSwapSelector.onChange?.({
-      target: { value: tokenLabel },
-    } as React.ChangeEvent<HTMLSelectElement>);
-  };
 
   return (
     <Modal
@@ -134,17 +130,24 @@ export default function SwapModal({
               <ArrowUpDown className="w-5 h-5 text-muted-foreground" />
             }
             onClick={() => {
-              handleSwapSelectors();
+              handleSwapSelectors(tokenLabel, tokenSwapLabel);
             }}
+            disabled={isLoading}
           />
         </div>
         {/* Asset Swap Field */}
-        <InputSelectorToken
-          label="Receive"
-          value={valueReceive}
-          onChangeValue={(e) => handleChangeValueReceive(e.target.value)}
-          selectorProps={assetSwapSelector}
-        />
+        {isLoading ? (
+          <div className="flex justify-center">
+            <Loader2 className="w-5 h-5 text-muted-foreground animate-spin" />
+          </div>
+        ) : (
+          <InputSelectorToken
+            label="Receive"
+            value={valueReceive}
+            onChangeValue={(e) => handleChangeValueReceive(e.target.value)}
+            selectorProps={assetSwapSelector}
+          />
+        )}
       </div>
     </Modal>
   );

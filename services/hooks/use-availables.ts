@@ -5,6 +5,7 @@ import { useSessionMode } from "@/hooks/use-session-mode";
 import { getValidated } from "@/services/zod/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
+  AvailablesDataItemUI,
   AvailablesDataResponse,
   availablesDataResponseSchema,
   getFormattedAvailablesData,
@@ -14,7 +15,7 @@ import {
 export function useAvailables(userId: string, pollIntervalMs: number) {
   const { EP_STATEMENT_AVAILABLE } = envParsed();
   const { sessionMode } = useSessionMode();
-  return useQuery<string[]>({
+  return useQuery<AvailablesDataItemUI[]>({
     queryKey: ["availables", userId],
     queryFn: async () => {
       if (sessionMode === "mock") {

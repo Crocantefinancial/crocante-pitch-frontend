@@ -5,25 +5,21 @@ import { useSessionMode } from "@/hooks/use-session-mode";
 import { getValidated } from "@/services/zod/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
-  ConversionPairsDataItem,
+  ConversionPairsData,
   ConversionPairsDataResponse,
   conversionPairsDataResponseSchema,
   getFormattedConversionPairsData,
   getMockedConversionPairsData,
 } from "./types/conversion-pairs-data";
 
-export function useConversionPairs(
-  userId: string,
-  tokenId: string,
-  pollIntervalMs: number
-) {
+export function useConversionPairs(userId: string, pollIntervalMs: number) {
   const { EP_CONVERSION_PAIRS } = envParsed();
   const { sessionMode } = useSessionMode();
-  return useQuery<ConversionPairsDataItem>({
-    queryKey: ["conversionPairs", userId, tokenId],
+  return useQuery<ConversionPairsData>({
+    queryKey: ["conversionPairs", userId],
     queryFn: async () => {
       if (sessionMode === "mock") {
-        return getMockedConversionPairsData(tokenId);
+        return getMockedConversionPairsData();
       }
       try {
         const conversionPairsDataResponse =
@@ -31,16 +27,13 @@ export function useConversionPairs(
             `${EP_CONVERSION_PAIRS}`,
             conversionPairsDataResponseSchema
           );
-        return getFormattedConversionPairsData(
-          conversionPairsDataResponse,
-          tokenId
-        );
+        return getFormattedConversionPairsData(conversionPairsDataResponse);
       } catch (error) {
         console.warn("Error fetching conversion pairs data:", error);
-        return getMockedConversionPairsData(tokenId);
+        return getMockedConversionPairsData();
       }
     },
-    enabled: !!userId && !!tokenId,
+    enabled: !!userId,
     staleTime: 1000 * 60 * 5,
     refetchInterval: pollIntervalMs > 0 ? pollIntervalMs : false,
     refetchIntervalInBackground: pollIntervalMs > 0,

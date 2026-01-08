@@ -34,6 +34,13 @@ export const ConversionPairsDataSchema = z.record(
     "XLM",
     "XRP",
     "ZIL",
+    "CHZ",
+    "DAI",
+    "UNI",
+    "SAND",
+    "POL",
+    "S",
+    "TRX",
   ] as const),
   z.array(ConversionPairsDataSchemaItem)
 );
@@ -52,19 +59,12 @@ export type ConversionPairsDataResponse = z.infer<
   typeof conversionPairsDataResponseSchema
 >;
 
-export const getMockedConversionPairsData = (
-  tokenId: string
-): ConversionPairsDataItem => {
-  return ConversionPairsDataSchemaItem.parse(
-    CONVERSION_PAIRS.data[tokenId as keyof typeof CONVERSION_PAIRS.data]
-  );
+export const getMockedConversionPairsData = (): ConversionPairsData => {
+  return CONVERSION_PAIRS.data as ConversionPairsData;
 };
 
 export const getFormattedConversionPairsData = (
-  response: ConversionPairsDataResponse,
-  tokenId: string
-): ConversionPairsDataItem => {
-  return ConversionPairsDataSchemaItem.parse(
-    response.data[tokenId as keyof typeof response.data]
-  );
+  response: ConversionPairsDataResponse
+): ConversionPairsData => {
+  return response.data;
 };

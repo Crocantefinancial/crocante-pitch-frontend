@@ -5,12 +5,14 @@ import { useCallback } from "react";
 export function useTokenSwap(
   userId: string,
   tokenFrom: string,
-  tokenTo: string
+  tokenTo: string,
+  isLoading: boolean
 ) {
   const { data: quote } = useQuote(
     userId,
     tokenFrom,
     tokenTo,
+    isLoading,
     POLL_QUOTE_INTERVAL
   );
 

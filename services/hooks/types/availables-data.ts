@@ -26,21 +26,33 @@ export type AvailablesDataResponse = z.infer<
   typeof availablesDataResponseSchema
 >;
 
-const helperFormattedAvailablesData = (
-  response: AvailablesDataResponse
-): string[] => {
-  return response.data.availables.reduce((acc, av) => {
-    acc.push(av.currency.id);
-    return acc;
-  }, [] as string[]);
+export type AvailablesDataItemUI = {
+  id: string;
+  name: string;
+  amount: string;
+  value: string;
 };
 
-export const getMockedAvailablesData = (): string[] => {
+const helperFormattedAvailablesData = (
+  response: AvailablesDataResponse
+): AvailablesDataItemUI[] => {
+  return response.data.availables.reduce((acc, av) => {
+    acc.push({
+      id: av.currency.id,
+      name: av.currency.name,
+      amount: av.amount,
+      value: av.estValue,
+    });
+    return acc;
+  }, [] as AvailablesDataItemUI[]);
+};
+
+export const getMockedAvailablesData = (): AvailablesDataItemUI[] => {
   return helperFormattedAvailablesData(AVAILABLES);
 };
 
 export const getFormattedAvailablesData = (
   response: AvailablesDataResponse
-): string[] => {
+): AvailablesDataItemUI[] => {
   return helperFormattedAvailablesData(response);
 };
