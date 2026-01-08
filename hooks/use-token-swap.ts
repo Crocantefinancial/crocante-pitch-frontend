@@ -43,6 +43,8 @@ export function useTokenSwap(
     convertTo,
     convertFrom,
     conversionRateFrom,
+    commissionRate: quote?.edge.pair.LastConfig.takerFeePercent,
+    minAmount: quote?.estMinSize,
     isLoading: !quote,
   };
 }

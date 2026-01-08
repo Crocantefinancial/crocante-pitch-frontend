@@ -3,9 +3,12 @@ import { Button, Input, Select, SelectorProps } from "@/components/index";
 interface InputSelectorTokenProps {
   label: string;
   value: string;
+  placeholder?: string;
   onMaxClick?: () => void;
   onChangeValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
   maxValue?: string;
+  minValue?: string;
+  onMinClick?: () => void;
   tokenCode?: string;
   selectorProps: SelectorProps;
   onFocus?: () => void;
@@ -14,9 +17,12 @@ interface InputSelectorTokenProps {
 export default function InputSelectorToken({
   label,
   value,
+  placeholder,
   onMaxClick,
   onChangeValue,
   maxValue,
+  minValue,
+  onMinClick,
   tokenCode,
   selectorProps,
   onFocus,
@@ -33,6 +39,7 @@ export default function InputSelectorToken({
             <Input
               type="text"
               value={value}
+              placeholder={placeholder}
               onChange={onChangeValue}
               className="h-12"
               noBottomSpace={true}
@@ -50,20 +57,30 @@ export default function InputSelectorToken({
         </div>
       </div>
       {onMaxClick && (
-        <div className="flex items-center gap-1 -mt-4">
+        <div className="flex flex-col gap-1 items-start">
           <Button
             variant="outline"
-            className="text-xs mt-1.5"
+            className="text-xs -mt-2.5"
             onClick={onMaxClick}
           >
             Max
+            <p className="text-xs text-muted-foreground cursor-pointer">
+              {maxValue} {tokenCode}
+            </p>
           </Button>
-          <p
-            className="text-xs text-muted-foreground mt-1.5 cursor-pointer"
-            onClick={onMaxClick}
-          >
-            {maxValue} {tokenCode}
-          </p>
+
+          {onMinClick && (
+            <Button
+              variant="outline"
+              className="text-xs -mt-2.5"
+              onClick={onMinClick}
+            >
+              Min
+              <p className="text-xs text-muted-foreground cursor-pointer">
+                {minValue} {tokenCode}
+              </p>
+            </Button>
+          )}
         </div>
       )}
     </div>
