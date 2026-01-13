@@ -1,11 +1,23 @@
 import { SelectOption } from "@/components/core/select";
+import { AvatarIcon } from "@/components/index";
 import { getTokenLogo } from "@/components/token-icons";
 import { POLL_CURRENCY_DEPOSIT_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { useCurrencyDeposit } from "@/services/hooks/use-currency-deposit";
+import { CURRENCIES } from "@/shared/mockups/portfolio";
 import { useMemo } from "react";
 
 export type DepositTokenType = {
+  symbol: string;
+  icon: React.ReactNode;
+};
+
+export type DepositAssetType = {
+  symbol: string;
+  icon: React.ReactNode;
+};
+
+export type DepositFiatType = {
   symbol: string;
   icon: React.ReactNode;
 };
@@ -51,9 +63,80 @@ export function useDepositData() {
     };
   }, [depositData]);
 
+  const { depositAssetTypes, depositAssetTypesOptions } = useMemo(() => {
+    if (!depositData) {
+      return { depositAssetTypes: undefined, depositAssetTypesOptions: [] };
+    }
+
+    const assetTypesRecord: Record<string, DepositAssetType> = {};
+    const options: Array<SelectOption> = [];
+
+    const ASSETS_TYPES = [
+      {
+        id: "Crypto",
+        name: "Crypto",
+      },
+      {
+        id: "Fiat",
+        name: "Fiat",
+      },
+    ];
+
+    ASSETS_TYPES.forEach((assetTypeItem) => {
+      const assetType: DepositAssetType = {
+        symbol: assetTypeItem.id,
+        icon: (
+          <AvatarIcon initials={assetTypeItem.id.charAt(0)} color="primary" />
+        ),
+      };
+      assetTypesRecord[assetTypeItem.id] = assetType;
+      options.push({
+        label: assetTypeItem.id,
+        id: assetTypeItem.id,
+        icon: assetType.icon,
+      });
+    });
+
+    return {
+      depositAssetTypes: assetTypesRecord,
+      depositAssetTypesOptions: options,
+    };
+  }, [depositData]);
+
+  const { depositFiat, depositFiatOptions } = useMemo(() => {
+    if (!depositData) {
+      return { depositFiat: undefined, depositFiatOptions: [] };
+    }
+
+    const fiatRecord: Record<string, DepositFiatType> = {};
+    const options: Array<SelectOption> = [];
+
+    CURRENCIES.forEach((currency) => {
+      const fiat: DepositFiatType = {
+        symbol: currency.code,
+        icon: <AvatarIcon initials={currency.code.charAt(0)} color="primary" />,
+      };
+      fiatRecord[currency.code] = fiat;
+      options.push({
+        label: currency.code,
+        id: currency.code,
+        icon: fiat.icon,
+      });
+    });
+
+    return {
+      depositFiat: fiatRecord,
+      depositFiatOptions: options,
+    };
+  }, [depositData]);
+
   return {
     depositTokens,
     depositTokensOptions,
+    depositAssetTypes,
+    depositAssetTypesOptions,
+    depositFiat,
+    depositFiatOptions,
     isLoading: isLoadingDeposit,
   };
 }

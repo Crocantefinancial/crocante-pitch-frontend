@@ -1,6 +1,8 @@
 import { DepositModal } from "@/domain/portfolio/components";
 import { useDepositAddressData } from "@/domain/portfolio/hooks/use-deposit-address-data";
 import {
+  DepositAssetType,
+  DepositFiatType,
   DepositTokenType,
   useDepositData,
 } from "@/domain/portfolio/hooks/use-deposit-data";
@@ -21,8 +23,40 @@ export default function DepositAction({ open, setOpen }: DepositActionProps) {
   const {
     depositTokens,
     depositTokensOptions,
+    depositAssetTypes,
+    depositAssetTypesOptions,
+    depositFiat,
+    depositFiatOptions,
     isLoading: isLoadingDeposit,
   } = useDepositData();
+
+  const {
+    selectedRow: selectedDepositAssetType,
+    selectedIndex: selectedDepositAssetTypeIndex,
+    reset: resetDepositAssetTypeSelector,
+    change: changeDepositAssetTypeSelection,
+  } = useSelector<DepositAssetType>(depositAssetTypes || {}, 0, {
+    /* onReset: () => {
+      resetDepositAssetTypeSelector();
+    },
+    onChange: () => {
+      resetDepositAssetTypeSelector();
+    }, */
+  });
+
+  const {
+    selectedRow: selectedDepositFiat,
+    selectedIndex: selectedDepositFiatIndex,
+    reset: resetDepositFiatSelector,
+    change: changeDepositFiatSelection,
+  } = useSelector<DepositFiatType>(depositFiat || {}, 0, {
+    /* onReset: () => {
+      resetDepositFiatSelector();
+    },
+    onChange: () => {
+      resetDepositFiatSelector();
+    }, */
+  });
 
   const {
     selectedRow: selectedDepositAsset,
@@ -82,6 +116,16 @@ export default function DepositAction({ open, setOpen }: DepositActionProps) {
         onClose={closeDepositModal}
         address={depositAddress || ""}
         network={network}
+        assetTypeSelector={{
+          selectedIndex: selectedDepositAssetTypeIndex,
+          onChange: changeDepositAssetTypeSelection,
+          options: depositAssetTypesOptions,
+        }}
+        fiatSelector={{
+          selectedIndex: selectedDepositFiatIndex,
+          onChange: changeDepositFiatSelection,
+          options: depositFiatOptions,
+        }}
         tokenSelector={{
           selectedIndex: selectedDepositAssetIndex,
           onChange: changeDepositAssetSelection,

@@ -15,6 +15,8 @@ interface DepositModalProps {
   network: NetworkConfig | undefined;
   tokenSelector: SelectorProps;
   networkSelector: SelectorProps;
+  assetTypeSelector: SelectorProps;
+  fiatSelector: SelectorProps;
 }
 
 export default function DepositModal({
@@ -24,6 +26,8 @@ export default function DepositModal({
   network,
   tokenSelector,
   networkSelector,
+  assetTypeSelector,
+  fiatSelector,
 }: DepositModalProps) {
   const isMobile = useIsMobile();
   const shortAddress = getShortAddress(evmAddress);
@@ -40,13 +44,18 @@ export default function DepositModal({
     tokenSelector.options[tokenSelector.selectedIndex]?.label || ""
   );
 
+  const assetType =
+    assetTypeSelector.options[assetTypeSelector.selectedIndex]?.label || "";
+
+  const isFiat = assetType === "Fiat";
+
   return (
     <Modal
       title="Deposit Tokens"
       open={isOpen}
       onClose={onClose}
       actions={() =>
-        !!evmAddress && !!network ? (
+        !!evmAddress && !!network && !isFiat ? (
           <div className="flex flex-col gap-2 w-full">
             <Button
               variant="tertiary"
@@ -77,6 +86,17 @@ export default function DepositModal({
               {isAddressCopied ? "Address copied to clipboard" : "Copy address"}
             </Button>
           </div>
+        ) : isFiat ? (
+          <div className="flex flex-col gap-2 w-full">
+            <Label
+              label={`On-ramping fiat assets will be available soon.`}
+              className="!text-normal !text-textLight"
+            />
+            <Label
+              label={`You can still deposit crypto assets.`}
+              className="!text-normal !text-textLight"
+            />
+          </div>
         ) : (
           <div className="flex flex-col gap-2 w-full">
             <Label
@@ -89,15 +109,30 @@ export default function DepositModal({
     >
       <div className="flex flex-col w-full items-center gap-12 justify-center pt-16 pb-8">
         <div className="flex w-full items-left gap-2 -mt-16">
-          <Select className="w-full" label="Token" properties={tokenSelector} />
           <Select
             className="w-full"
-            label="Network"
-            properties={networkSelector}
+            label="Asset Type"
+            properties={assetTypeSelector}
           />
+          {assetType === "Fiat" ? (
+            <Select className="w-full" label="Fiat" properties={fiatSelector} />
+          ) : (
+            <>
+              <Select
+                className="w-full"
+                label="Token"
+                properties={tokenSelector}
+              />
+              <Select
+                className="w-full"
+                label="Network"
+                properties={networkSelector}
+              />
+            </>
+          )}
         </div>
 
-        {!!evmAddress && !!network && (
+        {!!evmAddress && !!network && !isFiat && (
           <div className="flex w-full gap-2 justify-center flex-col">
             <Label
               label={`Only send assets on ${network.chain.name}. Deposits from other networks won't be credited.`}
@@ -112,7 +147,7 @@ export default function DepositModal({
           </div>
         )}
 
-        {!!evmAddress && !!network && (
+        {!!evmAddress && !!network && !isFiat && (
           <div className="relative">
             <QRCodeSVG value={evmAddress} size={200} level="L" />
             <div className="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 border-[5px] border-white bg-white rounded-full shadow-md">
