@@ -28,7 +28,7 @@ export default function InputToken({
 }: InputTokenProps) {
   return (
     <div>
-      <label className="block text-sm font-normal text-muted-foreground mb-2">
+      <label className="block text-xs font-normal text-muted-foreground mb-1">
         {label}
       </label>
       <div className="flex items-center gap-1">

@@ -1,0 +1,28 @@
+import { POLL_STAKING_TYPE_DATA_INTERVAL } from "@/config/constants";
+import { useSession } from "@/context/session-provider";
+import { useStakingType } from "@/services/hooks/use-staking-type";
+import { useMemo } from "react";
+
+export function useStakeData(selectedToken: string) {
+    const { user } = useSession();
+    const userId = user?.id.toString() || "";
+    const { data: stakingTypeData, isLoading: isLoadingStakingType } = useStakingType(userId, POLL_STAKING_TYPE_DATA_INTERVAL);
+
+    const { stakeData, StakingTypeValues, isLoading: isLoadingStakeData } = useMemo(() => {
+        if (!stakingTypeData) {
+            return { stakeData: null, StakingTypeValues: { "": "" }, isLoading: false };
+        }
+        const stakeData = stakingTypeData.filter(item => item.currencyId === selectedToken);
+        const StakingTypeValues: Record<string, string> = stakeData.reduce((acc, item) => {
+            acc[item.id] = item.mode === "VARIABLE" ? "Flexible" : item.durationDays ? `${item.durationDays} Days` : item.id;
+            return acc;
+        }, {} as Record<string, string>);
+        return { stakeData, StakingTypeValues, isLoading: isLoadingStakingType };
+    }, [stakingTypeData, selectedToken]);
+
+    return {
+        stakeData,
+        StakingTypeValues,
+        isLoading: isLoadingStakeData,
+    };
+}
