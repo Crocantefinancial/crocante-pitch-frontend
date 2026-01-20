@@ -6,3 +6,4 @@ export const POLL_CURRENCY_DEPOSIT_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_TOKENS_NETWORKS_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_QUOTE_INTERVAL = 1000; // 1 second - poll interval for quote
 export const POLL_AVAILABLES_INTERVAL = 1000 * 60 * 5; // 5 minutes
+export const POLL_STAKING_TYPE_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes

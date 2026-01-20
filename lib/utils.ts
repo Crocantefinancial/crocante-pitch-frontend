@@ -1,3 +1,4 @@
+import envParsed from "@/config/envParsed";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
@@ -37,3 +38,23 @@ export function parseValue(valueStr: string): string {
   const numValue = Number(cleaned);
   return isNaN(numValue) || !isFinite(numValue) ? "0" : numValue.toString();
 }
+
+
+
+
+// Helper functions
+/* const roundToDecimals = (value: number, decimals: number): number => {
+  return parseFloat(value.toFixed(decimals));
+}; */
+
+function truncateToDecimals(num: number, decimals: number): number {
+  const factor = Math.pow(10, decimals);
+  return Math.trunc(num * factor) / factor;
+}
+
+export const formatToMaxDefinition = (value: number | undefined | null): number => {
+  if (value === undefined || value === null || isNaN(value)) {
+    return 0;
+  }
+  return truncateToDecimals(value, envParsed().MAX_DEFINITION);
+};
