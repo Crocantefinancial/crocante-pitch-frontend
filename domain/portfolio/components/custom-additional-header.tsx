@@ -2,6 +2,7 @@ import { Button } from "@/components/index";
 import {
   DepositAction,
   SendAction,
+  StakeAction,
   SwapAction,
 } from "@/domain/portfolio/components";
 import { useIsMobile } from "@/hooks/use-is-mobile";
@@ -13,6 +14,7 @@ import {
   Eye,
   MenuIcon,
   Send,
+  DatabaseZap as Staking,
   Repeat as Swap,
   XIcon,
 } from "lucide-react";
@@ -29,9 +31,10 @@ export default function CustomAdditionalHeader() {
   const [openSendModal, setOpenSendModal] = useState(false);
   const [openDepositModal, setOpenDepositModal] = useState(false);
   const [openSwapModal, setOpenSwapModal] = useState(false);
+  const [openStakingModal, setOpenStakingModal] = useState(false);
 
   const menuItems = [
-    {
+    /* {
       label: "Options",
       icon: <Eye className="h-4 w-auto" />,
       onClick: () => {},
@@ -42,7 +45,7 @@ export default function CustomAdditionalHeader() {
       icon: <ArrowUpDown className="h-4 w-auto" />,
       onClick: () => {},
       variant: "secondary",
-    },
+    }, */
     {
       label: "Send",
       icon: <Send className="h-4 w-auto" />,
@@ -59,6 +62,12 @@ export default function CustomAdditionalHeader() {
       label: "Swap",
       icon: <Swap className="h-4 w-auto" />,
       onClick: () => setOpenSwapModal(true),
+      variant: "primary",
+    },
+    {
+      label: "Staking",
+      icon: <Staking className="h-4 w-auto" />,
+      onClick: () => setOpenStakingModal(true),
       variant: "primary",
     },
   ];
@@ -129,6 +138,8 @@ export default function CustomAdditionalHeader() {
       <DepositAction open={openDepositModal} setOpen={setOpenDepositModal} />
 
       <SwapAction open={openSwapModal} setOpen={setOpenSwapModal} />
+
+      <StakeAction open={openStakingModal} setOpen={setOpenStakingModal} />
     </div>
   );
 }

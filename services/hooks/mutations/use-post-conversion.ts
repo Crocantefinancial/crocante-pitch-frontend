@@ -2,7 +2,6 @@
 
 import envParsed from "@/config/envParsed";
 import { useSessionMode } from "@/hooks/use-session-mode";
-import { queryClient } from "@/services/react-query/query-client";
 import { postValidated } from "@/services/zod/utils";
 import { useMutation } from "@tanstack/react-query";
 import {
@@ -12,6 +11,7 @@ import {
   PostConversionDataResponse,
   postConversionDataResponseSchema,
 } from "../types/post-conversion-data";
+import { invalidatePortfolioQueries } from "./utils/invalidate-portfolio-queries";
 
 type Vars = {
   userId: string;
@@ -42,23 +42,7 @@ export function usePostConversion() {
       return getFormattedPostConversionData(resp);
     },
     onSuccess: async (_data, { userId }) => {
-      const invalidateQueries = () => {
-        return Promise.all([
-          queryClient.invalidateQueries({ queryKey: ["netWorth", userId] }),
-          queryClient.invalidateQueries({ queryKey: ["portfolioData"] }),
-          queryClient.invalidateQueries({ queryKey: ["availables", userId] }),
-          queryClient.invalidateQueries({
-            queryKey: ["conversionPairs", userId],
-          }),
-        ]);
-      };
-      // 1) immediate refresh
-      await invalidateQueries();
-
-      // 2) indexer lag follow-ups
-      setTimeout(invalidateQueries, 1500);
-      setTimeout(invalidateQueries, 4000);
-      setTimeout(invalidateQueries, 6000);
+      await invalidatePortfolioQueries(userId);
     },
   });
 }

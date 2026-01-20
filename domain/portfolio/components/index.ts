@@ -10,9 +10,12 @@ export { default as DepositAction } from "./header-actions/deposit-action";
 export { default as DepositModal } from "./header-actions/deposit-modal";
 export { default as SendAction } from "./header-actions/send-action";
 export { default as SendModal } from "./header-actions/send-modal";
+export { default as StakeAction } from "./header-actions/stake-action";
+export { default as StakeModal } from "./header-actions/stake-modal";
 export { default as SwapAction } from "./header-actions/swap-action";
 export { default as SwapModal } from "./header-actions/swap-modal";
 export { default as AssetBreakdown } from "./left-section/asset-breakdown";
 export { default as CurrencyTable } from "./left-section/currency-table";
 export { default as TokensTable } from "./left-section/tokens-table";
 export { default as AssetAllocation } from "./right-section/asset-allocation";
+

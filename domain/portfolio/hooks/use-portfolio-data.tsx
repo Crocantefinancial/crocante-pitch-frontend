@@ -54,7 +54,7 @@ export function usePortfolioData() {
       options.push({
         label: currency.code,
         id: currency.code,
-        value: currency.amount, // amount - token units
+        value: currency.available,
         icon: token.icon,
       });
     });
