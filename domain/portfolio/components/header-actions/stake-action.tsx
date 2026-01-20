@@ -1,11 +1,11 @@
 import { StakeModal } from "@/domain/portfolio/components";
 import {
   TokenType,
-  usePortfolioData,
 } from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useStakeData } from "@/domain/portfolio/hooks/use-stake-data";
 import { useModal } from "@/hooks/use-modal";
 import { useSelector } from "@/hooks/use-selector";
+import { usePostStaking } from "@/services/hooks/mutations/use-post-staking";
 import { useEffect, useState } from "react";
 
 interface StakeActionProps {
@@ -13,6 +13,7 @@ interface StakeActionProps {
   setOpen: (open: boolean) => void;
 }
 export default function StakeAction({ open, setOpen }: StakeActionProps) {
+  const postStaking = usePostStaking();
   const [selectedToken, setSelectedToken] = useState("");
 
   const {
@@ -80,12 +81,33 @@ export default function StakeAction({ open, setOpen }: StakeActionProps) {
     }
   }, [open]);
 
-  const handleStake = () => {
-    console.log(
-      "STAKE",
-      selectedAsset,
-      value,
-      valueUSD + " USD"
+  const handleStake = (userId: string, typeId: string) => {
+    const amount = value?.trim();
+
+    if (!userId || !typeId || !amount) {
+      console.warn("Stake blocked: missing inputs", {
+        userId,
+        typeId,
+        amount,
+      });
+      return;
+    }
+
+    postStaking.mutate(
+      { userId, typeId, amount },
+      {
+        onSuccess: (data) => {
+          console.log("POST STAKING SUCCESS", data);
+          //TODO: toast success
+        },
+        onError: (err) => {
+          console.error("POST STAKING ERROR", err);
+          //TODO: toast error
+        },
+        onSettled: () => {
+          closeStakeModal();
+        },
+      }
     );
   };
 
@@ -98,9 +120,10 @@ export default function StakeAction({ open, setOpen }: StakeActionProps) {
   if (!tokens) return null;
 
   return (
-    stakeModalOpen &&
-    tokens && (
+    stakeModalOpen && (
       <StakeModal
+        isLoading={isLoadingStakeData}
+        isStaking={postStaking.isPending}
         stakeModalOpen={stakeModalOpen}
         setStakeModalOpen={closeStakeModal}
         handleStake={handleStake}

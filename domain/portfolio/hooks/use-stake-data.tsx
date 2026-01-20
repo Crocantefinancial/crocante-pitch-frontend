@@ -14,8 +14,11 @@ export function useStakeData(selectedToken: string) {
     const { data: stakingTypeData, isLoading: isLoadingStakingType } = useStakingType(userId, POLL_STAKING_TYPE_DATA_INTERVAL);
 
     const { tokens, tokensOptions } = useMemo(() => {
-        if (!allTokens || !stakingTypeData) {
+        if (!allTokens) {
             return { tokens: undefined, tokensOptions: [] };
+        }
+        if (!stakingTypeData) {
+            return { tokens: allTokens, tokensOptions: allTokensOptions };
         }
 
         const keysFilteredByStakingType = Object.keys(allTokens).filter(item => stakingTypeData.some(stakingType => stakingType.currencyId === item));

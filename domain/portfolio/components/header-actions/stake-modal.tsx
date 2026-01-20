@@ -9,6 +9,8 @@ import { DatabaseZap as Staking } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 
 interface StakeModalProps {
+  isLoading: boolean;
+  isStaking: boolean;
   stakeModalOpen: boolean;
   setStakeModalOpen: (open: boolean) => void;
   stakeData: StakingTypeData;
@@ -16,12 +18,14 @@ interface StakeModalProps {
   valueUSD: string;
   setValue: (value: string) => void;
   setValueUSD: (value: string) => void;
-  handleStake: () => void;
+  handleStake: (userId: string, typeId: string) => void;
   assetSelector: SelectorProps;
   stakingTypeSelector: SelectorProps;
 }
 
 export default function StakeModal({
+  isLoading,
+  isStaking,
   stakeModalOpen,
   setStakeModalOpen,
   stakeData,
@@ -102,6 +106,8 @@ export default function StakeModal({
 
   const conditionsSuccess =
     isValidValue &&
+    selectedRowKey !== undefined &&
+    stakeData.length > 0 &&
     assetSelector.options[assetSelector.selectedIndex]?.id !== undefined;
 
   const renderStakeDate = () => {
@@ -116,7 +122,7 @@ export default function StakeModal({
         <Label
           className={itemsClassName}
           label="APY:"
-          secondaryLabel={`${formatToMaxDefinition(Number(item.apy))} (${formatToMaxDefinition(Number(item.apy) * 100)}% yearly)`}
+          secondaryLabel={`${formatToMaxDefinition(Number(item.apy) * 100)}% yearly`}
         />
         <Label
           className={itemsClassName}
@@ -167,10 +173,10 @@ export default function StakeModal({
           variant="primary"
           className="w-full justify-center"
           onClick={() => {
-            handleStake();
+            handleStake(userId, selectedRowKey!);
             setStakeModalOpen(false);
           }}
-          disabled={!conditionsSuccess}
+          disabled={!conditionsSuccess || isStaking}
         >
           Stake
         </Button>
@@ -198,26 +204,29 @@ export default function StakeModal({
         />
 
         {/* Staking Type Field */}
-        <div className="bg-card rounded-lg max-w-full">
-          <div className="flex items-end justify-between mb-1 gap-2">
-            <Tabs
-              TabValues={TabValues}
-              selectedRow={selectedRow}
-              onChange={(selectedRow) =>
-                stakingTypeSelector.onChange?.(
-                  {
-                    target: { value: selectedRow },
-                  } as ChangeEvent<HTMLSelectElement>
-                )
-              }
-            />
-          </div>
+        {stakeData.length > 0 && (
+          <div className="bg-card rounded-lg max-w-full">
+            <div className="flex items-end justify-between mb-1 gap-2">
+              <Tabs
+                TabValues={TabValues}
+                selectedRow={selectedRow}
+                onChange={(selectedRow) =>
+                  stakingTypeSelector.onChange?.(
+                    {
+                      target: { value: selectedRow },
+                    } as ChangeEvent<HTMLSelectElement>
+                  )
+                }
+              />
+            </div>
 
-          {/* Stake Data */}
-          <div className="bg-background rounded-lg overflow-hidden">
-            {renderStakeDate()}
+
+            {/* Stake Data */}
+            <div className="bg-background rounded-lg overflow-hidden">
+              {renderStakeDate()}
+            </div>
           </div>
-        </div>
+        )}
       </div>
     </Modal>
   );
