@@ -2,11 +2,34 @@ import { POLL_STAKING_TYPE_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { useStakingType } from "@/services/hooks/use-staking-type";
 import { useMemo } from "react";
+import { TokenType, usePortfolioData } from "./use-portfolio-data";
 
 export function useStakeData(selectedToken: string) {
     const { user } = useSession();
     const userId = user?.id.toString() || "";
+    const {
+        tokens: allTokens,
+        tokensOptions: allTokensOptions,
+    } = usePortfolioData();
     const { data: stakingTypeData, isLoading: isLoadingStakingType } = useStakingType(userId, POLL_STAKING_TYPE_DATA_INTERVAL);
+
+    const { tokens, tokensOptions } = useMemo(() => {
+        if (!allTokens || !stakingTypeData) {
+            return { tokens: undefined, tokensOptions: [] };
+        }
+
+        const keysFilteredByStakingType = Object.keys(allTokens).filter(item => stakingTypeData.some(stakingType => stakingType.currencyId === item));
+        const tokensFilteredByStakingType = keysFilteredByStakingType.reduce((acc, item) => {
+            acc[item] = allTokens[item];
+            return acc;
+        }, {} as Record<string, TokenType>);
+        const tokensOptionsFilteredByStakingType = allTokensOptions.filter(item => keysFilteredByStakingType.includes(item.id));
+
+        return {
+            tokens: tokensFilteredByStakingType,
+            tokensOptions: tokensOptionsFilteredByStakingType
+        };
+    }, [allTokens, allTokensOptions, stakingTypeData]);
 
     const { stakeData, StakingTypeValues, isLoading: isLoadingStakeData } = useMemo(() => {
         if (!stakingTypeData) {
@@ -21,6 +44,8 @@ export function useStakeData(selectedToken: string) {
     }, [stakingTypeData, selectedToken]);
 
     return {
+        tokens,
+        tokensOptions,
         stakeData,
         StakingTypeValues,
         isLoading: isLoadingStakeData,

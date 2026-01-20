@@ -4,6 +4,7 @@ const env = {
   API_GATEWAY: process.env.NEXT_PUBLIC_API_GATEWAY,
   API_PROXY_ORIGIN: process.env.NEXT_PUBLIC_API_PROXY_ORIGIN,
   APP_ENV: process.env.NEXT_PUBLIC_APP_ENV,
+  MAX_DEFINITION: process.env.NEXT_PUBLIC_MAX_DEFINITION,
   EP_NET_WORTH: process.env.NEXT_PUBLIC_EP_NET_WORTH,
   EP_AUTH_LOGIN: process.env.NEXT_PUBLIC_EP_AUTH_LOGIN,
   EP_AUTH_LOGOUT: process.env.NEXT_PUBLIC_EP_AUTH_LOGOUT,
@@ -33,6 +34,7 @@ const envSchema = z
       .optional()
       .transform((v) => (v === "staging" ? undefined : v)),
 
+    MAX_DEFINITION: z.string().transform(v => Number(v)).default("2"),
     EP_NET_WORTH: z.string(),
     EP_AUTH_LOGIN: z.string(),
     EP_AUTH_LOGOUT: z.string(),

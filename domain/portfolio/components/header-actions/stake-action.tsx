@@ -18,9 +18,6 @@ export default function StakeAction({ open, setOpen }: StakeActionProps) {
   const {
     tokens,
     tokensOptions,
-  } = usePortfolioData();
-
-  const {
     stakeData,
     StakingTypeValues,
     isLoading: isLoadingStakeData,
@@ -107,6 +104,7 @@ export default function StakeAction({ open, setOpen }: StakeActionProps) {
         stakeModalOpen={stakeModalOpen}
         setStakeModalOpen={closeStakeModal}
         handleStake={handleStake}
+        stakeData={stakeData || []}
         value={value}
         valueUSD={valueUSD}
         setValue={setValue}

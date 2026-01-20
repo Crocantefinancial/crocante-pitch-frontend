@@ -6,9 +6,11 @@ interface InputTokenProps {
   value: string;
   valueUSD: string;
   onMaxClick: () => void;
+  onMinClick?: () => void;
   onChangeUSD: (e: React.ChangeEvent<HTMLInputElement>) => void;
   onChangeValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
   maxValue: string;
+  minValue?: string;
   tokenCode: string;
   tokenIcon: React.ReactNode;
   handleFocus: (convertedInputFocused: boolean) => void;
@@ -19,9 +21,11 @@ export default function InputToken({
   value,
   valueUSD,
   onMaxClick,
+  onMinClick,
   onChangeUSD,
   onChangeValue,
   maxValue,
+  minValue,
   tokenCode,
   tokenIcon,
   handleFocus,
@@ -64,7 +68,34 @@ export default function InputToken({
           </div>
         </div>
       </div>
-      <div className="flex items-center gap-1 -mt-4">
+      {onMaxClick && (
+        <div className="flex flex-col gap-1 items-start">
+          <Button
+            variant="outline"
+            className="text-xs -mt-2.5"
+            onClick={onMaxClick}
+          >
+            Max
+            <p className="text-xs text-muted-foreground cursor-pointer">
+              {maxValue} {tokenCode}
+            </p>
+          </Button>
+
+          {onMinClick && (
+            <Button
+              variant="outline"
+              className="text-xs -mt-2.5"
+              onClick={onMinClick}
+            >
+              Min
+              <p className="text-xs text-muted-foreground cursor-pointer">
+                {minValue} {tokenCode}
+              </p>
+            </Button>
+          )}
+        </div>
+      )}
+      {/* <div className="flex items-center gap-1 -mt-4">
         <Button
           variant="outline"
           className="text-xs mt-1.5"
@@ -78,7 +109,7 @@ export default function InputToken({
         >
           {maxValue} {tokenCode}
         </p>
-      </div>
+      </div> */}
     </div>
   );
 }
