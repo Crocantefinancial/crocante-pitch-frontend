@@ -1,8 +1,8 @@
 import { POLL_ACTIVITY_DATA_INTERVAL } from "@/config/constants";
-import { DEPOSIT_ICON, STAKE_ICON, SWAP_ICON, WITHDRAWAL_ICON } from "@/config/operation-icons";
+import { DEPOSIT_ICON, LOAN_ICON, STAKE_ICON, SWAP_ICON, WITHDRAWAL_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
 import { formatDate, formatTime } from "@/lib/utils";
-import { AdminOperationDataSchema, ConvertDataSchema, StakingDataSchema } from "@/services/hooks/types/activity-data";
+import { AdminOperationDataSchema, ConvertDataSchema, CryptoOperationDataSchema, LoanOperationDataSchema, StakingDataSchema, TransferOperationDataSchema } from "@/services/hooks/types/activity-data";
 import { useActivity } from "@/services/hooks/use-activity";
 import { useMemo } from "react";
 
@@ -19,12 +19,13 @@ export type UIActivityDataType = {
   status: string;
 };
 
-export function useActivityData() {
+export function useActivityData(page: number) {
   const { user } = useSession();
   const userId = user?.id.toString() || "";
 
   const { data: activityData, isLoading: isLoadingActivity } = useActivity(
     userId,
+    page,
     POLL_ACTIVITY_DATA_INTERVAL
   );
 
@@ -57,6 +58,12 @@ export function useActivityData() {
             <STAKE_ICON className={iconClassName} />
           </span>
         );
+      case "LOAN":
+        return (
+          <span className={wrapperClassName}>
+            <LOAN_ICON className={iconClassName} />
+          </span>
+        );
     }
   };
 
@@ -72,7 +79,6 @@ export function useActivityData() {
       if (AdminOperationDataSchema.safeParse(activity).success) {
         const instantiatedActivity = AdminOperationDataSchema.safeParse(activity).data!;
         const amount = instantiatedActivity.operation.type === "DEPOSIT" ? instantiatedActivity.amount : instantiatedActivity.netAmount;
-        console.log("AdminOperationDataSchema", instantiatedActivity);
         return {
           id: instantiatedActivity.operation.id,
           type,
@@ -85,7 +91,6 @@ export function useActivityData() {
       }
       if (ConvertDataSchema.safeParse(activity).success) {
         const instantiatedActivity = ConvertDataSchema.safeParse(activity).data!;
-        console.log("ConvertDataSchema", instantiatedActivity);
         return {
           id: instantiatedActivity.operation.id,
           type,
@@ -99,7 +104,6 @@ export function useActivityData() {
       }
       if (StakingDataSchema.safeParse(activity).success) {
         const instantiatedActivity = StakingDataSchema.safeParse(activity).data!;
-        console.log("StakingDataSchema", instantiatedActivity);
         return {
           id: instantiatedActivity.operation.id,
           type,
@@ -110,13 +114,47 @@ export function useActivityData() {
           subDate: time
         } as UIActivityDataType;
       }
-
+      if (CryptoOperationDataSchema.safeParse(activity).success) {
+        const instantiatedActivity = CryptoOperationDataSchema.safeParse(activity).data!;
+        const amount = (instantiatedActivity.grossAmount ? instantiatedActivity.grossAmount : instantiatedActivity.amount ? instantiatedActivity.amount : instantiatedActivity.netAmount);
+        return {
+          id: instantiatedActivity.operation.id,
+          type,
+          opIcon,
+          amount: amount + " " + instantiatedActivity.currencyId,
+          status: instantiatedActivity.operation.status,
+          date: date,
+          subDate: time,
+        } as UIActivityDataType;
+      }
+      if (LoanOperationDataSchema.safeParse(activity).success) {
+        const instantiatedActivity = LoanOperationDataSchema.safeParse(activity).data!;
+        return {
+          id: instantiatedActivity.operation.id,
+          type,
+          opIcon,
+          amount: instantiatedActivity.repayed + " " + instantiatedActivity.sizeCurrencyId,
+          status: instantiatedActivity.operation.status,
+          date: formatDate(instantiatedActivity.lastUpdate.createdAt),
+          subDate: formatTime(instantiatedActivity.lastUpdate.createdAt),
+        } as UIActivityDataType;
+      }
+      if (TransferOperationDataSchema.safeParse(activity).success) {
+        const instantiatedActivity = TransferOperationDataSchema.safeParse(activity).data!;
+        return {
+          id: instantiatedActivity.operation.id,
+          type,
+          opIcon,
+          //amount: (Number(instantiatedActivity.grossAmount) + Number(instantiatedActivity.feeAmount)) + " " + instantiatedActivity.currencyId,
+          amount: instantiatedActivity.netAmount + " " + instantiatedActivity.currencyId,
+          status: instantiatedActivity.operation.status,
+          date: formatDate(instantiatedActivity.operation.updatedAt),
+          subDate: formatTime(instantiatedActivity.operation.updatedAt),
+        } as UIActivityDataType;
+      }
       return {} as UIActivityDataType;
     });
-  }, [activityData]);
+  }, [activityData, getActivityIcon]);
 
-  return {
-    isLoading: isLoadingActivity,
-    activityData: formattedActivityData
-  };
+  return { isLoading: isLoadingActivity, activityData: formattedActivityData };
 }

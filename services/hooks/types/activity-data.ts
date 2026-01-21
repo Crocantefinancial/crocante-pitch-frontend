@@ -31,6 +31,84 @@ export const CurrencySchema = z.object({
   priority: z.number(),
 });
 
+export const TiersSchema = z.object({
+  minRatio: z.string(),
+  minPrice: z.string(),
+  apr: z.string(),
+});
+
+export const LastUpdateSchema = z.object({
+  createdAt: z.string(),
+  type: z.string(),
+  status: z.string(),
+  apr: z.string(),
+  dCollat: z.string(),
+  dRepayed: z.string(),
+  liqCollat: z.string(),
+  price: z.string(),
+  dFees: z.string(),
+  dTierNum: z.number(),
+  forcedLiq: z.boolean(),
+});
+
+export const LoanOperationDataSchema = z.object({
+  type: z.literal("LOAN").optional(),
+  typeId: z.string(),
+  operation: OperationSchema,
+  sizeCurrencyId: z.string().optional(),
+  collatCurrencyId: z.string().optional(),
+  status: z.string().optional(),
+  size: z.string().optional(),
+  collat: z.string().optional(),
+  repayed: z.string().optional(),
+  debt: z.string().optional(),
+  interest: z.string().optional(),
+  ratio: z.string().optional(),
+  liqPrice: z.string().optional(),
+  apr: z.string().optional(),
+  tierNum: z.number().optional(),
+  minCollat: z.string().optional(),
+  initialAPR: z.string().optional(),
+  initialRatio: z.string().optional(),
+  initialSize: z.string().optional(),
+  initialCollat: z.string().optional(),
+  initialDebt: z.string().optional(),
+  origFee: z.string().optional(),
+  tiers: z.array(TiersSchema),
+  lastUpdate: LastUpdateSchema,
+  forcedLiq: z.boolean().optional(),
+});
+
+export const NetworkSchema = z.object({
+  id: z.string(),
+  name: z.string(),
+  mainCurrencyID: z.string(),
+  minConfirms: z.number(),
+});
+
+export const CryptoOperationDataSchema = z.object({
+  type: z.literal("CRYPTO"),
+  currencyId: z.string(),
+  operation: OperationSchema,
+  currency: CurrencySchema,
+  id: z.string().optional(),
+  amount: z.string().optional(),
+  netAmount: z.string().optional(),
+  feeAmount: z.string().optional(),
+  grossAmount: z.string().optional(),
+  receiverId: z.string().optional(),
+  network: NetworkSchema,
+  networkId: z.string().optional(),
+  address: z.string().optional(),
+  addressURL: z.string().optional(),
+  dstAddress: z.string().optional(),
+  dstAddressURL: z.string().optional(),
+  srcAddress: z.string().optional(),
+  srcAddressURL: z.string().optional(),
+  transactionHash: z.string().nullable().optional(),
+  transactionHashURL: z.string().nullable().optional(),
+});
+
 export const AdminOperationDataSchema = z.object({
   type: z.literal("ADMIN"),
   currencyId: z.string(),
@@ -43,8 +121,23 @@ export const AdminOperationDataSchema = z.object({
   grossAmount: z.string().optional(),
   senderId: z.string().optional(),
   receiverId: z.string().optional(),
-  approverId: z.string().optional(),
+  approverId: z.string().nullable().optional(),
   approvalState: z.string().optional(),
+});
+
+export const TransferOperationDataSchema = z.object({
+  type: z.literal("TRANSFER"),
+  currencyId: z.string(),
+  operation: OperationSchema,
+  currency: CurrencySchema,
+  id: z.string().optional(),
+  amount: z.string().optional(),
+  netAmount: z.string().optional(),
+  feeAmount: z.string().optional(),
+  grossAmount: z.string().optional(),
+  senderId: z.string().optional(),
+  receiverId: z.string().optional(),
+  receiver: z.string().optional(),
 });
 
 export const StakingDataSchema = z.object({
@@ -61,63 +154,6 @@ export const StakingDataSchema = z.object({
   apy: z.string().optional(),
 });
 
-/* 
-
-"operationId": "e79a12b9-0981-439f-8a49-a1e226b89516",
-            "groupId": "CONVERT",
-            "baseId": "USDC",
-            "quoteId": "USDT",
-            "limitPrice": null,
-            "type": "MARKET",
-            "side": "BUY",
-            "status": "FILLED",
-            "size": "20",
-            "lastFilledAt": "2026-01-09T14:40:23.906478Z",
-            "filledSize": "19.984012",
-            "avgPrice": "1.0008",
-            "canceling": false,
-            "makerFeePercent": "0.0035",
-            "takerFeePercent": "0.0035",
-            "execType": "IMMEDIATE",
-            "triggeredAt": null,
-            "triggerPrice": null,
-            "triggerPriceHigh": null,
-            "triggerPriceLow": null,
-            "operation": {
-                "id": "e79a12b9-0981-439f-8a49-a1e226b89516",
-                "creatorId": "79f970d7-3b2f-492c-a358-6c1f1c2fd429",
-                "ownerId": "79f970d7-3b2f-492c-a358-6c1f1c2fd429",
-                "openedAt": "2026-01-09T14:40:23.508926Z",
-                "updatedAt": "2026-01-09T14:40:23.906478Z",
-                "closedAt": "2026-01-09T14:40:23.906478Z",
-                "status": "COMPLETED",
-                "type": "TRADE",
-                "fullType": "TRADE.CONVERSION"
-            },
-            "baseSize": null,
-            "quoteSize": "20",
-            "filledQuoteSize": "19.9999992096",
-            "creditCurrencyID": "USDC",
-            "debitCurrencyID": "USDT",
-            "estCreditAmount": null,
-            "estGrossCreditAmount": null,
-            "estNetCreditAmount": null,
-            "estDebitAmount": null,
-            "estFeeAmount": null,
-            "creditAmount": "19.914067958",
-            "netCreditAmount": "19.914067958",
-            "grossCreditAmount": "19.984012",
-            "debitAmount": "19.9999992096",
-            "feeAmount": "0.069944042",
-            "tickSize": 4,
-            "stepSize": 6,
-            "liquidityProviderType": "OKX",
-            "triggerPriceHighBaseSize": null,
-            "triggerPriceLowBaseSize": null,
-            "triggerPriceHighQuoteSize": null,
-            "triggerPriceLowQuoteSize": null
-
-*/
 export const ConvertDataSchema = z.object({
   operationId: z.string(),
   groupId: z.string(),
@@ -167,6 +203,9 @@ export const ConvertDataSchema = z.object({
 export const ActivityDataSchema = z.union([
   StakingDataSchema,
   AdminOperationDataSchema,
+  TransferOperationDataSchema,
+  CryptoOperationDataSchema,
+  LoanOperationDataSchema,
   ConvertDataSchema,
 ]);
 

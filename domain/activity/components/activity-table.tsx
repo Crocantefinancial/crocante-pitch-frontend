@@ -1,11 +1,12 @@
 import { Badge, Skeleton, Table } from "@/components/index";
-import { getTokenLogo } from "@/components/token-icons";
 import { useActivityData } from "@/domain/activity/hooks/use-activity-data";
 
-export default function ActivityTable() {
-  const { activityData, isLoading } = useActivityData();
+interface ActivityTableProps {
+  page: number;
+}
 
-  console.log(activityData);
+export default function ActivityTable({ page = 1 }: ActivityTableProps) {
+  const { activityData, isLoading } = useActivityData(page);
 
   if (isLoading || !activityData) {
     return <Skeleton lines={3} />;
@@ -43,14 +44,6 @@ export default function ActivityTable() {
               id: "type",
               value: tx.type,
               leftIcon: () => tx.opIcon,
-              /* leftIcon: () => {
-                return (
-                  <img
-                    src={getTokenLogo(tx.type)}
-                    className="w-7 h-7 rounded-full"
-                  />
-                );
-              }, */
               className: "text-left !font-xs",
             },
             {

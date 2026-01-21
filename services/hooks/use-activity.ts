@@ -14,20 +14,21 @@ import {
 
 export function useActivity(
   userId: string,
+  page: number,
   pollIntervalMs: number,
   fallbackToMockOnNonAuthError = true
 ) {
   const { EP_ACTIVITY } = envParsed();
   const { sessionMode } = useSessionMode();
   return useQuery<ActivityData[]>({
-    queryKey: ["activity", userId],
+    queryKey: ["activity", userId, page],
     queryFn: async () => {
       if (sessionMode === "mock") {
         return getMockedActivityData();
       }
       try {
         const activityDataResponse = await getValidated<ActivityDataResponse>(
-          `${EP_ACTIVITY}?page=1&size=10`,
+          `${EP_ACTIVITY}?page=${page}&size=10`,
           activityDataResponseSchema
         );
         return getFormattedActivityData(activityDataResponse);
