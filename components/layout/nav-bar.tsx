@@ -12,6 +12,7 @@ import {
   FileText,
   Lock,
   LogOut,
+  Logs,
   Menu,
   Shield,
   Zap,
@@ -28,6 +29,7 @@ export const MENU_ITEMS = [
   { icon: Activity, label: "Reports", id: "reports" },
   { icon: Cog, label: "Settings", id: "settings" },
   { icon: FileText, label: "RFQ Manager", id: "rfq-manager" },
+  { icon: Logs, label: "Activity", id: "activity" },
 ];
 
 interface NavBarProps {
@@ -47,9 +49,8 @@ export default function NavBar({
   const { mutate: logoutMutation } = useLogout();
   return (
     <div
-      className={`${
-        sidebarOpen ? "w-64" : "w-20"
-      } bg-white border-r border-neutral-200 transition-all duration-300 flex flex-col`}
+      className={`${sidebarOpen ? "w-64" : "w-20"
+        } bg-white border-r border-neutral-200 transition-all duration-300 flex flex-col`}
     >
       {/* Logo */}
       <div className="px-3 py-4 border-b border-neutral-200 flex items-center justify-center">
