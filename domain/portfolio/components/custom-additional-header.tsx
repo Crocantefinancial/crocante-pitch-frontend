@@ -120,7 +120,7 @@ export default function CustomAdditionalHeader() {
             <Button
               key={it.label}
               variant={it.variant as any}
-              className="flex flex-row"
+              className="flex flex-row h-10 w-auto"
               onClick={it.onClick}
             >
               {it.icon}

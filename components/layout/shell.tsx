@@ -40,7 +40,7 @@ export default function Shell({
 
         {/* Content Area */}
         <div className="flex-1 overflow-auto">
-          <div className="p-8">{children}</div>
+          <div className="">{children}</div>
         </div>
       </div>
     </div>

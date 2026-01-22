@@ -40,7 +40,7 @@ export function SettingsSection() {
   };
 
   return (
-    <>
+    <div className="p-8">
       {/* Settings Tabs */}
       <div className="bg-white px-8 sticky top-0 z-10">
         <div className="flex gap-8">
@@ -48,11 +48,10 @@ export function SettingsSection() {
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
-              className={`py-4 text-sm font-normal border-b-2 transition-colors ${
-                activeTab === tab
+              className={`py-4 text-sm font-normal border-b-2 transition-colors ${activeTab === tab
                   ? "border-primary text-primary"
                   : "border-transparent text-neutral-600 hover:text-neutral-900"
-              }`}
+                }`}
             >
               {tab}
             </button>
@@ -137,11 +136,10 @@ export function SettingsSection() {
               {[1, 2, 3, "...", 7].map((page) => (
                 <button
                   key={page}
-                  className={`px-3 py-2 text-sm font-normal rounded transition-colors ${
-                    page === 1
+                  className={`px-3 py-2 text-sm font-normal rounded transition-colors ${page === 1
                       ? "bg-neutral-300 text-neutral-900"
                       : "text-neutral-600 hover:bg-neutral-100"
-                  }`}
+                    }`}
                 >
                   {page}
                 </button>
@@ -161,6 +159,6 @@ export function SettingsSection() {
           </div>
         )}
       </div>
-    </>
+    </div>
   );
 }

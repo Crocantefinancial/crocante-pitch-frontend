@@ -1,4 +1,4 @@
-import { Shield, Info, Plus } from 'lucide-react'
+import { Info, Plus, Shield } from 'lucide-react'
 import { useState } from "react"
 
 const TABS = ["General Policies", "Crocante Wallet Policies", "Counterparty Policies", "Approval Groups", "Activity"]
@@ -137,7 +137,7 @@ export function GovernanceSection() {
   const [activeTab, setActiveTab] = useState("General Policies")
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-8">
       <div className="flex items-center gap-3">
         <Shield className="w-8 h-8 text-primary" />
         <h2 className="text-2xl font-semibold text-neutral-900">Governance</h2>
@@ -151,9 +151,8 @@ export function GovernanceSection() {
               <button
                 key={tab}
                 onClick={() => setActiveTab(tab)}
-                className={`py-4 text-sm font-normal relative transition-colors ${
-                  activeTab === tab ? "text-neutral-900" : "text-neutral-500 hover:text-neutral-700"
-                }`}
+                className={`py-4 text-sm font-normal relative transition-colors ${activeTab === tab ? "text-neutral-900" : "text-neutral-500 hover:text-neutral-700"
+                  }`}
               >
                 {tab}
                 {activeTab === tab && (
@@ -209,9 +208,8 @@ export function GovernanceSection() {
                 {WALLET_POLICIES.map((policy, index) => (
                   <div
                     key={policy.order}
-                    className={`grid grid-cols-[0.5fr,1.5fr,1.5fr,1.5fr,1.5fr,2fr,2fr] gap-4 px-6 py-4 items-center ${
-                      index < WALLET_POLICIES.length - 1 ? "border-b border-neutral-200" : ""
-                    }`}
+                    className={`grid grid-cols-[0.5fr,1.5fr,1.5fr,1.5fr,1.5fr,2fr,2fr] gap-4 px-6 py-4 items-center ${index < WALLET_POLICIES.length - 1 ? "border-b border-neutral-200" : ""
+                      }`}
                   >
                     <div className="text-sm text-neutral-600">{policy.order}</div>
                     <div className="text-sm text-neutral-600">{policy.name}</div>
@@ -271,9 +269,8 @@ export function GovernanceSection() {
                 {COUNTERPARTY_POLICIES.map((policy, index) => (
                   <div
                     key={policy.order}
-                    className={`grid grid-cols-[0.5fr,2fr,1.5fr,1.5fr,1.5fr,1.5fr,2fr,1.5fr] gap-4 px-6 py-4 items-center ${
-                      index < COUNTERPARTY_POLICIES.length - 1 ? "border-b border-neutral-200" : ""
-                    }`}
+                    className={`grid grid-cols-[0.5fr,2fr,1.5fr,1.5fr,1.5fr,1.5fr,2fr,1.5fr] gap-4 px-6 py-4 items-center ${index < COUNTERPARTY_POLICIES.length - 1 ? "border-b border-neutral-200" : ""
+                      }`}
                   >
                     <div className="text-sm text-neutral-600">{policy.order}</div>
                     <div className="text-sm text-neutral-600 truncate" title={policy.name}>{policy.name}</div>
@@ -327,9 +324,8 @@ export function GovernanceSection() {
                 {APPROVAL_GROUPS.map((group, index) => (
                   <div
                     key={group.name}
-                    className={`grid grid-cols-[2.5fr,1.5fr,1.5fr,1fr,1fr] gap-4 px-6 py-4 items-center ${
-                      index < APPROVAL_GROUPS.length - 1 ? "border-b border-neutral-200" : ""
-                    }`}
+                    className={`grid grid-cols-[2.5fr,1.5fr,1.5fr,1fr,1fr] gap-4 px-6 py-4 items-center ${index < APPROVAL_GROUPS.length - 1 ? "border-b border-neutral-200" : ""
+                      }`}
                   >
                     <div className="text-sm text-neutral-600">{group.name}</div>
                     <div className="text-sm text-neutral-600">{group.members}</div>
@@ -372,9 +368,8 @@ export function GovernanceSection() {
                   {GOVERNANCE_RULES.map((rule, index) => (
                     <div
                       key={rule.name}
-                      className={`grid grid-cols-[2fr,3fr,1.5fr] gap-4 px-6 py-4 ${
-                        index < GOVERNANCE_RULES.length - 1 ? "border-b border-neutral-200" : ""
-                      }`}
+                      className={`grid grid-cols-[2fr,3fr,1.5fr] gap-4 px-6 py-4 ${index < GOVERNANCE_RULES.length - 1 ? "border-b border-neutral-200" : ""
+                        }`}
                     >
                       <div className="text-sm text-neutral-600">{rule.name}</div>
                       <div className="text-sm text-neutral-600">{rule.activity}</div>

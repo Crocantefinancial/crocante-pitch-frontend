@@ -49,7 +49,7 @@ export function ReportsSection() {
   };
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-8">
       {/* Generate Report Section */}
       <div className="bg-card rounded-lg p-8">
         <h2 className="text-2xl font-semibold text-foreground mb-6">

@@ -175,7 +175,7 @@ export function InvestSection() {
   };
 
   return (
-    <div className="space-y-6 max-w-7xl mx-auto">
+    <div className="space-y-6 max-w-7xl mx-auto p-8">
       {/* Header */}
       <div>
         <h2 className="text-2xl font-semibold text-foreground mb-2">Invest</h2>
@@ -190,11 +190,10 @@ export function InvestSection() {
           <button
             key={tab}
             onClick={() => setActiveTab(tab)}
-            className={`pb-3 text-sm font-normal border-b-2 transition-colors ${
-              activeTab === tab
+            className={`pb-3 text-sm font-normal border-b-2 transition-colors ${activeTab === tab
                 ? "border-primary text-primary"
                 : "border-transparent text-muted-foreground hover:text-foreground"
-            }`}
+              }`}
           >
             {tab}
           </button>
@@ -254,11 +253,10 @@ export function InvestSection() {
                 onClick={() =>
                   setSelectedCategory(cat.value as Category | "all")
                 }
-                className={`px-3 py-1.5 text-xs font-normal rounded-md transition-colors ${
-                  selectedCategory === cat.value
+                className={`px-3 py-1.5 text-xs font-normal rounded-md transition-colors ${selectedCategory === cat.value
                     ? "bg-card text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
-                }`}
+                  }`}
               >
                 {cat.label}
               </button>

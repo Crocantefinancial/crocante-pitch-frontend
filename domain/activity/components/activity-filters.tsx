@@ -115,8 +115,8 @@ export default function ActivityFilters({
 
     return (
         <>
-            <div className="space-y-8">
-                <div className="flex flex-wrap items-center justify-between gap-0 mb-2">
+            <div className="mb-4">
+                <div className="flex flex-wrap gap-0">
                     <div className="flex flex-item flex-row items-center justify-start gap-0">
                         <Button variant={filtersClassName as "outline" | "secondary"} className="text-xs" onClick={openFiltersModal}>
                             <Eye className="w-4 h-4" />
