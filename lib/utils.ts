@@ -58,3 +58,15 @@ export const formatToMaxDefinition = (value: number | undefined | null): number 
   }
   return truncateToDecimals(value, envParsed().MAX_DEFINITION);
 };
+
+export const formatDate = (date: string): string => {
+  return new Date(date).toLocaleDateString();
+};
+
+export const formatDateTime = (date: string): string => {
+  return formatDate(date) + " " + formatTime(date);
+};
+
+export const formatTime = (date: string): string => {
+  return new Date(date).toLocaleTimeString();
+};

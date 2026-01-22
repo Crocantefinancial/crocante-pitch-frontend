@@ -1,11 +1,11 @@
 import { SelectorProps } from "@/components/core/select";
 import { Button, InputToken, Label, Modal, Select, Tabs } from "@/components/index";
+import { STAKE_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
 import { useTokenConversion } from "@/hooks/use-token-conversion";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { formatToMaxDefinition, parseValue } from "@/lib/utils";
 import { StakingTypeData } from "@/services/hooks/types/staking-type-data";
-import { DatabaseZap as Staking } from "lucide-react";
 import { ChangeEvent, useEffect, useState } from "react";
 
 interface StakeModalProps {
@@ -166,7 +166,7 @@ export default function StakeModal({
     <Modal
       open={stakeModalOpen}
       onClose={() => setStakeModalOpen(false)}
-      icon={<Staking className="w-5 h-5 text-muted-foreground" />}
+      icon={<STAKE_ICON className="w-5 h-5 text-muted-foreground" />}
       title="Stake"
       actions={() => (
         <Button

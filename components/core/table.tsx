@@ -159,6 +159,7 @@ export default function Table({ tableHeaders, rows }: TableProps) {
                         <p
                           className={clsx(
                             "text-sm font-normal",
+                            cell.className?.includes("text-xs") && "text-xs",
                             cell.highlight
                               ? "text-accent"
                               : "text-muted-foreground"

@@ -5,11 +5,12 @@ import {
   InputSelectorToken,
   Modal,
 } from "@/components/index";
+import { SWAP_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
 import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { parseValue } from "@/lib/utils";
-import { ArrowDown, ArrowUpDown, Loader2, Repeat as Swap } from "lucide-react";
+import { ArrowDown, ArrowUpDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
 interface SwapModalProps {
@@ -103,7 +104,7 @@ export default function SwapModal({
   const conditionsSuccess =
     isValidValue &&
     assetSelector.options[assetSelector.selectedIndex]?.id !==
-      assetSwapSelector.options[assetSwapSelector.selectedIndex]?.id &&
+    assetSwapSelector.options[assetSwapSelector.selectedIndex]?.id &&
     commissionRate &&
     minAmount;
 
@@ -111,7 +112,7 @@ export default function SwapModal({
     <Modal
       open={swapModalOpen}
       onClose={() => setSwapModalOpen(false)}
-      icon={<Swap className="w-5 h-5 text-muted-foreground" />}
+      icon={<SWAP_ICON className="w-5 h-5 text-muted-foreground" />}
       title="Swap"
       actions={() => (
         <Button

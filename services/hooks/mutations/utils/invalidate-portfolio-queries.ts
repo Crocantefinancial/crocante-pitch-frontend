@@ -15,6 +15,7 @@ export async function invalidatePortfolioQueries(userId: string): Promise<void> 
       queryClient.invalidateQueries({
         queryKey: ["conversionPairs", userId],
       }),
+      queryClient.invalidateQueries({ queryKey: ["activity", userId] }),
     ]);
   };
 
