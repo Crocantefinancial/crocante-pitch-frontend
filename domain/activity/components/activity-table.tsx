@@ -3,10 +3,12 @@ import { useActivityData } from "@/domain/activity/hooks/use-activity-data";
 
 interface ActivityTableProps {
   page: number;
+  status: string[];
+  txType: string[];
 }
 
-export default function ActivityTable({ page = 1 }: ActivityTableProps) {
-  const { activityData, isLoading } = useActivityData(page);
+export default function ActivityTable({ page = 1, status = [], txType = [] }: ActivityTableProps) {
+  const { activityData, isLoading } = useActivityData(page, status, txType);
 
   if (isLoading || !activityData) {
     return <Skeleton lines={3} />;
@@ -42,9 +44,9 @@ export default function ActivityTable({ page = 1 }: ActivityTableProps) {
           cells: [
             {
               id: "type",
-              value: tx.type,
+              value: tx.type.charAt(0).toUpperCase() + tx.type.slice(1).toLowerCase(),
               leftIcon: () => tx.opIcon,
-              className: "text-left !font-xs",
+              className: "text-left",
             },
             {
               id: "date",
@@ -63,7 +65,7 @@ export default function ActivityTable({ page = 1 }: ActivityTableProps) {
               className: "text-left",
               leftIcon: () => (
                 <Badge
-                  label={tx.status}
+                  label={tx.status.charAt(0).toUpperCase() + tx.status.slice(1).toLowerCase()}
                   variant={tx.status.toLocaleUpperCase() === "CANCELED" ? "accent" : "primary"}
                 />
               ),

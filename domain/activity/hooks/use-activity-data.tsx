@@ -6,8 +6,6 @@ import { AdminOperationDataSchema, ConvertDataSchema, CryptoOperationDataSchema,
 import { useActivity } from "@/services/hooks/use-activity";
 import { useMemo } from "react";
 
-
-
 export type UIActivityDataType = {
   id: string;
   type: string;
@@ -19,13 +17,15 @@ export type UIActivityDataType = {
   status: string;
 };
 
-export function useActivityData(page: number) {
+export function useActivityData(page: number, status: string[], txType: string[]) {
   const { user } = useSession();
   const userId = user?.id.toString() || "";
 
   const { data: activityData, isLoading: isLoadingActivity } = useActivity(
     userId,
     page,
+    status,
+    txType,
     POLL_ACTIVITY_DATA_INTERVAL
   );
 
@@ -145,7 +145,6 @@ export function useActivityData(page: number) {
           id: instantiatedActivity.operation.id,
           type,
           opIcon,
-          //amount: (Number(instantiatedActivity.grossAmount) + Number(instantiatedActivity.feeAmount)) + " " + instantiatedActivity.currencyId,
           amount: instantiatedActivity.netAmount + " " + instantiatedActivity.currencyId,
           status: instantiatedActivity.operation.status,
           date: formatDate(instantiatedActivity.operation.updatedAt),
