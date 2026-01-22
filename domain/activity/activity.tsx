@@ -8,7 +8,7 @@ export default function Activity() {
     const [txType, setTxType] = useState<string[]>([]);
 
     return (
-        <>
+        <div className="space-y-8 p-8 bg-white">
             <ActivityFilters
                 setPageCallback={setPage}
                 setStatusCallback={setStatus}
@@ -19,6 +19,6 @@ export default function Activity() {
                 status={status}
                 txType={txType}
             />
-        </>
+        </div>
     );
 }

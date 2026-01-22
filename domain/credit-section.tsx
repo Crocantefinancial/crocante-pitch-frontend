@@ -2,7 +2,7 @@ import { CreditCard } from "lucide-react"
 
 export function CreditSection() {
   return (
-    <div className="space-y-8">
+    <div className="space-y-8 p-8">
       <div className="flex items-center gap-3">
         <CreditCard className="w-8 h-8 text-primary" />
         <h2 className="text-2xl font-semibold text-neutral-900">Credit</h2>

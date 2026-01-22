@@ -1,4 +1,5 @@
 import { Button } from "@/components/index";
+import { STAKE_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useLogout } from "@/services/hooks/mutations/use-logout";
@@ -23,9 +24,9 @@ export const MENU_ITEMS = [
   { icon: Building2, label: "Portfolio", id: "portfolio" },
   { icon: Lock, label: "Custody", id: "custody" },
   { icon: Zap, label: "Invest", id: "invest" },
+  { icon: STAKE_ICON, label: "Staking", id: "staking" },
   { icon: CreditCard, label: "Credit", id: "credit" },
   { icon: Shield, label: "Governance", id: "governance" },
-  { icon: BarChart3, label: "Trade", id: "trade" },
   { icon: Activity, label: "Reports", id: "reports" },
   { icon: Cog, label: "Settings", id: "settings" },
   { icon: FileText, label: "RFQ Manager", id: "rfq-manager" },
@@ -53,7 +54,7 @@ export default function NavBar({
         } bg-white border-r border-neutral-200 transition-all duration-300 flex flex-col`}
     >
       {/* Logo */}
-      <div className="px-3 py-4 border-b border-neutral-200 flex items-center justify-center">
+      <div className="px-3 py-4 border-b border-neutral-200 flex items-center justify-center h-[73px]">
         {!isMobile && (
           <Button
             variant="secondary"

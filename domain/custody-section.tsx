@@ -296,7 +296,7 @@ export function CustodySection() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="space-y-6 p-8">
       <div className="flex items-center gap-3 mb-6">
         <Lock className="w-8 h-8 text-slate-700" />
         <h2 className="text-3xl font-semibold text-neutral-900">Custody</h2>
@@ -397,21 +397,19 @@ export function CustodySection() {
               <div className="inline-flex rounded-lg border border-neutral-200 p-1">
                 <button
                   onClick={() => setDistributionView("asset")}
-                  className={`px-3 py-1 rounded text-sm font-normal transition-colors ${
-                    distributionView === "asset"
+                  className={`px-3 py-1 rounded text-sm font-normal transition-colors ${distributionView === "asset"
                       ? "bg-neutral-900 text-white"
                       : "text-neutral-600 hover:text-neutral-900"
-                  }`}
+                    }`}
                 >
                   By Asset
                 </button>
                 <button
                   onClick={() => setDistributionView("provider")}
-                  className={`px-3 py-1 rounded text-sm font-normal transition-colors ${
-                    distributionView === "provider"
+                  className={`px-3 py-1 rounded text-sm font-normal transition-colors ${distributionView === "provider"
                       ? "bg-neutral-900 text-white"
                       : "text-neutral-600 hover:text-neutral-900"
-                  }`}
+                    }`}
                 >
                   By Provider
                 </button>
@@ -535,11 +533,10 @@ export function CustodySection() {
                       </td>
                       <td className="px-4 py-4">
                         <span
-                          className={`text-xs font-normal ${
-                            account.segregation === "Segregated"
+                          className={`text-xs font-normal ${account.segregation === "Segregated"
                               ? "text-emerald-600"
                               : "text-neutral-600"
-                          }`}
+                            }`}
                         >
                           {account.segregation}
                         </span>
@@ -572,18 +569,16 @@ export function CustodySection() {
                       </td>
                       <td className="px-4 py-4">
                         <span
-                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-normal ${
-                            account.status === "Active"
+                          className={`inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-xs font-normal ${account.status === "Active"
                               ? "bg-emerald-50 text-emerald-700"
                               : "bg-amber-50 text-amber-700"
-                          }`}
+                            }`}
                         >
                           <div
-                            className={`w-1.5 h-1.5 rounded-full ${
-                              account.status === "Active"
+                            className={`w-1.5 h-1.5 rounded-full ${account.status === "Active"
                                 ? "bg-emerald-600"
                                 : "bg-amber-600"
-                            }`}
+                              }`}
                           ></div>
                           {account.status}
                         </span>
@@ -730,31 +725,28 @@ export function CustodySection() {
             <div className="flex gap-2 mb-4 border-b border-neutral-200">
               <button
                 onClick={() => setAllowlistTab("addresses")}
-                className={`px-4 py-2 text-sm font-normal transition-colors border-b-2 ${
-                  allowlistTab === "addresses"
+                className={`px-4 py-2 text-sm font-normal transition-colors border-b-2 ${allowlistTab === "addresses"
                     ? "border-primary text-primary"
                     : "border-transparent text-neutral-600 hover:text-neutral-900"
-                }`}
+                  }`}
               >
                 Allowlisted Addresses
               </button>
               <button
                 onClick={() => setAllowlistTab("counterparties")}
-                className={`px-4 py-2 text-sm font-normal transition-colors border-b-2 ${
-                  allowlistTab === "counterparties"
+                className={`px-4 py-2 text-sm font-normal transition-colors border-b-2 ${allowlistTab === "counterparties"
                     ? "border-primary text-primary"
                     : "border-transparent text-neutral-600 hover:text-neutral-900"
-                }`}
+                  }`}
               >
                 Counterparties
               </button>
               <button
                 onClick={() => setAllowlistTab("travel-rule")}
-                className={`px-4 py-2 text-sm font-normal transition-colors border-b-2 ${
-                  allowlistTab === "travel-rule"
+                className={`px-4 py-2 text-sm font-normal transition-colors border-b-2 ${allowlistTab === "travel-rule"
                     ? "border-primary text-primary"
                     : "border-transparent text-neutral-600 hover:text-neutral-900"
-                }`}
+                  }`}
               >
                 Travel Rule
               </button>
@@ -852,11 +844,10 @@ export function CustodySection() {
                       <button
                         key={filter}
                         onClick={() => setAuditFilter(filter.toLowerCase())}
-                        className={`px-3 py-1 text-xs rounded-full transition-colors ${
-                          auditFilter === filter.toLowerCase()
+                        className={`px-3 py-1 text-xs rounded-full transition-colors ${auditFilter === filter.toLowerCase()
                             ? "bg-primary text-white"
                             : "bg-neutral-100 text-neutral-600 hover:bg-neutral-200"
-                        }`}
+                          }`}
                       >
                         {filter}
                       </button>
@@ -914,13 +905,12 @@ export function CustodySection() {
                       </td>
                       <td className="px-4 py-3">
                         <span
-                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-normal ${
-                            event.result === "Success"
+                          className={`inline-flex items-center px-2 py-0.5 rounded-full text-xs font-normal ${event.result === "Success"
                               ? "bg-emerald-50 text-emerald-700"
                               : event.result === "Failed"
-                              ? "bg-red-50 text-red-700"
-                              : "bg-amber-50 text-amber-700"
-                          }`}
+                                ? "bg-red-50 text-red-700"
+                                : "bg-amber-50 text-amber-700"
+                            }`}
                         >
                           {event.result}
                         </span>
@@ -1031,13 +1021,12 @@ export function CustodySection() {
                             {provider.name}
                           </h4>
                           <span
-                            className={`px-2 py-0.5 rounded-full text-[10px] font-normal ${
-                              provider.status === "operational"
+                            className={`px-2 py-0.5 rounded-full text-[10px] font-normal ${provider.status === "operational"
                                 ? "bg-emerald-50 text-emerald-700"
                                 : provider.status === "degraded"
-                                ? "bg-amber-50 text-amber-700"
-                                : "bg-slate-50 text-slate-700"
-                            }`}
+                                  ? "bg-amber-50 text-amber-700"
+                                  : "bg-slate-50 text-slate-700"
+                              }`}
                           >
                             {provider.status}
                           </span>
