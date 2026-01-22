@@ -1,4 +1,5 @@
 import { Button } from "@/components/index";
+import { DEPOSIT_ICON, SEND_ICON, STAKE_ICON, SWAP_ICON } from "@/config/operation-icons";
 import {
   DepositAction,
   SendAction,
@@ -9,13 +10,9 @@ import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useModal } from "@/hooks/use-modal";
 import clsx from "clsx";
 import {
-  ArrowUp,
   ArrowUpDown,
   Eye,
   MenuIcon,
-  Send,
-  DatabaseZap as Staking,
-  Repeat as Swap,
   XIcon,
 } from "lucide-react";
 import { useState } from "react";
@@ -48,25 +45,25 @@ export default function CustomAdditionalHeader() {
     }, */
     {
       label: "Send",
-      icon: <Send className="h-4 w-auto" />,
+      icon: <SEND_ICON className="h-4 w-auto" />,
       onClick: () => setOpenSendModal(true),
       variant: "primary",
     },
     {
       label: "Deposit",
-      icon: <ArrowUp className="h-4 w-auto" />,
+      icon: <DEPOSIT_ICON className="h-4 w-auto" />,
       onClick: () => setOpenDepositModal(true),
       variant: "primary",
     },
     {
       label: "Swap",
-      icon: <Swap className="h-4 w-auto" />,
+      icon: <SWAP_ICON className="h-4 w-auto" />,
       onClick: () => setOpenSwapModal(true),
       variant: "primary",
     },
     {
       label: "Staking",
-      icon: <Staking className="h-4 w-auto" />,
+      icon: <STAKE_ICON className="h-4 w-auto" />,
       onClick: () => setOpenStakingModal(true),
       variant: "primary",
     },
