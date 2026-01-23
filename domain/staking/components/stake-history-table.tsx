@@ -24,18 +24,23 @@ export default function StakeHistoryTable() {
         isLoading={isLoading || !stakingData}
         tableHeaders={[
           {
-            id: "typeHeader",
-            label: "Type",
-            className: "text-left",
-          },
-          {
             id: "dateHeader",
             label: "Date",
             className: "text-left",
           },
           {
+            id: "tokenHeader",
+            label: "Token",
+            className: "text-left",
+          },
+          {
             id: "amountHeader",
             label: "Amount",
+            className: "text-left",
+          },
+          {
+            id: "durationHeader",
+            label: "Duration",
             className: "text-left",
           },
           {
@@ -49,21 +54,26 @@ export default function StakeHistoryTable() {
             id: tx.id,
             cells: [
               {
-                id: "type",
-                value: tx.type.charAt(0).toUpperCase() + tx.type.slice(1).toLowerCase(),
-                leftIcon: () => tx.opIcon,
-                className: "text-left",
-              },
-              {
                 id: "date",
                 value: tx.date,
                 subtitle: tx.subDate,
                 className: "text-center",
               },
               {
+                id: "token",
+                value: tx.token,
+                subtitle: tx.subAmount,
+                className: "text-center",
+              },
+              {
                 id: "amount",
                 value: tx.amount,
                 subtitle: tx.subAmount,
+                className: "text-center",
+              },
+              {
+                id: "duration",
+                value: tx.duration.charAt(0).toUpperCase() + tx.duration.slice(1).toLowerCase(),
                 className: "text-center",
               },
               {
