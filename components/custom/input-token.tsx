@@ -36,8 +36,8 @@ export default function InputToken({
         {label}
       </label>
       <div className="flex items-center gap-1">
-        <div className="w-full flex flex-row justify-between gap-1">
-          <div className="relative w-1/2">
+        <div className="w-full flex flex-row justify-between gap-1 flex-wrap">
+          <div className="flex-1 relative w-1/2 min-w-[240px]">
             <Input
               type="text"
               placeholder={placeholder}
@@ -53,7 +53,7 @@ export default function InputToken({
               USD
             </div>
           </div>
-          <div className="relative w-1/2">
+          <div className="flex-1 relative w-1/2 min-w-[240px]">
             <Input
               type="text"
               value={value}
@@ -95,21 +95,6 @@ export default function InputToken({
           )}
         </div>
       )}
-      {/* <div className="flex items-center gap-1 -mt-4">
-        <Button
-          variant="outline"
-          className="text-xs mt-1.5"
-          onClick={onMaxClick}
-        >
-          Max
-        </Button>
-        <p
-          className="text-xs text-muted-foreground mt-1.5 cursor-pointer"
-          onClick={onMaxClick}
-        >
-          {maxValue} {tokenCode}
-        </p>
-      </div> */}
     </div>
   );
 }
