@@ -56,83 +56,87 @@ export default function AssetAllocation() {
   }
 
   return (
-    <div
-      ref={containerRef}
-      className="bg-background rounded-lg p-6 flex flex-col overflow-visible"
-    >
-      <h4 className="text-sm font-normal text-muted-foreground mb-4 uppercase">
-        Asset Allocation
-      </h4>
+    <div className="space-y-4">
+      <div className="sticky top-6 space-y-4">
+        <div
+          ref={containerRef}
+          className="bg-background rounded-lg p-6 flex flex-col overflow-visible"
+        >
+          <h4 className="text-sm font-normal text-muted-foreground mb-4 uppercase">
+            Asset Allocation
+          </h4>
 
-      <div className="w-full flex justify-center overflow-visible">
-        <ResponsiveContainer width="100%" height={chartSize.height}>
-          <PieChart>
-            <Pie
-              data={assetAllocationData}
-              dataKey="value"
-              nameKey="name"
-              cx="50%"
-              cy="50%"
-              innerRadius={chartSize.innerRadius}
-              outerRadius={chartSize.outerRadius}
-              paddingAngle={2}
-              stroke="none"
-              onMouseEnter={(_, index) => setHoveredSegment(index)}
-              onMouseLeave={() => setHoveredSegment(null)}
-            >
-              {assetAllocationData.map((entry, index) => (
-                <Cell
-                  key={`segment-${entry.name}`}
-                  className={clsx(
-                    `portfolio-segment-${index}`,
-                    "cursor-pointer"
-                  )}
-                  fill={entry.color}
-                  opacity={
-                    hoveredSegment === null || hoveredSegment === index
-                      ? 1
-                      : 0.7
-                  }
+          <div className="w-full flex justify-center overflow-visible">
+            <ResponsiveContainer width="100%" height={chartSize.height}>
+              <PieChart>
+                <Pie
+                  data={assetAllocationData}
+                  dataKey="value"
+                  nameKey="name"
+                  cx="50%"
+                  cy="50%"
+                  innerRadius={chartSize.innerRadius}
+                  outerRadius={chartSize.outerRadius}
+                  paddingAngle={2}
+                  stroke="none"
+                  onMouseEnter={(_, index) => setHoveredSegment(index)}
+                  onMouseLeave={() => setHoveredSegment(null)}
+                >
+                  {assetAllocationData.map((entry, index) => (
+                    <Cell
+                      key={`segment-${entry.name}`}
+                      className={clsx(
+                        `portfolio-segment-${index}`,
+                        "cursor-pointer"
+                      )}
+                      fill={entry.color}
+                      opacity={
+                        hoveredSegment === null || hoveredSegment === index
+                          ? 1
+                          : 0.7
+                      }
+                    />
+                  ))}
+                </Pie>
+
+                <Tooltip
+                  contentStyle={{
+                    backgroundColor: "white",
+                    border: "1px solid #e5e7eb",
+                    borderRadius: "8px",
+                    fontSize: "12px",
+                  }}
+                  formatter={(value: number, name: string) => [`${value}%`, name]}
                 />
-              ))}
-            </Pie>
-
-            <Tooltip
-              contentStyle={{
-                backgroundColor: "white",
-                border: "1px solid #e5e7eb",
-                borderRadius: "8px",
-                fontSize: "12px",
-              }}
-              formatter={(value: number, name: string) => [`${value}%`, name]}
-            />
-          </PieChart>
-        </ResponsiveContainer>
-      </div>
-
-      {/* Legend */}
-      <div className="mt-6 space-y-2.5">
-        {assetAllocationData.map((item, index) => (
-          <div
-            key={item.name}
-            className="flex items-center justify-between cursor-pointer hover:bg-muted/5 p-2 rounded transition-colors"
-            onMouseEnter={() => setHoveredSegment(index)}
-            onMouseLeave={() => setHoveredSegment(null)}
-          >
-            <div className="flex items-center gap-2">
-              <div
-                className="w-3 h-3 rounded-full"
-                style={{ backgroundColor: item.color }}
-              />
-              <span className="text-sm text-muted-foreground">
-                {item.name} {item.value}%
-              </span>
-            </div>
-            <span className="text-xs text-muted-foreground">
-              {formatCurrency(item.amount)}
-            </span>
+              </PieChart>
+            </ResponsiveContainer>
           </div>
-        ))}
+
+          {/* Legend */}
+          <div className="mt-6 space-y-2.5">
+            {assetAllocationData.map((item, index) => (
+              <div
+                key={item.name}
+                className="flex items-center justify-between cursor-pointer hover:bg-muted/5 p-2 rounded transition-colors"
+                onMouseEnter={() => setHoveredSegment(index)}
+                onMouseLeave={() => setHoveredSegment(null)}
+              >
+                <div className="flex items-center gap-2">
+                  <div
+                    className="w-3 h-3 rounded-full"
+                    style={{ backgroundColor: item.color }}
+                  />
+                  <span className="text-sm text-muted-foreground">
+                    {item.name} {item.value}%
+                  </span>
+                </div>
+                <span className="text-xs text-muted-foreground">
+                  {formatCurrency(item.amount)}
+                </span>
+              </div>
+            ))}
+          </div>
+        </div>
       </div>
     </div>
   );
