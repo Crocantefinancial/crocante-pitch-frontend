@@ -1,3 +1,5 @@
+import TableFilters, { TableFiltersProps } from "@/components/core/table-filters";
+import { Skeleton } from "@/components/index";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import clsx from "clsx";
 import { ChevronLeft, ChevronRight } from "lucide-react";
@@ -27,9 +29,11 @@ interface TableRow {
 interface TableProps {
   tableHeaders: TableHeader[];
   rows: TableRow[];
+  filters?: TableFiltersProps;
+  isLoading?: boolean;
 }
 
-export default function Table({ tableHeaders, rows }: TableProps) {
+export default function Table({ tableHeaders, rows, filters, isLoading }: TableProps) {
   const isMobile = useIsMobile();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
@@ -92,6 +96,7 @@ export default function Table({ tableHeaders, rows }: TableProps) {
 
   return (
     <div className="relative bg-background rounded-lg overflow-hidden">
+      {filters && <TableFilters {...filters} />}
       {isMobile && canScrollLeft && (
         <button
           onClick={() => scrollColumns("left")}
@@ -134,50 +139,57 @@ export default function Table({ tableHeaders, rows }: TableProps) {
             </tr>
           </thead>
           <tbody>
-            {rows.map((row) => (
-              <tr
-                key={row.id}
-                className="hover:bg-muted/5 transition-colors cursor-pointer"
-                onClick={row.onClick}
-              >
-                {row.cells.map((cell) => (
-                  <td
-                    key={cell.id}
-                    className={clsx(
-                      "px-4 py-3 text-sm font-normal",
-                      cell.className
-                    )}
-                  >
-                    <div
+            {isLoading ? (
+              <tr>
+                <td colSpan={tableHeaders.length} className="text-center py-4">
+                  <Skeleton lines={3} />
+                </td>
+              </tr>
+            ) : (
+              rows.map((row) => (
+                <tr
+                  key={row.id}
+                  className="hover:bg-muted/5 transition-colors cursor-pointer"
+                  onClick={row.onClick}
+                >
+                  {row.cells.map((cell) => (
+                    <td
+                      key={cell.id}
                       className={clsx(
-                        "flex items-center gap-3",
-                        cell.className?.includes("text-right") && "justify-end"
+                        "px-4 py-3 text-sm font-normal",
+                        cell.className
                       )}
                     >
-                      {cell.leftIcon && cell.leftIcon()}
-                      <div className="flex flex-col">
-                        <p
-                          className={clsx(
-                            "text-sm font-normal",
-                            cell.className?.includes("text-xs") && "text-xs",
-                            cell.highlight
-                              ? "text-accent"
-                              : "text-muted-foreground"
-                          )}
-                        >
-                          {cell.value}
-                        </p>
-                        {cell.subtitle && (
-                          <p className="text-xs text-muted-foreground">
-                            {cell.subtitle}
-                          </p>
+                      <div
+                        className={clsx(
+                          "flex items-center gap-3",
+                          cell.className?.includes("text-right") && "justify-end"
                         )}
+                      >
+                        {cell.leftIcon && cell.leftIcon()}
+                        <div className="flex flex-col">
+                          <p
+                            className={clsx(
+                              "text-sm font-normal",
+                              cell.className?.includes("text-xs") && "text-xs",
+                              cell.highlight
+                                ? "text-accent"
+                                : "text-muted-foreground"
+                            )}
+                          >
+                            {cell.value}
+                          </p>
+                          {cell.subtitle && (
+                            <p className="text-xs text-muted-foreground">
+                              {cell.subtitle}
+                            </p>
+                          )}
+                        </div>
                       </div>
-                    </div>
-                  </td>
-                ))}
-              </tr>
-            ))}
+                    </td>
+                  ))}
+                </tr>
+              )))}
           </tbody>
         </table>
       </div>

@@ -18,6 +18,9 @@ const env = {
   EP_CONVERSION: process.env.NEXT_PUBLIC_EP_CONVERSION,
   EP_STAKING_TYPE: process.env.NEXT_PUBLIC_EP_STAKING_TYPE,
   EP_STAKING: process.env.NEXT_PUBLIC_EP_STAKING,
+  EP_STAKING_REDEEM: process.env.NEXT_PUBLIC_EP_STAKING_REDEEM,
+  EP_STAKING_ACTIVE: process.env.NEXT_PUBLIC_EP_STAKING_ACTIVE,
+  EP_STAKING_REDEEMED: process.env.NEXT_PUBLIC_EP_STAKING_REDEEMED,
   EP_ACTIVITY: process.env.NEXT_PUBLIC_EP_ACTIVITY,
 };
 
@@ -50,6 +53,9 @@ const envSchema = z
     EP_CONVERSION: z.string(),
     EP_STAKING_TYPE: z.string(),
     EP_STAKING: z.string(),
+    EP_STAKING_REDEEM: z.string(),
+    EP_STAKING_ACTIVE: z.string(),
+    EP_STAKING_REDEEMED: z.string(),
     EP_ACTIVITY: z.string(),
   })
   .required();

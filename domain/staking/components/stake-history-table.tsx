@@ -1,29 +1,27 @@
 import { Badge, Modal, Select, Table } from "@/components/index";
-import { useActivityData } from "@/domain/activity/hooks/use-activity-data";
-import { useActivityFilters } from "@/domain/activity/hooks/use-activity-filters";
+import { useStakeHistoryData } from "@/domain/staking/hooks/use-stake-history-data";
+import { useStakeHistoryFilters } from "@/domain/staking/hooks/use-stake-history-filters";
 import { useState } from "react";
 
-export default function ActivityTable() {
+export default function StakeHistoryTable() {
   const [pageLocal, setPageLocal] = useState(1);
   const {
     page,
     status,
-    txType,
     activeFilters,
     filtersClassName,
     filtersModalOpen,
     openFiltersModal,
     closeFiltersModal,
-    txTypeSelector,
     statusSelector
-  } = useActivityFilters({ page: pageLocal });
+  } = useStakeHistoryFilters({ page: pageLocal });
 
-  const { activityData, isLoading } = useActivityData(page, status, txType);
+  const { stakingData, isLoading } = useStakeHistoryData(page, status);
 
   return (
     <>
       <Table
-        isLoading={isLoading || !activityData}
+        isLoading={isLoading || !stakingData}
         tableHeaders={[
           {
             id: "typeHeader",
@@ -46,7 +44,7 @@ export default function ActivityTable() {
             className: "text-left",
           }
         ]}
-        rows={activityData.map((tx) => (
+        rows={stakingData.map((tx) => (
           {
             id: tx.id,
             cells: [
@@ -94,10 +92,6 @@ export default function ActivityTable() {
         title="Filters"
       >
         <div className="flex flex-col gap-2">
-          <Select
-            label="Transaction Type"
-            properties={txTypeSelector}
-          />
           <Select
             label="Status"
             properties={statusSelector}
