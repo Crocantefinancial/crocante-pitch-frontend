@@ -6,6 +6,7 @@ import { StakeComponent } from "@/domain/staking";
 import { useSelector } from "@/hooks/use-selector";
 import { usePostStaking } from "@/services/hooks/mutations/use-post-staking";
 import { useEffect, useState } from "react";
+import StakeHistoryTable from "./components/stake-history-table";
 
 export default function Stake() {
   const postStaking = usePostStaking();
@@ -100,25 +101,28 @@ export default function Stake() {
   if (!tokens) return null;
 
   return (
-    <StakeComponent
-      isLoading={isLoadingStakeData}
-      isStaking={postStaking.isPending}
-      handleStake={handleStake}
-      stakeData={stakeData || []}
-      value={value}
-      valueUSD={valueUSD}
-      setValue={setValue}
-      setValueUSD={setValueUSD}
-      assetSelector={{
-        selectedIndex: selectedAssetIndex,
-        onChange: changeAssetSelection,
-        options: tokensOptions,
-      }}
-      stakingTypeSelector={{
-        selectedIndex: selectedStakingTypeIndex,
-        onChange: changeStakingTypeSelection,
-        options: stakingTypeOptions,
-      }}
-    />
+    <div className="flex flex-col gap-8">
+      <StakeComponent
+        isLoading={isLoadingStakeData}
+        isStaking={postStaking.isPending}
+        handleStake={handleStake}
+        stakeData={stakeData || []}
+        value={value}
+        valueUSD={valueUSD}
+        setValue={setValue}
+        setValueUSD={setValueUSD}
+        assetSelector={{
+          selectedIndex: selectedAssetIndex,
+          onChange: changeAssetSelection,
+          options: tokensOptions,
+        }}
+        stakingTypeSelector={{
+          selectedIndex: selectedStakingTypeIndex,
+          onChange: changeStakingTypeSelection,
+          options: stakingTypeOptions,
+        }}
+      />
+      <StakeHistoryTable />
+    </div>
   );
 }
