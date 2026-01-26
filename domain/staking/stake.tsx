@@ -1,3 +1,5 @@
+import { ToastType } from "@/components/core/toast";
+import { useToast } from "@/context/toast-provider";
 import {
   TokenType,
 } from "@/domain/portfolio/hooks/use-portfolio-data";
@@ -10,6 +12,7 @@ import StakeHistoryTable from "./components/stake-history-table";
 
 export default function Stake() {
   const postStaking = usePostStaking();
+  const { showToast } = useToast();
   const [selectedToken, setSelectedToken] = useState("");
 
   const {
@@ -78,12 +81,11 @@ export default function Stake() {
       { userId, typeId, amount },
       {
         onSuccess: (data) => {
-          console.log("POST STAKING SUCCESS", data);
-          //TODO: toast success
+          showToast("Stake successful", ToastType.SUCCESS);
         },
         onError: (err) => {
           console.error("POST STAKING ERROR", err);
-          //TODO: toast error
+          showToast("Stake failed", ToastType.ERROR);
         },
         onSettled: () => {
           resetAssetSelector();
