@@ -8,6 +8,7 @@ import { queryClient } from "@/services/react-query/query-client";
 import { QueryClientProvider } from "@tanstack/react-query";
 import * as React from "react";
 import { SessionProvider } from "./session-provider";
+import { ToastProvider } from "./toast-provider";
 
 function ProvidersInner({ children }: { children: React.ReactNode }) {
   const mounted = useMounted();
@@ -24,7 +25,11 @@ function ProvidersInner({ children }: { children: React.ReactNode }) {
         onOpen={openAuthModalAction}
         isOpen={isOpenAuthModal}
       />
-      <SessionProvider>{children}</SessionProvider>
+      <SessionProvider>
+        <ToastProvider>
+          {children}
+        </ToastProvider>
+      </SessionProvider>
 
       {mounted && (
         <AuthModal

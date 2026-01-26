@@ -1,4 +1,5 @@
-import { Badge, Button, Label, Modal, Select, Table } from "@/components/index";
+import { Badge, Button, Label, Modal, Select, Table, ToastType } from "@/components/index";
+import { useToast } from "@/context/toast-provider";
 import { UIStakeHistoryDataType, useStakeHistoryData } from "@/domain/staking/hooks/use-stake-history-data";
 import { useStakeHistoryFilters } from "@/domain/staking/hooks/use-stake-history-filters";
 import { useModal } from "@/hooks/use-modal";
@@ -21,6 +22,7 @@ export default function StakeHistoryTable() {
   } = useStakeHistoryFilters({ page: pageLocal });
 
   const { stakingData, isLoading, userId } = useStakeHistoryData(page, status);
+  const { showToast } = useToast();
   const [redeemId, setRedeemId] = useState("");
   const [selectedRedeemData, setSelectedRedeemData] = useState<UIStakeHistoryDataType | null>(null);
   const [isRedeemable, setIsRedeemable] = useState(false);
@@ -47,12 +49,11 @@ export default function StakeHistoryTable() {
   const finalizeRedeem = () => {
     postStakingRedeem.mutate({ userId: userId, opId: redeemId }, {
       onSuccess: (data) => {
-        console.log("POST STAKING REDEEM SUCCESS", data);
-        //TODO: toast success
+        showToast("Redeem successful", ToastType.SUCCESS);
       },
       onError: (err) => {
         console.error("POST STAKING REDEEM ERROR", err);
-        //TODO: toast error
+        showToast("Redeem failed", ToastType.ERROR);
       },
       onSettled: () => {
         setRedeemId("");

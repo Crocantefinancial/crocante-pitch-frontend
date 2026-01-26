@@ -16,6 +16,7 @@ export { default as Select } from "./core/select";
 export { default as Skeleton } from "./core/skeleton";
 export { default as Table } from "./core/table";
 export { default as Tabs } from "./core/tabs";
+export { default as Toast, ToastType } from "./core/toast";
 export { default as Tooltip } from "./core/tooltip";
 
 // Custom Components

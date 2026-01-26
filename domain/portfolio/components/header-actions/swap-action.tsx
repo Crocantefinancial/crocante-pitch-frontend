@@ -1,3 +1,5 @@
+import { ToastType } from "@/components/core/toast";
+import { useToast } from "@/context/toast-provider";
 import { SwapModal } from "@/domain/portfolio/components";
 import { TokenType } from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useSwapData } from "@/domain/portfolio/hooks/use-swap-data";
@@ -12,6 +14,7 @@ interface SwapActionProps {
 }
 export default function SwapAction({ open, setOpen }: SwapActionProps) {
   const postConversion = usePostConversion();
+  const { showToast } = useToast();
   const [selectedTokenFrom, setSelectedTokenFrom] = useState("");
   const {
     tokensFrom,
@@ -95,12 +98,11 @@ export default function SwapAction({ open, setOpen }: SwapActionProps) {
       { userId, tokenFrom, tokenTo, amount },
       {
         onSuccess: (data) => {
-          console.log("POST CONVERSION SUCCESS", data);
-          //TODO: toast success
+          showToast("Swap successful", ToastType.SUCCESS);
         },
         onError: (err) => {
           console.error("POST CONVERSION ERROR", err);
-          //TODO: toast error
+          showToast("Swap failed", ToastType.ERROR);
         },
         onSettled: () => {
           closeSwapModal();

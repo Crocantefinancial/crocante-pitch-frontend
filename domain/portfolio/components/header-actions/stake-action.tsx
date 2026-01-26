@@ -1,3 +1,5 @@
+import { ToastType } from "@/components/core/toast";
+import { useToast } from "@/context/toast-provider";
 import { StakeModal } from "@/domain/portfolio/components";
 import {
   TokenType,
@@ -14,6 +16,7 @@ interface StakeActionProps {
 }
 export default function StakeAction({ open, setOpen }: StakeActionProps) {
   const postStaking = usePostStaking();
+  const { showToast } = useToast();
   const [selectedToken, setSelectedToken] = useState("");
 
   const {
@@ -97,12 +100,11 @@ export default function StakeAction({ open, setOpen }: StakeActionProps) {
       { userId, typeId, amount },
       {
         onSuccess: (data) => {
-          console.log("POST STAKING SUCCESS", data);
-          //TODO: toast success
+          showToast("Stake successful", ToastType.SUCCESS);
         },
         onError: (err) => {
           console.error("POST STAKING ERROR", err);
-          //TODO: toast error
+          showToast("Stake failed", ToastType.ERROR);
         },
         onSettled: () => {
           closeStakeModal();
