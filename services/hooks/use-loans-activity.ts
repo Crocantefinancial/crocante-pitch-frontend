@@ -5,40 +5,40 @@ import { useSessionMode } from "@/hooks/use-session-mode";
 import { getValidated } from "@/services/zod/utils";
 import { useQuery } from "@tanstack/react-query";
 import {
-  StakingData,
-  StakingDataResponse,
-  StakingDataResponseSchema,
-  getFormattedStakingData,
-  getMockedStakingData,
-} from "./types/staking-data";
+  getFormattedLoanData,
+  getMockedLoanData,
+  LoanData,
+  LoanDataResponse,
+  loanDataResponseSchema,
+} from "./types/loans-activity-data";
 
-export function useStaking(
+export function useLoansActivity(
   userId: string,
   page: number,
   status: string,
   pollIntervalMs: number,
   fallbackToMockOnNonAuthError = true
 ) {
-  const { EP_STAKING_ACTIVE, EP_STAKING_REDEEMED } = envParsed();
+  const { EP_LOAN_ACTIVE, EP_LOAN_COMPLETED } = envParsed();
   const { sessionMode } = useSessionMode();
-  return useQuery<StakingData>({
-    queryKey: ["staking", userId, page, status],
+  return useQuery<LoanData>({
+    queryKey: ["loans-activity", userId, page, status],
     queryFn: async () => {
       if (sessionMode === "mock") {
-        return getMockedStakingData();
+        return getMockedLoanData();
       }
       try {
-        let url = status === "Active" ? `${EP_STAKING_ACTIVE}` : `${EP_STAKING_REDEEMED}`;
+        let url = status === "Active" ? `${EP_LOAN_ACTIVE}` : `${EP_LOAN_COMPLETED}`;
         url += `?page=${page}&size=10`;
 
-        const stakingDataResponse = await getValidated<StakingDataResponse>(
+        const loanDataResponse = await getValidated<LoanDataResponse>(
           url,
-          StakingDataResponseSchema
+          loanDataResponseSchema
         );
-        return getFormattedStakingData(stakingDataResponse);
+        return getFormattedLoanData(loanDataResponse);
       } catch (error) {
-        console.warn("Error fetching staking data:", error);
-        return getMockedStakingData();
+        console.warn("Error fetching loans activity data:", error);
+        return getMockedLoanData();
       }
     },
     enabled: !!userId,
