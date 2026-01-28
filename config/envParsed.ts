@@ -22,6 +22,12 @@ const env = {
   EP_STAKING_ACTIVE: process.env.NEXT_PUBLIC_EP_STAKING_ACTIVE,
   EP_STAKING_REDEEMED: process.env.NEXT_PUBLIC_EP_STAKING_REDEEMED,
   EP_ACTIVITY: process.env.NEXT_PUBLIC_EP_ACTIVITY,
+  EP_LOAN_ACTIVE: process.env.NEXT_PUBLIC_EP_LOAN_ACTIVE,
+  EP_LOAN_COMPLETED: process.env.NEXT_PUBLIC_EP_LOAN_COMPLETED,
+  EP_STATEMENT_LIABILITY: process.env.NEXT_PUBLIC_EP_STATEMENT_LIABILITY,
+  EP_LOAN: process.env.NEXT_PUBLIC_EP_LOAN,
+  EP_LOAN_HISTORY_EVENTS: process.env.NEXT_PUBLIC_EP_LOAN_HISTORY_EVENTS,
+  EP_LOAN_TYPE: process.env.NEXT_PUBLIC_EP_LOAN_TYPE,
 };
 
 const envSchema = z
@@ -57,6 +63,12 @@ const envSchema = z
     EP_STAKING_ACTIVE: z.string(),
     EP_STAKING_REDEEMED: z.string(),
     EP_ACTIVITY: z.string(),
+    EP_LOAN_ACTIVE: z.string(),
+    EP_LOAN_COMPLETED: z.string(),
+    EP_STATEMENT_LIABILITY: z.string(),
+    EP_LOAN: z.string(),
+    EP_LOAN_HISTORY_EVENTS: z.string(),
+    EP_LOAN_TYPE: z.string(),
   })
   .required();
 

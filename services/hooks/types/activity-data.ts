@@ -32,8 +32,8 @@ export const CurrencySchema = z.object({
 });
 
 export const TiersSchema = z.object({
-  minRatio: z.string(),
-  minPrice: z.string(),
+  minRatio: z.string().optional(),
+  minPrice: z.string().optional(),
   apr: z.string(),
 });
 

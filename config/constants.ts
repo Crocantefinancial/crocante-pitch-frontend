@@ -9,3 +9,6 @@ export const POLL_AVAILABLES_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_STAKING_TYPE_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_ACTIVITY_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_STAKING_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
+export const POLL_LOANS_ACTIVITY_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
+export const POLL_LIABILITY_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
+export const POLL_LOANS_TYPE_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
