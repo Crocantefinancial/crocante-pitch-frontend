@@ -45,8 +45,8 @@ export default function LoanComponent({
     {} as Record<string, string>
   );
 
-  const parsedMaxValue = parseValue(loanSelectedData.rawMaxValue);
-  const parsedMinValue = parseValue(loanSelectedData.rawMinValue);
+  const maxPossibleLoan = parseValue(loanSelectedData.maxPossibleLoan);
+  const parsedMinValue = parseValue(loanSelectedData.minLoanValue);
 
   const { user } = useSession();
   const userId = user?.id.toString() || "";
@@ -55,7 +55,6 @@ export default function LoanComponent({
     convertTo,
     conversionRateFrom: conversionRate,
   } = useTokenSwap(userId, loanSelectedData.tokenLabel, loanSelectedData.collateralLabel, isLoading);
-
 
   const handleChangeValue = (tokenValue: string) => {
     setValue(tokenValue);
@@ -76,7 +75,7 @@ export default function LoanComponent({
   const { isValid: isValidValue } = useValueVerifier({
     value,
     min: Number(parsedMinValue),
-    max: Number(parsedMaxValue),
+    max: Number(maxPossibleLoan),
     requireNonZero: true,
   });
 
@@ -113,7 +112,8 @@ export default function LoanComponent({
           <div className="w-1/2 mt-4 mb-2 mx-auto">
             <Label
               className={itemsClassName}
-              label="Origination Cost:" secondaryLabel={`${formatToMaxDefinition(originationCost)} ${loanSelectedData.tokenLabel}`}
+              label="Origination Cost:"
+              secondaryLabel={`${formatToMaxDefinition(originationCost)} ${loanSelectedData.tokenLabel}`}
             />
             <Label
               className={itemsClassName}
@@ -122,11 +122,13 @@ export default function LoanComponent({
             />
             <Label
               className={itemsClassName}
-              label="Loan Total Cost:" secondaryLabel={`${formatToMaxDefinition(loanSelectedData.loanTotalCost)} ${loanSelectedData.tokenLabel}`}
+              label="Loan Total Cost:"
+              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.loanTotalCost)} ${loanSelectedData.tokenLabel}`}
             />
             <Label
               className={itemsClassName}
-              label="Collateral:" secondaryLabel={`${Number(collateralValue)} ${loanSelectedData.collateralLabel}`}
+              label="Collateral:"
+              secondaryLabel={`${Number(collateralValue)} ${loanSelectedData.collateralLabel}`}
             />
             <Label
               className={itemsClassName}
@@ -156,9 +158,9 @@ export default function LoanComponent({
             label="Quantity"
             value={value}
             onChangeValue={(e) => handleChangeValue(e.target.value)}
-            maxValue={loanSelectedData.rawMaxValue}
-            minValue={loanSelectedData.rawMinValue}
-            onMaxClick={() => handleChangeValue(parsedMaxValue)}
+            maxValue={loanSelectedData.maxPossibleLoan}
+            minValue={loanSelectedData.minLoanValue}
+            onMaxClick={() => handleChangeValue(maxPossibleLoan)}
             onMinClick={() => handleChangeValue(parsedMinValue)}
             tokenCode={loanSelectedData.tokenLabel}
             selectorProps={assetSelector}

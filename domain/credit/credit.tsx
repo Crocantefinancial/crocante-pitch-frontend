@@ -57,19 +57,15 @@ export default function Credit() {
         })
     );
 
-    /* const LoanTypeValues = loanTypeOptions.reduce(
-        (acc, option) => {
-            acc[option.id] = option.label;
-            return acc;
-        },
-        {} as Record<string, string>
-    ); */
-
     const {
         selectedRow: selectedCollateral,
         selectedIndex: selectedCollateralIndex,
-        change: changeCollateralSelection
-    } = useSelector<TokenType>(collaterals || {}, 0);
+        change: changeCollateralSelection,
+        reset: resetCollateralSelector,
+    } = useSelector<TokenType>(collaterals || {}, 0, {
+        onReset: handleResetValues,
+        onChange: handleResetValues,
+    });
 
     const {
         selectedRow: selectedAsset,
@@ -83,6 +79,7 @@ export default function Credit() {
 
     useEffect(() => {
         resetAssetSelector();
+        resetCollateralSelector();
     }, []);
 
     const { loanSelectedData, isLoadingLoanSelectedData } = useLoanSelectedData(
@@ -174,7 +171,7 @@ export default function Credit() {
                     onChange: changeLoanTypeSelection,
                     options: loanTypeOptions as SelectOption[],
                 }}
-                loanSelectedData={loanSelectedData as LoanSelectedData}
+                loanSelectedData={loanSelectedData}
             />
             <LoanHistoryTable />
         </div>
