@@ -100,17 +100,15 @@ export function useLoanData(selectedToken: string, selectedCollateral: string) {
 
     const { loanData, LoanTypeValues, isLoadingLoanData } = useMemo(() => {
         if (!loanTypeData) {
-            return { loanData: [], LoanTypeValues: { "": "" }, isLoadingLoanData: false };
+            return { loanData: null, LoanTypeValues: { "": "" }, isLoadingLoanData: false };
         }
         const loanData = loanTypeData.find(loanType => loanType.sizeId === selectedToken && loanType.collatId === selectedCollateral);
         if (!loanData) {
-            return { loanData: [], LoanTypeValues: { "": "" }, isLoadingLoanData: false };
+            return { loanData: null, LoanTypeValues: { "": "" }, isLoadingLoanData: false };
         }
         const LoanTypeValues: Record<string, string> = loanData.models.
-            sort((a, b) => Number(a.ratio) - Number(b.ratio)).reverse().
-            reduce((acc, item, index) => {
-                //acc[item.ratio] = (Number(item.ratio) * 100).toString() + "% ratio/" + (Number(item.apr) * 100).toString() + "% apy";
-                acc[item.ratio] = `Risk Level ${index + 1}`;
+            reduce((acc, _, index) => {
+                acc[index] = `Risk Level ${index + 1}`;
                 return acc;
             }, {} as Record<string, string>);
         return { loanData, LoanTypeValues, isLoadingLoanData: isLoadingLoanType };

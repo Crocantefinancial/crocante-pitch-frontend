@@ -5,7 +5,7 @@ interface InputSelectorTokenProps {
   value: string;
   placeholder?: string;
   onMaxClick?: () => void;
-  onChangeValue: (e: React.ChangeEvent<HTMLInputElement>) => void;
+  onChangeValue?: (e: React.ChangeEvent<HTMLInputElement>) => void;
   maxValue?: string;
   minValue?: string;
   onMinClick?: () => void;
@@ -13,6 +13,7 @@ interface InputSelectorTokenProps {
   selectorProps: SelectorProps;
   onFocus?: () => void;
   onBlur?: () => void;
+  disabled?: boolean;
 }
 export default function InputSelectorToken({
   label,
@@ -27,6 +28,7 @@ export default function InputSelectorToken({
   selectorProps,
   onFocus,
   onBlur,
+  disabled,
 }: InputSelectorTokenProps) {
   return (
     <div>
@@ -45,6 +47,7 @@ export default function InputSelectorToken({
               noBottomSpace={true}
               onFocus={onFocus}
               onBlur={onBlur}
+              noEdit={disabled}
             />
             <div className="absolute right-1 -mt-7 -translate-y-1/2 text-sm font-normal text-foreground flex items-center">
               <Select

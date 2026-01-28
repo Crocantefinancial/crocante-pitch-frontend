@@ -29,7 +29,7 @@ export default function LoanHistoryTable() {
   //const postLoan = usePostLoan();
 
   const isCompleteableFunction = (data: UILoanHistoryDataType) => {
-    return data.closedAt === null;
+    return data.closedAt === "" || data.closedAt === null;
   }
   useEffect(() => {
     if (loanId) {
@@ -165,7 +165,7 @@ export default function LoanHistoryTable() {
         onClose={closeLoanModal}
         title="Loan Complete"
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 px-6">
           <Label
             label="Invested Amount"
             secondaryLabel={selectedLoanData?.amount || ""}
@@ -178,33 +178,28 @@ export default function LoanHistoryTable() {
             label="Ratio"
             secondaryLabel={selectedLoanData?.ratio || ""}
           />
-          {selectedLoanData?.closedAt && <Label
-            label="Closed At"
-            secondaryLabel={formatDate(selectedLoanData?.closedAt || "")}
-          />
-          }
           <Label
             label="Opened At"
-            secondaryLabel={formatDate(selectedLoanData?.date || "")}
+            secondaryLabel={selectedLoanData?.date || ""}
           />
           {selectedLoanData?.closedAt && <Label
             label="Closed At"
-            secondaryLabel={formatDate(selectedLoanData?.closedAt || "")}
+            secondaryLabel={selectedLoanData?.closedAt || ""}
           />
           }
           <Label
             label="Origination Fee"
             secondaryLabel={selectedLoanData?.origFee || ""}
           />
-          <Button
-            variant="primary"
-            className="w-full justify-center mt-4"
-            onClick={finalizeLoanComplete}
-            disabled={!selectedLoanData || !isCompleteable}
-          >
-            Complete
-          </Button>
         </div>
+        <Button
+          variant="primary"
+          className="w-full justify-center mt-4"
+          onClick={finalizeLoanComplete}
+          disabled={!selectedLoanData || !isCompleteable}
+        >
+          Complete
+        </Button>
       </Modal>
     </>
   );

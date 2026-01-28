@@ -1,24 +1,26 @@
 import { SelectorProps } from "@/components/core/select";
-import { Button, InputToken, Label, Select, Tabs } from "@/components/index";
+import { Button, InputSelectorToken, Label, Tabs } from "@/components/index";
 import { useSession } from "@/context/session-provider";
-import { useTokenConversion } from "@/hooks/use-token-conversion";
+import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { formatToMaxDefinition, parseValue } from "@/lib/utils";
 import { LoanTypeData } from "@/services/hooks/types/loan-type-data";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
+import { LoanSelectedData } from "../hooks/use-loan-selected-data";
 
 interface LoanComponentProps {
   isLoading: boolean;
   isLoan: boolean;
   loanData: LoanTypeData;
   value: string;
-  valueUSD: string;
+  collateralValue: string;
+  setCollateralValue: (value: string) => void;
   setValue: (value: string) => void;
-  setValueUSD: (value: string) => void;
   handleLoan: (userId: string, typeId: string) => void;
   assetSelector: SelectorProps;
   collateralSelector: SelectorProps;
   loanTypeSelector: SelectorProps;
+  loanSelectedData: LoanSelectedData;
 }
 
 export default function LoanComponent({
@@ -26,13 +28,14 @@ export default function LoanComponent({
   isLoan,
   loanData,
   value,
-  valueUSD,
+  collateralValue,
+  setCollateralValue,
   setValue,
-  setValueUSD,
   handleLoan,
   assetSelector,
   collateralSelector,
   loanTypeSelector,
+  loanSelectedData,
 }: LoanComponentProps) {
   const TabValues = loanTypeSelector.options.reduce(
     (acc, option) => {
@@ -41,58 +44,34 @@ export default function LoanComponent({
     },
     {} as Record<string, string>
   );
-  const selectedRow =
-    loanTypeSelector.options[loanTypeSelector.selectedIndex]?.label || "";
-  const selectedRowKey = Object.keys(TabValues).find(key => TabValues[key] === selectedRow);
-  const item = loanData?.models?.find(item => item.ratio === selectedRowKey);
-  const tokenLabel =
-    assetSelector.options[assetSelector.selectedIndex]?.label || "";
-  const rawMaxValue =
-    assetSelector.options[assetSelector.selectedIndex]?.value || "0";
-  const rawMinValue = loanData?.minSize ?? "0";
 
-  const parsedMaxValue = parseValue(rawMaxValue);
-  const parsedMinValue = parseValue(rawMinValue);
+  const parsedMaxValue = parseValue(loanSelectedData.rawMaxValue);
+  const parsedMinValue = parseValue(loanSelectedData.rawMinValue);
 
   const { user } = useSession();
   const userId = user?.id.toString() || "";
 
-  const [convertedInputFocused, setConvertedInputFocused] = useState(false);
+  const {
+    convertTo,
+    conversionRateFrom: conversionRate,
+  } = useTokenSwap(userId, loanSelectedData.tokenLabel, loanSelectedData.collateralLabel, isLoading);
 
-  const { convertToUSD, convertFromUSD, conversionRate } = useTokenConversion(
-    userId,
-    tokenLabel
-  );
-
-  const handleChangeUSD = (usdValue: string) => {
-    setValueUSD(usdValue);
-    if (usdValue) {
-      const convertedValue = convertFromUSD(usdValue);
-      setValue(convertedValue);
-    } else {
-      setValue("0");
-    }
-  };
 
   const handleChangeValue = (tokenValue: string) => {
     setValue(tokenValue);
     if (tokenValue) {
-      const convertedUSD = convertToUSD(tokenValue);
-      setValueUSD(convertedUSD);
+      const convertedValue = convertTo((loanSelectedData.loanTotalCost).toString());
+      setCollateralValue(convertedValue);
     } else {
-      setValueUSD("0");
+      setCollateralValue("0");
     }
   };
 
   useEffect(() => {
     if (conversionRate) {
-      if (convertedInputFocused) {
-        setValue(convertFromUSD(valueUSD));
-      } else {
-        setValueUSD(convertToUSD(value));
-      }
+      setCollateralValue(convertTo(loanSelectedData.loanTotalCost.toString()));
     }
-  }, [conversionRate]);
+  }, [conversionRate, loanSelectedData.loanTotalCost]);
 
   const { isValid: isValidValue } = useValueVerifier({
     value,
@@ -103,22 +82,68 @@ export default function LoanComponent({
 
   const conditionsSuccess =
     isValidValue &&
-    selectedRowKey !== undefined &&
-    assetSelector.options[assetSelector.selectedIndex]?.id !== undefined;
+    loanSelectedData.selectedRowKey !== "" &&
+    loanSelectedData.tokenLabel !== "" &&
+    loanSelectedData.collateralLabel !== "";
 
   const renderLoanData = () => {
-    if (!item) return null;
+    if (!loanSelectedData.item) return null;
     const itemsClassName = "mb-1 text-primary text-sm"
+    const originationCost = loanSelectedData.originationFeeRate * Number(value);
     return (
-      <div className="w-1/2 mt-4 mb-2 mx-auto">
-        <Label
-          className={itemsClassName}
-          label="APY:"
-          secondaryLabel={`${formatToMaxDefinition(Number(item.apr) * 100)}% yearly`}
-        />
-        <Label
-          className={itemsClassName}
-          label="Overcollateralization:" secondaryLabel={`${formatToMaxDefinition(Number(item.ratio) * 100)}%`} />
+      <div className="flex flex-col gap-2">
+        <div className="bg-background rounded-lg overflow-hidden">
+          <div className="w-1/2 mt-4 mb-2 mx-auto">
+            <Label
+              className={itemsClassName}
+              label="APY:"
+              secondaryLabel={`${formatToMaxDefinition(Number(loanSelectedData.item.apr) * 100)}% yearly`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Overcollateralization:" secondaryLabel={`${formatToMaxDefinition(loanSelectedData.overcollateralizationRate * 100)}%`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Origination Fee:" secondaryLabel={`${formatToMaxDefinition(loanSelectedData.originationFeeRate * 100)}%`}
+            />
+          </div>
+        </div>
+        <div className="bg-background rounded-lg overflow-hidden">
+          <div className="w-1/2 mt-4 mb-2 mx-auto">
+            <Label
+              className={itemsClassName}
+              label="Origination Cost:" secondaryLabel={`${formatToMaxDefinition(originationCost)} ${loanSelectedData.tokenLabel}`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Overcollateralization:"
+              secondaryLabel={`${formatToMaxDefinition((loanSelectedData.overcollateralizationRate * (Number(value) + originationCost)) - (Number(value)))} ${loanSelectedData.tokenLabel}`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Loan Total Cost:" secondaryLabel={`${formatToMaxDefinition(loanSelectedData.loanTotalCost)} ${loanSelectedData.tokenLabel}`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Collateral:" secondaryLabel={`${Number(collateralValue)} ${loanSelectedData.collateralLabel}`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Liquidation Price:"
+              secondaryLabel={`${formatToMaxDefinition(
+                loanSelectedData.liqThreshold * (Number(value) + originationCost) / Number(collateralValue)
+              )} ${loanSelectedData.tokenLabel}/${loanSelectedData.collateralLabel}`}
+            />
+            <Label
+              className={itemsClassName}
+              label="Daily Cost:"
+              secondaryLabel={`${formatToMaxDefinition(
+                (Number(loanSelectedData.item.apr) * (Number(value) + originationCost) / 365)
+              )} ${loanSelectedData.tokenLabel}`}
+            />
+          </div>
+        </div>
       </div>
     );
   };
@@ -127,25 +152,23 @@ export default function LoanComponent({
     <div className="space-y-4">
       <div className="flex flex-wrap gap-8">
         <div className="flex flex-col flex-1 min-w-[240px] gap-8">
-          {/* Asset Field */}
-          <Select className="w-full" label="Asset" properties={assetSelector} />
-          <Select className="w-full" label="Collateral" properties={collateralSelector} />
-
-          {/* Quantity Field */}
-          <InputToken
+          <InputSelectorToken
             label="Quantity"
-            placeholder={`Equivalent`}
             value={value}
-            valueUSD={valueUSD}
+            onChangeValue={(e) => handleChangeValue(e.target.value)}
+            maxValue={loanSelectedData.rawMaxValue}
+            minValue={loanSelectedData.rawMinValue}
             onMaxClick={() => handleChangeValue(parsedMaxValue)}
             onMinClick={() => handleChangeValue(parsedMinValue)}
-            onChangeUSD={(e) => handleChangeUSD(e.target.value)}
-            onChangeValue={(e) => handleChangeValue(e.target.value)}
-            maxValue={rawMaxValue}
-            minValue={rawMinValue}
-            tokenCode={tokenLabel}
-            tokenIcon={assetSelector.options[assetSelector.selectedIndex]?.icon}
-            handleFocus={setConvertedInputFocused}
+            tokenCode={loanSelectedData.tokenLabel}
+            selectorProps={assetSelector}
+          />
+          <InputSelectorToken
+            label="Collateral"
+            value={collateralValue}
+            tokenCode={loanSelectedData.collateralLabel}
+            selectorProps={collateralSelector}
+            disabled={true}
           />
         </div>
         <div className="flex flex-col flex-1 min-w-[240px]">
@@ -155,7 +178,7 @@ export default function LoanComponent({
               <div className="flex items-end justify-between mb-1 gap-2">
                 <Tabs
                   TabValues={TabValues}
-                  selectedRow={selectedRow}
+                  selectedRow={loanSelectedData.selectedRow}
                   onChange={(selectedRow) =>
                     loanTypeSelector.onChange?.(
                       {
@@ -166,11 +189,8 @@ export default function LoanComponent({
                 />
               </div>
 
-
               {/* Loan Data */}
-              <div className="bg-background rounded-lg overflow-hidden">
-                {renderLoanData()}
-              </div>
+              {renderLoanData()}
             </div>
           )}
         </div>
@@ -179,7 +199,7 @@ export default function LoanComponent({
         variant="primary"
         className="w-full justify-center mt-8 min-w-[240px]"
         onClick={() => {
-          handleLoan(userId, selectedRowKey!);
+          handleLoan(userId, loanSelectedData.selectedRowKey);
         }}
         disabled={!conditionsSuccess || isLoan}
       >

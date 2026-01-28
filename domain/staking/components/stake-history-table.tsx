@@ -184,7 +184,7 @@ export default function StakeHistoryTable() {
         onClose={closeRedeemModal}
         title="Redeem"
       >
-        <div className="flex flex-col gap-2">
+        <div className="flex flex-col gap-2 px-6">
           <Label
             label="Invested Amount"
             secondaryLabel={selectedRedeemData?.amount || ""}
@@ -224,15 +224,15 @@ export default function StakeHistoryTable() {
             label={selectedRedeemData?.status === "Redeemed" ? "Redeemed Amount" : "Redeemable Amount"}
             secondaryLabel={selectedRedeemData?.redeemableAmount || ""}
           />
-          <Button
-            variant="primary"
-            className="w-full justify-center mt-4"
-            onClick={finalizeRedeem}
-            disabled={!selectedRedeemData || !isRedeemable}
-          >
-            Redeem
-          </Button>
         </div>
+        <Button
+          variant="primary"
+          className="w-full justify-center mt-4"
+          onClick={finalizeRedeem}
+          disabled={!selectedRedeemData || !isRedeemable}
+        >
+          Redeem
+        </Button>
       </Modal>
     </>
   );

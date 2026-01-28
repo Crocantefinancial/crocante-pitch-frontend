@@ -11,13 +11,15 @@ import { SelectOption } from "@/components/core/select";
 import { LoanTypeData } from "@/services/hooks/types/loan-type-data";
 import { useEffect, useState } from "react";
 import LoanHistoryTable from "./components/loan-history-table";
+import { LoanSelectedData, useLoanSelectedData } from "./hooks/use-loan-selected-data";
 
 export default function Credit() {
     //const postLoan = usePostLoan();
     const { showToast } = useToast();
     const [selectedOpId, setSelectedOpId] = useState("");
     const [selectedCollateralId, setSelectedCollateralId] = useState("");
-
+    const [selectedLoan, setSelectedLoan] = useState("");
+    const [selectedRow, setSelectedRow] = useState("");
     const {
         tokens,
         tokensOptions,
@@ -28,15 +30,12 @@ export default function Credit() {
         isLoading: isLoadingLoanData,
     } = useLoanData(selectedOpId, selectedCollateralId);
 
-    console.log(loanData);
-    console.log(LoanTypeValues);
-
     const [value, setValue] = useState("");
-    const [valueUSD, setValueUSD] = useState("");
+    const [collateralValue, setCollateralValue] = useState("");
 
     const handleResetValues = () => {
         setValue("");
-        setValueUSD("");
+        setCollateralValue("");
     };
 
     type LoanTypeType = (typeof LoanTypeValues)[keyof typeof LoanTypeValues];
@@ -58,6 +57,14 @@ export default function Credit() {
         })
     );
 
+    /* const LoanTypeValues = loanTypeOptions.reduce(
+        (acc, option) => {
+            acc[option.id] = option.label;
+            return acc;
+        },
+        {} as Record<string, string>
+    ); */
+
     const {
         selectedRow: selectedCollateral,
         selectedIndex: selectedCollateralIndex,
@@ -74,10 +81,19 @@ export default function Credit() {
         onChange: handleResetValues,
     });
 
-
     useEffect(() => {
         resetAssetSelector();
     }, []);
+
+    const { loanSelectedData, isLoadingLoanSelectedData } = useLoanSelectedData(
+        loanData!,
+        LoanTypeValues,
+        selectedLoan,
+        selectedRow,
+        value,
+        tokensOptions[selectedAssetIndex],
+        collateralOptions[selectedCollateralIndex]
+    );
 
     const handleLoan = (userId: string, typeId: string) => {
         const amount = value?.trim();
@@ -122,20 +138,27 @@ export default function Credit() {
         }
     }, [selectedCollateral]);
 
-    if (!tokens) return null;
+    useEffect(() => {
+        if (selectedLoanType) {
+            setSelectedLoan(selectedLoanType);
+            setSelectedRow(loanTypeOptions[selectedLoanTypeIndex]?.label || "");
+        }
+    }, [selectedLoanType]);
+
+    if (!tokens || !loanData) return null;
 
     return (
         <div className="flex flex-col gap-8">
             <LoanComponent
-                isLoading={isLoadingLoanData}
+                isLoading={isLoadingLoanData || isLoadingLoanSelectedData}
                 //isLoan={postLoan.isPending}
                 isLoan={false}
                 handleLoan={handleLoan}
-                loanData={loanData as LoanTypeData}
+                loanData={loanData}
                 value={value}
-                valueUSD={valueUSD}
+                collateralValue={collateralValue}
                 setValue={setValue}
-                setValueUSD={setValueUSD}
+                setCollateralValue={setCollateralValue}
                 assetSelector={{
                     selectedIndex: selectedAssetIndex,
                     onChange: changeAssetSelection,
@@ -151,6 +174,7 @@ export default function Credit() {
                     onChange: changeLoanTypeSelection,
                     options: loanTypeOptions as SelectOption[],
                 }}
+                loanSelectedData={loanSelectedData as LoanSelectedData}
             />
             <LoanHistoryTable />
         </div>

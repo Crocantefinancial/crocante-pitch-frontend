@@ -61,7 +61,7 @@ const Input = forwardRef<HTMLInputElement, InputProps>(function Input(
   const inputClassName = clsx({
     "!border-invalid": validation === "invalid",
     "!border-success": validation === "success",
-    "!bg-disabled !border-secondary !text-neutral": noEdit, // noEdit is disabled input forced to default styles
+    "!bg-secondary/50 !border-secondary/50 !text-neutral": noEdit, // noEdit is disabled input forced to default styles
     "!pl-10": leftIcon,
     "!pr-10": isPassword && !validation && !max,
     "!pr-20": isPassword && (validation || max),

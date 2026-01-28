@@ -48,6 +48,7 @@ export function useLoanHistoryData(page: number, status: string) {
     return loanData.map((loan) => {
       const date = formatDate(loan.operation.openedAt);
       const time = formatTime(loan.operation.openedAt);
+      const dateClosed = loan.operation.closedAt ? formatDate(loan.operation.closedAt) : "";
 
       if (LoanOperationDataSchema.safeParse(loan).success) {
         return {
@@ -60,7 +61,7 @@ export function useLoanHistoryData(page: number, status: string) {
           status: loan.lastUpdate.status === "REPAYED" ?
             loan.lastUpdate.type === "REPAY" ? "Completed" : "Liquidated" :
             loan.operation.status,
-          closedAt: loan.operation.closedAt,
+          closedAt: dateClosed,
           ratio: loan.ratio,
           liqPrice: loan.liqPrice,
           apr: loan.apr,
