@@ -1,9 +1,8 @@
 import { Badge, Button, Label, Modal, Select, Table, ToastType } from "@/components/index";
 import { useToast } from "@/context/toast-provider";
 import { UILoanHistoryDataType, useLoanHistoryData } from "@/domain/credit/hooks/use-loan-history-data";
-import { useLoanHistoryFilters } from "@/domain/credit/hooks/use-loan-history-filters";
+import { FILTER_STATUS, useLoanHistoryFilters } from "@/domain/credit/hooks/use-loan-history-filters";
 import { useModal } from "@/hooks/use-modal";
-import { formatDate } from "@/lib/utils";
 //import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 import { useEffect, useState } from "react";
 
@@ -69,8 +68,8 @@ export default function LoanHistoryTable() {
     close: closeLoanModal,
   } = useModal(false);
 
-  return (
-    <>
+  const renderCompleteTable = () => {
+    return (
       <Table
         isLoading={isLoading || !loanData}
         tableHeaders={[
@@ -80,8 +79,8 @@ export default function LoanHistoryTable() {
             className: "text-left",
           },
           {
-            id: "tokenHeader",
-            label: "Token",
+            id: "closedAtHeader",
+            label: "Closed At",
             className: "text-left",
           },
           {
@@ -90,8 +89,8 @@ export default function LoanHistoryTable() {
             className: "text-left",
           },
           {
-            id: "durationHeader",
-            label: "Duration",
+            id: "yieldHeader",
+            label: "Yield",
             className: "text-left",
           },
           {
@@ -108,24 +107,21 @@ export default function LoanHistoryTable() {
               {
                 id: "date",
                 value: tx.date,
-                subtitle: tx.subDate,
                 className: "text-center",
               },
               {
-                id: "token",
-                value: tx.token,
-                subtitle: tx.subAmount,
+                id: "closedAt",
+                value: tx.closedAt,
                 className: "text-center",
               },
               {
                 id: "amount",
                 value: tx.amount,
-                subtitle: tx.subAmount,
                 className: "text-center",
               },
               {
-                id: "ratio",
-                value: tx.ratio,
+                id: "yield",
+                value: tx.interest,
                 className: "text-center",
               },
               {
@@ -148,6 +144,103 @@ export default function LoanHistoryTable() {
           openFiltersModal: openFiltersModal,
         }}
       />
+    )
+  }
+
+  const renderActiveTable = () => {
+    return (
+      <Table
+        isLoading={isLoading || !loanData}
+        tableHeaders={[
+          {
+            id: "dateHeader",
+            label: "Date",
+            className: "text-left",
+          },
+          {
+            id: "debtHeader",
+            label: "Debt",
+            className: "text-left",
+          },
+          {
+            id: "aprHeader",
+            label: "APR",
+            className: "text-left",
+          },
+          {
+            id: "overcollateralizationHeader",
+            label: "Overcollateralization",
+            className: "text-left",
+          },
+          {
+            id: "liqPriceHeader",
+            label: "Liquidation Price",
+            className: "text-left",
+          },
+          {
+            id: "statusHeader",
+            label: "Status",
+            className: "text-left",
+          },
+        ]}
+        rows={loanData.map((tx) => (
+          {
+            id: tx.opId,
+            onClick: () => handleLoanComplete(tx.opId),
+            cells: [
+              {
+                id: "date",
+                value: tx.date,
+                subtitle: tx.subDate,
+                className: "text-center",
+              },
+              {
+                id: "debt",
+                value: tx.debt,
+                className: "text-center",
+              },
+              {
+                id: "apr",
+                value: tx.apr,
+                className: "text-center",
+              },
+              {
+                id: "overcollateralization",
+                value: tx.overcollateralization,
+                className: "text-center",
+              },
+              {
+                id: "liqPrice",
+                value: tx.liqPrice,
+                className: "text-center",
+              },
+              {
+                id: "status",
+                className: "text-left",
+                leftIcon: () => (
+                  <Badge
+                    label={tx.status.charAt(0).toUpperCase() + tx.status.slice(1).toLowerCase()}
+                    variant={tx.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
+                  />
+                ),
+              },
+            ],
+          }))}
+        filters={{
+          page: page,
+          setPage: setPageLocal,
+          filtersClassName: filtersClassName,
+          activeFilters: activeFilters,
+          openFiltersModal: openFiltersModal,
+        }}
+      />
+    );
+  }
+
+  return (
+    <>
+      {activeFilters === FILTER_STATUS.COMPLETED ? renderCompleteTable() : renderActiveTable()}
+
       <Modal
         open={filtersModalOpen}
         onClose={closeFiltersModal}
@@ -172,12 +265,19 @@ export default function LoanHistoryTable() {
           />
           <Label
             label="APY"
-            secondaryLabel={Number(selectedLoanData?.apr) * 100 + "%" || ""}
+            secondaryLabel={selectedLoanData?.apr || ""}
           />
-          <Label
-            label="Ratio"
-            secondaryLabel={selectedLoanData?.ratio || ""}
-          />
+          {selectedLoanData?.closedAt ?
+            <Label
+              label="Yield"
+              secondaryLabel={selectedLoanData?.interest || ""}
+            />
+            :
+            <Label
+              label="Overcollateralization"
+              secondaryLabel={selectedLoanData?.overcollateralization || ""}
+            />
+          }
           <Label
             label="Opened At"
             secondaryLabel={selectedLoanData?.date || ""}
