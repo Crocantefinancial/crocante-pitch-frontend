@@ -1,9 +1,9 @@
 import { SelectOption } from "@/components/core/select";
-import { POLL_PORTFOLIO_DATA_INTERVAL } from "@/config/constants";
+import { POLL_AVAILABLES_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { useTokenSwap } from "@/hooks/use-token-swap";
 import { LoanTypeData } from "@/services/hooks/types/loan-type-data";
-import { usePortfolio } from "@/services/hooks/use-portfolio";
+import { useAvailableToken } from "@/services/hooks/use-available-token";
 import { useMemo } from "react";
 
 export interface LoanSelectedData {
@@ -20,6 +20,11 @@ export interface LoanSelectedData {
     maxLoanValue: string;
     maxPossibleLoan: string;
     liqThreshold: number;
+    originationCost: number;
+    overcollateralizationCost: number;
+    liquidationPrice: number;
+    dailyCost: number;
+    modelId: string;
 }
 
 export function useLoanSelectedData(
@@ -28,6 +33,7 @@ export function useLoanSelectedData(
     selectedLoan: string,
     selectedRow: string,
     value: string,
+    collateralValue: string,
     assetSelector: SelectOption,
     collateralSelector: SelectOption
 ) {
@@ -38,23 +44,21 @@ export function useLoanSelectedData(
         isLoading: isLoadingTokenSwap,
     } = useTokenSwap(userId, assetSelector?.label, collateralSelector?.label, false);
 
-    const { data: portfolioData, isLoading: isLoadingPortfolio } = usePortfolio(
+    const { data: availableTokenData, isLoading: isLoadingAvailableToken } = useAvailableToken(
         userId,
-        POLL_PORTFOLIO_DATA_INTERVAL
+        collateralSelector?.label,
+        POLL_AVAILABLES_INTERVAL
     );
     const { minLoanValue, maxLoanValue, availableCollateral } = useMemo(() => {
-        if (!portfolioData || !collateralSelector || !loanData) {
+        if (!availableTokenData || !collateralSelector || !loanData) {
             return { minLoanValue: "0", maxLoanValue: "0", availableCollateral: "0" };
         }
-        const availableCollateral = portfolioData.cryptocurrenciesData.
-            find(currency => currency.code === collateralSelector.label)?.available || "0";
-
         return {
             minLoanValue: loanData?.minSize || "0",
             maxLoanValue: loanData?.maxSize || "0",
-            availableCollateral,
+            availableCollateral: availableTokenData.amount,
         };
-    }, [portfolioData, loanData, collateralSelector]);
+    }, [availableTokenData, loanData, collateralSelector]);
 
     const { loanSelectedData, isLoadingLoanSelectedData } = useMemo(() => {
         if (!loanData || !selectedLoan) {
@@ -74,6 +78,11 @@ export function useLoanSelectedData(
                     maxLoanValue: "0",
                     maxPossibleLoan: "0",
                     liqThreshold: 0,
+                    originationCost: 0,
+                    overcollateralizationCost: 0,
+                    liquidationPrice: 0,
+                    dailyCost: 0,
+                    modelId: "",
                 },
                 isLoadingLoanSelectedData: false
             };
@@ -99,6 +108,12 @@ export function useLoanSelectedData(
         const collateralLabel =
             collateralSelector.label || "";
         const liqThreshold = Number(loanData?.liqRatio || 0);
+
+        const originationCost = originationFeeRate * Number(value);
+        const overcollateralizationCost = (overcollateralizationRate * (Number(value) + originationCost)) - (Number(value));
+        const liquidationPrice = liqThreshold * (Number(value) + originationCost) / Number(collateralValue);
+        const dailyCost = (Number(item!.apr) * (Number(value) + originationCost) / 365);
+
         const loanSelectedData = {
             selectedLoan,
             selectedRow,
@@ -113,6 +128,11 @@ export function useLoanSelectedData(
             maxLoanValue,
             maxPossibleLoan,
             liqThreshold,
+            originationCost,
+            overcollateralizationCost,
+            liquidationPrice,
+            dailyCost,
+            modelId: loanData.id,
         };
         return { loanSelectedData, isLoadingLoanSelectedData: false };
     }, [
@@ -120,6 +140,7 @@ export function useLoanSelectedData(
         selectedLoan,
         selectedRow,
         value,
+        collateralValue,
         assetSelector,
         collateralSelector,
         LoanTypeValues,
@@ -132,6 +153,6 @@ export function useLoanSelectedData(
 
     return {
         loanSelectedData,
-        isLoadingLoanSelectedData: isLoadingPortfolio || isLoadingLoanSelectedData || isLoadingTokenSwap,
+        isLoadingLoanSelectedData: isLoadingAvailableToken || isLoadingLoanSelectedData || isLoadingTokenSwap,
     };
 }

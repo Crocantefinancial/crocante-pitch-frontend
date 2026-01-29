@@ -6,10 +6,14 @@ import { useState } from "react";
 interface UseStakeHistoryFiltersProps {
     page: number;
 }
+export enum FILTER_STATUS {
+    ACTIVE = "Active",
+    REDEEMED = "Redeemed",
+}
 export function useStakeHistoryFilters({ page }: UseStakeHistoryFiltersProps) {
     const statusOptions: Array<SelectOption> = [
-        { id: "Active", label: "Active", value: "Active" },
-        { id: "Redeemed", label: "Redeemed", value: "Redeemed" },
+        { id: FILTER_STATUS.ACTIVE, label: "Active", value: FILTER_STATUS.ACTIVE },
+        { id: FILTER_STATUS.REDEEMED, label: "Redeemed", value: FILTER_STATUS.REDEEMED },
     ];
     const statusOptionsRecord = statusOptions.reduce(
         (acc, option) => {
@@ -19,11 +23,11 @@ export function useStakeHistoryFilters({ page }: UseStakeHistoryFiltersProps) {
         {} as Record<string, SelectOption>
     );
 
-    const [status, setStatus] = useState<string[]>(["Active"]);
+    const [status, setStatus] = useState<string[]>([FILTER_STATUS.ACTIVE]);
     const [changeFilters, setChangeFilters] = useState<{ op: SelectOption, index: number }>({ op: statusOptions[0], index: 0 });
 
     const handleSetFilters = (filters: string[][]) => {
-        setStatus(filters[0] || ["Active"]);
+        setStatus(filters[0] || [FILTER_STATUS.ACTIVE]);
     }
 
     const resetSelectors = () => {

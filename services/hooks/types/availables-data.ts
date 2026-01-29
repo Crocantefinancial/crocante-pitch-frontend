@@ -2,16 +2,18 @@ import { AVAILABLES } from "@/shared/mockups/availables";
 import { z } from "zod";
 import { CurrencySchema } from "./net-worth-data";
 
+export const AvailableTokenDataSchema = z.object({
+  currency: CurrencySchema,
+  quoteCurrency: CurrencySchema,
+  amount: z.string(),
+  estPrice: z.string(),
+  estValue: z.string(),
+});
+
+export type AvailableTokenData = z.infer<typeof AvailableTokenDataSchema>;
+
 export const AvailablesDataSchema = z.object({
-  availables: z.array(
-    z.object({
-      currency: CurrencySchema,
-      quoteCurrency: CurrencySchema,
-      amount: z.string(),
-      estPrice: z.string(),
-      estValue: z.string(),
-    })
-  ),
+  availables: z.array(AvailableTokenDataSchema),
 });
 
 export type AvailablesData = z.infer<typeof AvailablesDataSchema>;

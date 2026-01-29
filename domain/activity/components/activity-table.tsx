@@ -1,6 +1,6 @@
 import { Badge, Modal, Select, Table } from "@/components/index";
 import { useActivityData } from "@/domain/activity/hooks/use-activity-data";
-import { useActivityFilters } from "@/domain/activity/hooks/use-activity-filters";
+import { FILTER_STATUS, useActivityFilters } from "@/domain/activity/hooks/use-activity-filters";
 import { useState } from "react";
 
 export default function ActivityTable() {
@@ -74,7 +74,7 @@ export default function ActivityTable() {
                 leftIcon: () => (
                   <Badge
                     label={tx.status.charAt(0).toUpperCase() + tx.status.slice(1).toLowerCase()}
-                    variant={tx.status.toLocaleUpperCase() === "CANCELED" ? "accent" : "primary"}
+                    variant={tx.status.toLocaleUpperCase() === FILTER_STATUS.CANCELED.toUpperCase() ? "accent" : "primary"}
                   />
                 ),
               },
