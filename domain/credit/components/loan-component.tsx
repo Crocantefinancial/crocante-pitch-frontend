@@ -10,7 +10,8 @@ import { LoanSelectedData } from "../hooks/use-loan-selected-data";
 
 interface LoanComponentProps {
   isLoading: boolean;
-  isLoan: boolean;
+  isSessionModeMock: boolean;
+  isLoanPending: boolean;
   loanData: LoanTypeData;
   value: string;
   collateralValue: string;
@@ -25,7 +26,8 @@ interface LoanComponentProps {
 
 export default function LoanComponent({
   isLoading,
-  isLoan,
+  isSessionModeMock,
+  isLoanPending,
   loanData,
   value,
   collateralValue,
@@ -80,6 +82,7 @@ export default function LoanComponent({
   });
 
   const conditionsSuccess =
+    !isSessionModeMock &&
     isValidValue &&
     loanSelectedData.selectedRowKey !== "" &&
     loanSelectedData.tokenLabel !== "" &&
@@ -200,7 +203,7 @@ export default function LoanComponent({
         variant="primary"
         className="w-full justify-center mt-8 min-w-[240px]"
         onClick={() => handleLoan(userId, loanSelectedData.overcollateralizationRate.toString(), value, loanSelectedData.modelId)}
-        disabled={!conditionsSuccess || isLoan}
+        disabled={!conditionsSuccess || isLoanPending}
       >
         Loan
       </Button>

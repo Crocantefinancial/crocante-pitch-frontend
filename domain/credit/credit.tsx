@@ -7,6 +7,7 @@ import {
     TokenType,
 } from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useSelector } from "@/hooks/use-selector";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { formatToMaxDefinition } from "@/lib/utils";
 import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 import { useEffect, useState } from "react";
@@ -29,7 +30,7 @@ export default function Credit() {
         LoanTypeValues,
         isLoading: isLoadingLoanData,
     } = useLoanData(selectedOpId, selectedCollateralId);
-
+    const { sessionMode } = useSessionMode();
     const [value, setValue] = useState("");
     const [collateralValue, setCollateralValue] = useState("");
 
@@ -148,8 +149,8 @@ export default function Credit() {
         <div className="flex flex-col gap-8">
             <LoanComponent
                 isLoading={isLoadingLoanData || isLoadingLoanSelectedData}
-                //isLoan={postLoan.isPending}
-                isLoan={false}
+                isSessionModeMock={sessionMode === "mock"}
+                isLoanPending={postLoan.isPending}
                 handleLoan={handleLoan}
                 loanData={loanData}
                 value={value}
