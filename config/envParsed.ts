@@ -28,6 +28,8 @@ const env = {
   EP_LOAN: process.env.NEXT_PUBLIC_EP_LOAN,
   EP_LOAN_HISTORY_EVENTS: process.env.NEXT_PUBLIC_EP_LOAN_HISTORY_EVENTS,
   EP_LOAN_TYPE: process.env.NEXT_PUBLIC_EP_LOAN_TYPE,
+  EP_STATEMENT_AVAILABLE_TOKEN: process.env.NEXT_PUBLIC_EP_STATEMENT_AVAILABLE_TOKEN,
+  EP_LOAN_POST: process.env.NEXT_PUBLIC_EP_LOAN_POST,
 };
 
 const envSchema = z
@@ -69,6 +71,8 @@ const envSchema = z
     EP_LOAN: z.string(),
     EP_LOAN_HISTORY_EVENTS: z.string(),
     EP_LOAN_TYPE: z.string(),
+    EP_STATEMENT_AVAILABLE_TOKEN: z.string(),
+    EP_LOAN_POST: z.string(),
   })
   .required();
 

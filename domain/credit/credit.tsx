@@ -1,3 +1,4 @@
+import { SelectOption } from "@/components/core/select";
 import { ToastType } from "@/components/core/toast";
 import { useToast } from "@/context/toast-provider";
 import { LoanComponent } from "@/domain/credit";
@@ -6,15 +7,14 @@ import {
     TokenType,
 } from "@/domain/portfolio/hooks/use-portfolio-data";
 import { useSelector } from "@/hooks/use-selector";
-//import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
-import { SelectOption } from "@/components/core/select";
-import { LoanTypeData } from "@/services/hooks/types/loan-type-data";
+import { formatToMaxDefinition } from "@/lib/utils";
+import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 import { useEffect, useState } from "react";
 import LoanHistoryTable from "./components/loan-history-table";
-import { LoanSelectedData, useLoanSelectedData } from "./hooks/use-loan-selected-data";
+import { useLoanSelectedData } from "./hooks/use-loan-selected-data";
 
 export default function Credit() {
-    //const postLoan = usePostLoan();
+    const postLoan = usePostLoan();
     const { showToast } = useToast();
     const [selectedOpId, setSelectedOpId] = useState("");
     const [selectedCollateralId, setSelectedCollateralId] = useState("");
@@ -88,29 +88,29 @@ export default function Credit() {
         selectedLoan,
         selectedRow,
         value,
+        collateralValue,
         tokensOptions[selectedAssetIndex],
         collateralOptions[selectedCollateralIndex]
     );
 
-    const handleLoan = (userId: string, typeId: string) => {
-        const amount = value?.trim();
-
-        if (!userId || !typeId || !amount) {
+    const handleLoan = (userId: string, ratio: string, size: string, typeId: string) => {
+        if (!userId || !ratio || !size || !typeId) {
             console.warn("Loan blocked: missing inputs", {
                 userId,
+                ratio,
+                size,
                 typeId,
-                amount,
             });
             return;
         }
-
-        showToast("Loan not implemented", ToastType.ERROR);
-
-        /* postLoan.mutate(
-            { userId, typeId, amount },
+        postLoan.mutate(
+            { userId, ratio, size, typeId },
             {
                 onSuccess: (data) => {
-                    showToast("Loan successful", ToastType.SUCCESS);
+                    showToast(
+                        `Loan successful. Liquidation price: ${formatToMaxDefinition(Number(data.liqPrice))} ${data.sizeCurrencyId}/${data.collatCurrencyId}`,
+                        ToastType.SUCCESS
+                    );
                 },
                 onError: (err) => {
                     console.error("POST LOAN ERROR", err);
@@ -120,7 +120,7 @@ export default function Credit() {
                     resetAssetSelector();
                 },
             }
-        ); */
+        );
     };
 
     useEffect(() => {

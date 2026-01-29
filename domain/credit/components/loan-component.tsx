@@ -16,7 +16,7 @@ interface LoanComponentProps {
   collateralValue: string;
   setCollateralValue: (value: string) => void;
   setValue: (value: string) => void;
-  handleLoan: (userId: string, typeId: string) => void;
+  handleLoan: (userId: string, ratio: string, size: string, typeId: string) => void;
   assetSelector: SelectorProps;
   collateralSelector: SelectorProps;
   loanTypeSelector: SelectorProps;
@@ -88,7 +88,7 @@ export default function LoanComponent({
   const renderLoanData = () => {
     if (!loanSelectedData.item) return null;
     const itemsClassName = "mb-1 text-primary text-sm"
-    const originationCost = loanSelectedData.originationFeeRate * Number(value);
+
     return (
       <div className="flex flex-col gap-2">
         <div className="bg-background rounded-lg overflow-hidden">
@@ -113,12 +113,12 @@ export default function LoanComponent({
             <Label
               className={itemsClassName}
               label="Origination Cost:"
-              secondaryLabel={`${formatToMaxDefinition(originationCost)} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.originationCost)} ${loanSelectedData.tokenLabel}`}
             />
             <Label
               className={itemsClassName}
               label="Overcollateralization:"
-              secondaryLabel={`${formatToMaxDefinition((loanSelectedData.overcollateralizationRate * (Number(value) + originationCost)) - (Number(value)))} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.overcollateralizationCost)} ${loanSelectedData.tokenLabel}`}
             />
             <Label
               className={itemsClassName}
@@ -133,16 +133,15 @@ export default function LoanComponent({
             <Label
               className={itemsClassName}
               label="Liquidation Price:"
-              secondaryLabel={`${formatToMaxDefinition(
-                loanSelectedData.liqThreshold * (Number(value) + originationCost) / Number(collateralValue)
-              )} ${loanSelectedData.tokenLabel}/${loanSelectedData.collateralLabel}`}
+              secondaryLabel={`
+                ${formatToMaxDefinition(loanSelectedData.liquidationPrice)} 
+                ${loanSelectedData.tokenLabel}/${loanSelectedData.collateralLabel}
+              `}
             />
             <Label
               className={itemsClassName}
               label="Daily Cost:"
-              secondaryLabel={`${formatToMaxDefinition(
-                (Number(loanSelectedData.item.apr) * (Number(value) + originationCost) / 365)
-              )} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.dailyCost)} ${loanSelectedData.tokenLabel}`}
             />
           </div>
         </div>
@@ -200,9 +199,7 @@ export default function LoanComponent({
       <Button
         variant="primary"
         className="w-full justify-center mt-8 min-w-[240px]"
-        onClick={() => {
-          handleLoan(userId, loanSelectedData.selectedRowKey);
-        }}
+        onClick={() => handleLoan(userId, loanSelectedData.overcollateralizationRate.toString(), value, loanSelectedData.modelId)}
         disabled={!conditionsSuccess || isLoan}
       >
         Loan

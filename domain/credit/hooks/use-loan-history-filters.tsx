@@ -6,10 +6,14 @@ import { useState } from "react";
 interface UseLoanHistoryFiltersProps {
     page: number;
 }
+export enum FILTER_STATUS {
+    ACTIVE = "Active",
+    COMPLETED = "Completed",
+}
 export function useLoanHistoryFilters({ page }: UseLoanHistoryFiltersProps) {
     const statusOptions: Array<SelectOption> = [
-        { id: "Active", label: "Active", value: "Active" },
-        { id: "Completed", label: "Completed", value: "Completed" },
+        { id: FILTER_STATUS.ACTIVE, label: "Active", value: FILTER_STATUS.ACTIVE },
+        { id: FILTER_STATUS.COMPLETED, label: "Completed", value: FILTER_STATUS.COMPLETED },
     ];
     const statusOptionsRecord = statusOptions.reduce(
         (acc, option) => {
@@ -19,11 +23,11 @@ export function useLoanHistoryFilters({ page }: UseLoanHistoryFiltersProps) {
         {} as Record<string, SelectOption>
     );
 
-    const [status, setStatus] = useState<string[]>(["Active"]);
+    const [status, setStatus] = useState<string[]>([FILTER_STATUS.ACTIVE]);
     const [changeFilters, setChangeFilters] = useState<{ op: SelectOption, index: number }>({ op: statusOptions[0], index: 0 });
 
     const handleSetFilters = (filters: string[][]) => {
-        setStatus(filters[0] || ["Active"]);
+        setStatus(filters[0] || [FILTER_STATUS.ACTIVE]);
     }
 
     const resetSelectors = () => {
