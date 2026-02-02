@@ -1,10 +1,12 @@
-import { Badge, Button, Label, Modal, Select, Table, ToastType } from "@/components/index";
+import { Badge, Button, DynamicAvatarButton, InputSelectorToken, Label, Modal, Select, Table, ToastType } from "@/components/index";
 import { useToast } from "@/context/toast-provider";
 import { UILoanHistoryDataType, useLoanHistoryData } from "@/domain/credit/hooks/use-loan-history-data";
 import { FILTER_STATUS, useLoanHistoryFilters } from "@/domain/credit/hooks/use-loan-history-filters";
 import { useModal } from "@/hooks/use-modal";
 //import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
+import { ArrowDown, ArrowUpDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
+import ManageCollateralModal from "./manage-collateral-modal";
 
 
 export default function LoanHistoryTable() {
@@ -67,6 +69,19 @@ export default function LoanHistoryTable() {
     open: openLoanModal,
     close: closeLoanModal,
   } = useModal(false);
+
+  const {
+    isOpen: collateralModalOpen,
+    open: openCollateralModal,
+    close: closeCollateralModal,
+  } = useModal(false);
+
+  const {
+    isOpen: debtModalOpen,
+    open: openDebtModal,
+    close: closeDebtModal,
+  } = useModal(false);
+
 
   const renderCompleteTable = () => {
     return (
@@ -257,6 +272,26 @@ export default function LoanHistoryTable() {
         open={loanModalOpen}
         onClose={closeLoanModal}
         title="Loan Complete"
+        actions={!isCompleteable ? () => (
+          <>
+            <Button
+              variant="primary"
+              className="w-full justify-center mt-4"
+              onClick={() => { openCollateralModal(); closeLoanModal() }}
+              disabled={!selectedLoanData}
+            >
+              Manage Collateral
+            </Button>
+            <Button
+              variant="primary"
+              className="w-full justify-center mt-4"
+              onClick={() => { openDebtModal(); closeLoanModal() }}
+              disabled={!selectedLoanData}
+            >
+              Manage Debt
+            </Button>
+          </>
+        ) : undefined}
       >
         <div className="flex flex-col gap-2 px-6">
           <Label
@@ -267,7 +302,7 @@ export default function LoanHistoryTable() {
             label="APY"
             secondaryLabel={selectedLoanData?.apr || ""}
           />
-          {selectedLoanData?.closedAt ?
+          {!isCompleteable ?
             <Label
               label="Yield"
               secondaryLabel={selectedLoanData?.interest || ""}
@@ -282,7 +317,7 @@ export default function LoanHistoryTable() {
             label="Opened At"
             secondaryLabel={selectedLoanData?.date || ""}
           />
-          {selectedLoanData?.closedAt && <Label
+          {!isCompleteable && <Label
             label="Closed At"
             secondaryLabel={selectedLoanData?.closedAt || ""}
           />
@@ -291,15 +326,47 @@ export default function LoanHistoryTable() {
             label="Origination Fee"
             secondaryLabel={selectedLoanData?.origFee || ""}
           />
+          {!isCompleteable &&
+            <Label
+              label="Initial Collateral"
+              secondaryLabel={selectedLoanData?.initialCollat || ""}
+            />
+          }
         </div>
-        <Button
-          variant="primary"
-          className="w-full justify-center mt-4"
-          onClick={finalizeLoanComplete}
-          disabled={!selectedLoanData || !isCompleteable}
-        >
-          Complete
-        </Button>
+      </Modal>
+      {selectedLoanData &&
+        <ManageCollateralModal
+          loanData={selectedLoanData}
+          collateralModalOpen={collateralModalOpen}
+          closeCollateralModal={closeCollateralModal}
+        />
+      }
+      {/* {selectedLoanData && <ManageDebtModal loanData={selectedLoanData} debtModalOpen={debtModalOpen} closeDebtModal={closeDebtModal} />} */}
+      <Modal
+        open={debtModalOpen}
+        onClose={closeDebtModal}
+        title="Manage Debt"
+        actions={() => (
+          <Button
+            variant="primary"
+            className="w-full justify-center mt-4"
+            onClick={finalizeLoanComplete}
+            disabled={!selectedLoanData || !isCompleteable}
+          >
+            Finalize
+          </Button>
+        )}
+      >
+        <div className="flex flex-col gap-2 px-6">
+          <Label
+            label="Debt"
+            secondaryLabel={selectedLoanData?.debt || ""}
+          />
+          <Label
+            label="Token"
+            secondaryLabel={selectedLoanData?.token || ""}
+          />
+        </div>
       </Modal>
     </>
   );

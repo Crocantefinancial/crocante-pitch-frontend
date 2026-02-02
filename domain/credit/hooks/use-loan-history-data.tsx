@@ -12,6 +12,7 @@ export type UILoanHistoryDataType = {
   date: string;
   subDate?: string;
   token: string;
+  collateralToken: string;
   amount: string;
   subAmount?: string;
   status: string;
@@ -23,7 +24,9 @@ export type UILoanHistoryDataType = {
   apr: string;
   interest: string;
   tierNum: number;
+  collat: string;
   minCollat: string;
+  withdrawableCollat: number;
   initialAPR: string;
   initialRatio: string;
   initialSize: string;
@@ -60,6 +63,7 @@ export function useLoanHistoryData(page: number, status: string) {
           date: date,
           subDate: time,
           token: loan.sizeCurrencyId,
+          collateralToken: loan.collatCurrencyId,
           amount: loan.size + " " + loan.sizeCurrencyId,
           status: loan.lastUpdate.status === "REPAYED" ?
             loan.lastUpdate.type === "REPAY" ? "Completed" : "Liquidated" :
@@ -71,11 +75,13 @@ export function useLoanHistoryData(page: number, status: string) {
           apr: formatToMaxDefinition(Number(loan.apr) * 100) + "%",
           interest: loan.interest + " " + loan.sizeCurrencyId,
           tierNum: loan.tierNum,
+          collat: loan.collat,
           minCollat: loan.minCollat,
+          withdrawableCollat: Number(loan.collat) - Number(loan.minCollat),
           initialAPR: loan.initialAPR,
           initialRatio: loan.initialRatio,
           initialSize: loan.initialSize,
-          initialCollat: loan.initialCollat,
+          initialCollat: loan.initialCollat + " " + loan.collatCurrencyId,
           initialDebt: loan.initialDebt,
           origFee: loan.origFee,
           tiers: loan.tiers,

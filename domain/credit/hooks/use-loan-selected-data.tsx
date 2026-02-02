@@ -16,6 +16,7 @@ export interface LoanSelectedData {
     loanTotalCost: number;
     tokenLabel: string;
     collateralLabel: string;
+    availableCollat: number;
     minLoanValue: string;
     maxLoanValue: string;
     maxPossibleLoan: string;
@@ -74,6 +75,7 @@ export function useLoanSelectedData(
                     loanTotalCost: 0,
                     tokenLabel: "",
                     collateralLabel: "",
+                    availableCollat: 0,
                     minLoanValue: "0",
                     maxLoanValue: "0",
                     maxPossibleLoan: "0",
@@ -124,6 +126,7 @@ export function useLoanSelectedData(
             loanTotalCost,
             tokenLabel,
             collateralLabel,
+            availableCollat: Number(availableCollateral),
             minLoanValue,
             maxLoanValue,
             maxPossibleLoan,
