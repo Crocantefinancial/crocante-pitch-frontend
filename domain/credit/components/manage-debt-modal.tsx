@@ -9,23 +9,22 @@ import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { useEffect, useState } from "react";
 //import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 
-interface ManageCollateralModalProps {
+interface ManageDebtModalProps {
   loanData: UILoanHistoryDataType;
-  collateralModalOpen: boolean;
-  closeCollateralModal: () => void;
+  debtModalOpen: boolean;
+  closeDebtModal: () => void;
 }
 
 enum TabValues {
-  Withdraw = "Withdraw",
-  Deposit = "Deposit",
+  TOKEN = "Pay w/USDT",
+  COLLATERAL = "Pay w/Collateral",
 }
 
-
-export default function ManageCollateralModal({
+export default function ManageDebtModal({
   loanData,
-  collateralModalOpen,
-  closeCollateralModal
-}: ManageCollateralModalProps) {
+  debtModalOpen,
+  closeDebtModal
+}: ManageDebtModalProps) {
   type TabType = (typeof TabValues)[keyof typeof TabValues];
   const { selectedRow, change: changeTabSelection } = useSelector<TabType>(
     TabValues,
@@ -43,28 +42,14 @@ export default function ManageCollateralModal({
   const { showToast } = useToast();
   //const postLoan = usePostLoan();
 
-  const withdrawCollateral = () => {
-    showToast("Withdraw not implemented", ToastType.ERROR);
-    /* postLoanComplete.mutate({ userId: userId, opId: loanId }, {
-      onSuccess: (data) => {
-        showToast("Loan complete successful", ToastType.SUCCESS);
-      },
-      onError: (err) => {
-        console.error("POST LOAN COMPLETE ERROR", err);
-        showToast("Loan complete failed", ToastType.ERROR);
-      },
-      onSettled: () => {
-        setLoanId("");
-        setSelectedLoanData(null);
-        setIsCompleteable(false);
-      },
-    }); */
-    closeCollateralModal();
+  const payWithUSDT = () => {
+    showToast("Pay with USDT not implemented", ToastType.ERROR);
+    closeDebtModal();
   }
 
-  const depositCollateral = () => {
-    showToast("Deposit not implemented", ToastType.ERROR);
-    closeCollateralModal();
+  const payWithCollateral = () => {
+    showToast("Pay with Collateral not implemented", ToastType.ERROR);
+    closeDebtModal();
   }
 
   const { user } = useSession();
@@ -107,13 +92,17 @@ export default function ManageCollateralModal({
   const { isValid: isValidValue } = useValueVerifier({
     value,
     min: 0,
-    max: selectedRow === TabValues.Withdraw ? Number(loanData.withdrawableCollat) : loanData.availableCollateral,
+    max: selectedRow === TabValues.TOKEN ? loanData.debtSize : loanData.availableCollateral,
     requireNonZero: true,
   });
 
   const conditionsSuccess = isValidValue;
 
   const renderTabContent = () => {
+    const max_value = selectedRow === TabValues.TOKEN
+      ? Math.min(loanData.debtSize, loanData.availableToken)
+      : convertTo(loanData.debtSize.toString());
+
     return (
       <div className="space-y-4">
         <div className="max-w-full flex flex-row gap-4">
@@ -121,10 +110,10 @@ export default function ManageCollateralModal({
             className="w-1/2"
             label=""
             value={value}
-            onMaxClick={() => handleChangeValue(selectedRow === TabValues.Withdraw ? loanData.withdrawableCollat.toString() : loanData.availableCollateral.toString())}
+            onMaxClick={() => handleChangeValue(max_value.toString())}
             onChangeValue={(e) => handleChangeValue(e.target.value)}
-            maxValue={selectedRow === TabValues.Withdraw ? loanData.withdrawableCollat.toString() : loanData.availableCollateral.toString()}
-            tokenCode={loanData.collateralToken}
+            maxValue={max_value.toString()}
+            tokenCode={selectedRow === TabValues.TOKEN ? loanData.token : loanData.collateralToken}
             selectorProps={{
               options: [
                 {
@@ -170,34 +159,38 @@ export default function ManageCollateralModal({
 
   return (
     <Modal
-      open={collateralModalOpen}
-      onClose={closeCollateralModal}
-      title="Manage Collateral"
+      open={debtModalOpen}
+      onClose={closeDebtModal}
+      title="Manage Debt"
       actions={() => (
         <>
-          {selectedRow === TabValues.Withdraw ? (
+          {selectedRow === TabValues.TOKEN ? (
             <Button
               variant="primary"
               className="w-full justify-center mt-4"
-              onClick={withdrawCollateral}
+              onClick={payWithUSDT}
               disabled={!conditionsSuccess}
             >
-              Withdraw
+              Pay with USDT
             </Button>
           ) : (
             <Button
               variant="primary"
               className="w-full justify-center mt-4"
-              onClick={depositCollateral}
+              onClick={payWithCollateral}
               disabled={!conditionsSuccess}
             >
-              Deposit
+              Pay with Collateral
             </Button>
           )}
         </>
       )}
     >
       <div className="flex flex-col gap-2 px-6">
+        <Label
+          label="Loan Debt"
+          secondaryLabel={`${loanData.debt}` || ""}
+        />
         <Label
           label="Loan Collateral"
           secondaryLabel={`${loanData.collat} ${loanData.collateralToken}` || ""}

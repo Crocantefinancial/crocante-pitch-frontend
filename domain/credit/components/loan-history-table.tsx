@@ -7,6 +7,7 @@ import { useModal } from "@/hooks/use-modal";
 import { ArrowDown, ArrowUpDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 import ManageCollateralModal from "./manage-collateral-modal";
+import ManageDebtModal from "./manage-debt-modal";
 
 
 export default function LoanHistoryTable() {
@@ -341,33 +342,12 @@ export default function LoanHistoryTable() {
           closeCollateralModal={closeCollateralModal}
         />
       }
-      {/* {selectedLoanData && <ManageDebtModal loanData={selectedLoanData} debtModalOpen={debtModalOpen} closeDebtModal={closeDebtModal} />} */}
-      <Modal
-        open={debtModalOpen}
-        onClose={closeDebtModal}
-        title="Manage Debt"
-        actions={() => (
-          <Button
-            variant="primary"
-            className="w-full justify-center mt-4"
-            onClick={finalizeLoanComplete}
-            disabled={!selectedLoanData || !isCompleteable}
-          >
-            Finalize
-          </Button>
-        )}
-      >
-        <div className="flex flex-col gap-2 px-6">
-          <Label
-            label="Debt"
-            secondaryLabel={selectedLoanData?.debt || ""}
-          />
-          <Label
-            label="Token"
-            secondaryLabel={selectedLoanData?.token || ""}
-          />
-        </div>
-      </Modal>
+      {selectedLoanData &&
+        <ManageDebtModal
+          loanData={selectedLoanData}
+          debtModalOpen={debtModalOpen}
+          closeDebtModal={closeDebtModal}
+        />}
     </>
   );
 }
