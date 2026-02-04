@@ -273,7 +273,7 @@ export default function LoanHistoryTable() {
         open={loanModalOpen}
         onClose={closeLoanModal}
         title="Loan Complete"
-        actions={!isCompleteable ? () => (
+        actions={isCompleteable ? () => (
           <>
             <Button
               variant="primary"

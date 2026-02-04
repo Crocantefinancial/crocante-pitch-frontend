@@ -1,12 +1,10 @@
-import { Button, InputSelectorToken, Label, Modal, Tabs, ToastType } from "@/components/index";
-import { getTokenLogo } from "@/components/token-icons";
-import { useSession } from "@/context/session-provider";
+import { Button, Label, Modal, Tabs, ToastType } from "@/components/index";
 import { useToast } from "@/context/toast-provider";
 import { UILoanHistoryDataType } from "@/domain/credit/hooks/use-loan-history-data";
 import { useSelector } from "@/hooks/use-selector";
-import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { useEffect, useState } from "react";
+import LoanCollateralPair from "./loan-collateral-pair";
 //import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 
 interface ManageCollateralModalProps {
@@ -27,19 +25,25 @@ export default function ManageCollateralModal({
   closeCollateralModal
 }: ManageCollateralModalProps) {
   type TabType = (typeof TabValues)[keyof typeof TabValues];
-  const { selectedRow, change: changeTabSelection } = useSelector<TabType>(
+  const { selectedRow, reset: resetTabSelection, change: changeTabSelection } = useSelector<TabType>(
     TabValues,
     0,
     {
       onChange: () => {
-        setValue("0");
-        setValueReceive("0");
+        setValueCollateral("");
+        setValueLoan("");
       }
     }
   );
-  const [value, setValue] = useState("");
-  const [valueReceive, setValueReceive] = useState("");
-  const [inputReceiveFocused, setInputReceiveFocused] = useState(false);
+  const [valueCollateral, setValueCollateral] = useState("");
+  const [valueLoan, setValueLoan] = useState("");
+
+  useEffect(() => {
+    if (collateralModalOpen) {
+      resetTabSelection();
+    }
+  }, [collateralModalOpen]);
+
   const { showToast } = useToast();
   //const postLoan = usePostLoan();
 
@@ -67,106 +71,14 @@ export default function ManageCollateralModal({
     closeCollateralModal();
   }
 
-  const { user } = useSession();
-  const userId = user?.id.toString() || "";
-
-  const {
-    convertTo,
-    convertFrom,
-    conversionRateFrom: conversionRate,
-  } = useTokenSwap(userId, loanData.token, loanData.collateralToken, false);
-
-  const handleChangeValue = (tokenValue: string) => {
-    if (inputReceiveFocused) {
-      setValueReceive(tokenValue);
-    } else {
-      setValue(tokenValue);
-    }
-    if (tokenValue) {
-      if (inputReceiveFocused) {
-        setValue(convertFrom(tokenValue));
-      } else {
-        setValueReceive(convertTo(tokenValue));
-      }
-    } else {
-      setValueReceive("0");
-      setValue("0");
-    }
-  };
-
-  useEffect(() => {
-    if (conversionRate) {
-      if (inputReceiveFocused) {
-        setValueReceive(convertTo(value));
-      } else {
-        setValue(convertTo(valueReceive));
-      }
-    }
-  }, [conversionRate]);
-
   const { isValid: isValidValue } = useValueVerifier({
-    value,
+    value: valueCollateral,
     min: 0,
     max: selectedRow === TabValues.Withdraw ? Number(loanData.withdrawableCollat) : loanData.availableCollateral,
     requireNonZero: true,
   });
 
   const conditionsSuccess = isValidValue;
-
-  const renderTabContent = () => {
-    return (
-      <div className="space-y-4">
-        <div className="max-w-full flex flex-row gap-4">
-          <InputSelectorToken
-            className="w-1/2"
-            label=""
-            value={value}
-            onMaxClick={() => handleChangeValue(selectedRow === TabValues.Withdraw ? loanData.withdrawableCollat.toString() : loanData.availableCollateral.toString())}
-            onChangeValue={(e) => handleChangeValue(e.target.value)}
-            maxValue={selectedRow === TabValues.Withdraw ? loanData.withdrawableCollat.toString() : loanData.availableCollateral.toString()}
-            tokenCode={loanData.collateralToken}
-            selectorProps={{
-              options: [
-                {
-                  label: loanData.collateralToken,
-                  id: loanData.collateralToken,
-                  value: loanData.collateralToken,
-                  icon: <img src={getTokenLogo(loanData.collateralToken)} className="w-7 h-7 rounded-full" />,
-                }
-              ],
-              selectedIndex: 0,
-              onChange: () => { },
-            }}
-          />
-          <InputSelectorToken
-            className="w-1/2"
-            label=""
-            value={valueReceive}
-            onChangeValue={(e) => handleChangeValue(e.target.value)}
-            tokenCode={loanData.token}
-            selectorProps={{
-              options: [
-                {
-                  label: loanData.token,
-                  id: loanData.token,
-                  value: loanData.token,
-                  icon: <img src={getTokenLogo(loanData.token)} className="w-7 h-7 rounded-full" />,
-                }
-              ],
-              selectedIndex: 0,
-              onChange: () => { },
-            }}
-            onFocus={() => {
-              setInputReceiveFocused(true);
-            }}
-            onBlur={() => {
-              setInputReceiveFocused(false);
-            }}
-          />
-        </div>
-      </div>
-    )
-  }
 
   return (
     <Modal
@@ -223,7 +135,18 @@ export default function ManageCollateralModal({
           />
         </div>
 
-        {renderTabContent()}
+        <LoanCollateralPair
+          loanData={loanData}
+          valueCollateral={valueCollateral}
+          setValueCollateral={setValueCollateral}
+          valueLoan={valueLoan}
+          setValueLoan={setValueLoan}
+          maxValueCollateral={
+            selectedRow === TabValues.Withdraw
+              ? loanData.withdrawableCollat.toString()
+              : loanData.availableCollateral.toString()
+          }
+        />
       </div>
     </Modal>
   );
