@@ -5,8 +5,13 @@ export const LoanHistoryEventSchema = z.object({
     createdAt: z.string(),
     type: z.string(),
     data: z.object({
-        currencyId: z.string(),
-        amount: z.string(),
+        currencyId: z.string().optional(),
+        amount: z.string().optional(),
+        liqCollat: z.string().optional(),
+        liqCollatValue: z.string().optional(),
+        repayed: z.string().optional(),
+        price: z.string().optional(),
+        fee: z.string().optional()
     }),
 });
 

@@ -30,6 +30,10 @@ const env = {
   EP_LOAN_TYPE: process.env.NEXT_PUBLIC_EP_LOAN_TYPE,
   EP_STATEMENT_AVAILABLE_TOKEN: process.env.NEXT_PUBLIC_EP_STATEMENT_AVAILABLE_TOKEN,
   EP_LOAN_POST: process.env.NEXT_PUBLIC_EP_LOAN_POST,
+  EP_LOAN_ADD_COLLAT_POST: process.env.NEXT_PUBLIC_EP_LOAN_ADD_COLLAT_POST,
+  EP_LOAN_REM_COLLAT_POST: process.env.NEXT_PUBLIC_EP_LOAN_REM_COLLAT_POST,
+  EP_LOAN_REPAY_POST: process.env.NEXT_PUBLIC_EP_LOAN_REPAY_POST,
+  EP_LOAN_LIQUIDATE_POST: process.env.NEXT_PUBLIC_EP_LOAN_LIQUIDATE_POST,
 };
 
 const envSchema = z
@@ -73,6 +77,10 @@ const envSchema = z
     EP_LOAN_TYPE: z.string(),
     EP_STATEMENT_AVAILABLE_TOKEN: z.string(),
     EP_LOAN_POST: z.string(),
+    EP_LOAN_ADD_COLLAT_POST: z.string(),
+    EP_LOAN_REM_COLLAT_POST: z.string(),
+    EP_LOAN_REPAY_POST: z.string(),
+    EP_LOAN_LIQUIDATE_POST: z.string(),
   })
   .required();
 

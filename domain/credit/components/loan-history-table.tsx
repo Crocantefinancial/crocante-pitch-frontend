@@ -1,11 +1,12 @@
-import { Badge, Button, Label, Modal, Select, Table, ToastType } from "@/components/index";
-import { useToast } from "@/context/toast-provider";
+import { Badge, Button, Modal, Select, Table } from "@/components/index";
 import { UILoanHistoryDataType, useLoanHistoryData } from "@/domain/credit/hooks/use-loan-history-data";
 import { FILTER_STATUS, useLoanHistoryFilters } from "@/domain/credit/hooks/use-loan-history-filters";
 import { useModal } from "@/hooks/use-modal";
-//import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
-import { useEffect, useState } from "react";
-
+import { useState } from "react";
+import LoanEventsTable from "./loan-events-table";
+import LoanInfo from "./loan-info";
+import ManageCollateralModal from "./manage-collateral-modal";
+import ManageDebtModal from "./manage-debt-modal";
 
 export default function LoanHistoryTable() {
   const [pageLocal, setPageLocal] = useState(1);
@@ -21,45 +22,17 @@ export default function LoanHistoryTable() {
   } = useLoanHistoryFilters({ page: pageLocal });
 
   const { loanData, isLoading, userId } = useLoanHistoryData(page, status);
-  const { showToast } = useToast();
-  const [loanId, setLoanId] = useState("");
   const [selectedLoanData, setSelectedLoanData] = useState<UILoanHistoryDataType | null>(null);
-  const [isCompleteable, setIsCompleteable] = useState(false);
-  //const postLoan = usePostLoan();
+  const [isActive, setIsActive] = useState(false);
 
-  const isCompleteableFunction = (data: UILoanHistoryDataType) => {
-    return data.closedAt === "" || data.closedAt === null;
+  const isActiveLoan = (loan: UILoanHistoryDataType) => {
+    return loan.closedAt === "" || loan.closedAt === null;
   }
-  useEffect(() => {
-    if (loanId) {
-      const data = loanData?.find(tx => tx.opId === loanId)!;
-      setSelectedLoanData(data);
-      setIsCompleteable(isCompleteableFunction(data));
-    }
-  }, [loanId]);
 
-  const handleLoanComplete = (id: string) => {
-    setLoanId(id);
+  const handleLoanSelected = (loan: UILoanHistoryDataType) => {
+    setSelectedLoanData(loan);
+    setIsActive(isActiveLoan(loan));
     openLoanModal();
-  }
-
-  const finalizeLoanComplete = () => {
-    showToast("Loan complete not implemented", ToastType.ERROR);
-    /* postLoanComplete.mutate({ userId: userId, opId: loanId }, {
-      onSuccess: (data) => {
-        showToast("Loan complete successful", ToastType.SUCCESS);
-      },
-      onError: (err) => {
-        console.error("POST LOAN COMPLETE ERROR", err);
-        showToast("Loan complete failed", ToastType.ERROR);
-      },
-      onSettled: () => {
-        setLoanId("");
-        setSelectedLoanData(null);
-        setIsCompleteable(false);
-      },
-    }); */
-    closeLoanModal();
   }
 
   const {
@@ -67,6 +40,19 @@ export default function LoanHistoryTable() {
     open: openLoanModal,
     close: closeLoanModal,
   } = useModal(false);
+
+  const {
+    isOpen: collateralModalOpen,
+    open: openCollateralModal,
+    close: closeCollateralModal,
+  } = useModal(false);
+
+  const {
+    isOpen: debtModalOpen,
+    open: openDebtModal,
+    close: closeDebtModal,
+  } = useModal(false);
+
 
   const renderCompleteTable = () => {
     return (
@@ -99,29 +85,29 @@ export default function LoanHistoryTable() {
             className: "text-left",
           },
         ]}
-        rows={loanData.map((tx) => (
+        rows={loanData.map((loan) => (
           {
-            id: tx.opId,
-            onClick: () => handleLoanComplete(tx.opId),
+            id: loan.opId,
+            onClick: () => handleLoanSelected(loan),
             cells: [
               {
                 id: "date",
-                value: tx.date,
+                value: loan.date,
                 className: "text-center",
               },
               {
                 id: "closedAt",
-                value: tx.closedAt,
+                value: loan.closedAt,
                 className: "text-center",
               },
               {
                 id: "amount",
-                value: tx.amount,
+                value: loan.amount,
                 className: "text-center",
               },
               {
                 id: "yield",
-                value: tx.interest,
+                value: loan.interest,
                 className: "text-center",
               },
               {
@@ -129,8 +115,8 @@ export default function LoanHistoryTable() {
                 className: "text-left",
                 leftIcon: () => (
                   <Badge
-                    label={tx.status.charAt(0).toUpperCase() + tx.status.slice(1).toLowerCase()}
-                    variant={tx.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
+                    label={loan.status.charAt(0).toUpperCase() + loan.status.slice(1).toLowerCase()}
+                    variant={loan.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
                   />
                 ),
               },
@@ -183,35 +169,35 @@ export default function LoanHistoryTable() {
             className: "text-left",
           },
         ]}
-        rows={loanData.map((tx) => (
+        rows={loanData.map((loan) => (
           {
-            id: tx.opId,
-            onClick: () => handleLoanComplete(tx.opId),
+            id: loan.opId,
+            onClick: () => handleLoanSelected(loan),
             cells: [
               {
                 id: "date",
-                value: tx.date,
-                subtitle: tx.subDate,
+                value: loan.date,
+                subtitle: loan.subDate,
                 className: "text-center",
               },
               {
                 id: "debt",
-                value: tx.debt,
+                value: loan.debt,
                 className: "text-center",
               },
               {
                 id: "apr",
-                value: tx.apr,
+                value: loan.apr,
                 className: "text-center",
               },
               {
                 id: "overcollateralization",
-                value: tx.overcollateralization,
+                value: loan.overcollateralization,
                 className: "text-center",
               },
               {
                 id: "liqPrice",
-                value: tx.liqPrice,
+                value: loan.liqPrice,
                 className: "text-center",
               },
               {
@@ -219,8 +205,8 @@ export default function LoanHistoryTable() {
                 className: "text-left",
                 leftIcon: () => (
                   <Badge
-                    label={tx.status.charAt(0).toUpperCase() + tx.status.slice(1).toLowerCase()}
-                    variant={tx.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
+                    label={loan.status.charAt(0).toUpperCase() + loan.status.slice(1).toLowerCase()}
+                    variant={loan.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
                   />
                 ),
               },
@@ -256,51 +242,56 @@ export default function LoanHistoryTable() {
       <Modal
         open={loanModalOpen}
         onClose={closeLoanModal}
-        title="Loan Complete"
+        title="Loan Overview"
+        actions={isActive ? () => (
+          <>
+            <Button
+              variant="primary"
+              className="w-full justify-center mt-4"
+              onClick={() => { openCollateralModal(); closeLoanModal() }}
+              disabled={!selectedLoanData}
+            >
+              Manage Collateral
+            </Button>
+            <Button
+              variant="primary"
+              className="w-full justify-center mt-4"
+              onClick={() => { openDebtModal(); closeLoanModal() }}
+              disabled={!selectedLoanData}
+            >
+              Manage Debt
+            </Button>
+          </>
+        ) : undefined}
       >
-        <div className="flex flex-col gap-2 px-6">
-          <Label
-            label="Invested Amount"
-            secondaryLabel={selectedLoanData?.amount || ""}
-          />
-          <Label
-            label="APY"
-            secondaryLabel={selectedLoanData?.apr || ""}
-          />
-          {selectedLoanData?.closedAt ?
-            <Label
-              label="Yield"
-              secondaryLabel={selectedLoanData?.interest || ""}
-            />
-            :
-            <Label
-              label="Overcollateralization"
-              secondaryLabel={selectedLoanData?.overcollateralization || ""}
+        <div className="flex flex-col gap-2 mt-2 px-4">
+          <LoanInfo loanData={selectedLoanData} isActive={isActive} />
+          {selectedLoanData &&
+            <LoanEventsTable
+              opId={selectedLoanData.opId}
+              userId={userId}
+              isActive={isActive}
+              loanTokenId={selectedLoanData.token}
+              collateralTokenId={selectedLoanData.collateralToken}
             />
           }
-          <Label
-            label="Opened At"
-            secondaryLabel={selectedLoanData?.date || ""}
-          />
-          {selectedLoanData?.closedAt && <Label
-            label="Closed At"
-            secondaryLabel={selectedLoanData?.closedAt || ""}
-          />
-          }
-          <Label
-            label="Origination Fee"
-            secondaryLabel={selectedLoanData?.origFee || ""}
-          />
         </div>
-        <Button
-          variant="primary"
-          className="w-full justify-center mt-4"
-          onClick={finalizeLoanComplete}
-          disabled={!selectedLoanData || !isCompleteable}
-        >
-          Complete
-        </Button>
       </Modal>
+      {selectedLoanData &&
+        <ManageCollateralModal
+          userId={userId}
+          loanData={selectedLoanData}
+          collateralModalOpen={collateralModalOpen}
+          closeCollateralModal={closeCollateralModal}
+        />
+      }
+      {selectedLoanData &&
+        <ManageDebtModal
+          userId={userId}
+          loanData={selectedLoanData}
+          debtModalOpen={debtModalOpen}
+          closeDebtModal={closeDebtModal}
+        />}
     </>
   );
 }

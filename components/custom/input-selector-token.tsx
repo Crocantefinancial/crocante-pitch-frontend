@@ -14,6 +14,7 @@ interface InputSelectorTokenProps {
   onFocus?: () => void;
   onBlur?: () => void;
   disabled?: boolean;
+  className?: string;
 }
 export default function InputSelectorToken({
   label,
@@ -29,9 +30,10 @@ export default function InputSelectorToken({
   onFocus,
   onBlur,
   disabled,
+  className,
 }: InputSelectorTokenProps) {
   return (
-    <div>
+    <div className={className}>
       <label className="block text-sm font-normal text-muted-foreground mb-2">
         {label}
       </label>

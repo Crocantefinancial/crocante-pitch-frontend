@@ -12,13 +12,13 @@ export async function invalidatePortfolioQueries(userId: string): Promise<void> 
       queryClient.invalidateQueries({ queryKey: ["netWorth", userId] }),
       queryClient.invalidateQueries({ queryKey: ["portfolioData"] }),
       queryClient.invalidateQueries({ queryKey: ["availables", userId] }),
-      queryClient.invalidateQueries({
-        queryKey: ["conversionPairs", userId],
-      }),
+      queryClient.invalidateQueries({ queryKey: ["conversionPairs", userId] }),
       queryClient.invalidateQueries({ queryKey: ["activity", userId] }),
       queryClient.invalidateQueries({ queryKey: ["staking", userId] }),
       queryClient.invalidateQueries({ queryKey: ["loans-activity", userId] }),
       queryClient.invalidateQueries({ queryKey: ["availableToken", userId] }),
+      queryClient.invalidateQueries({ queryKey: ["loanType", userId] }),
+      queryClient.invalidateQueries({ queryKey: ["loan-history-events", userId] }),
     ]);
   };
 
