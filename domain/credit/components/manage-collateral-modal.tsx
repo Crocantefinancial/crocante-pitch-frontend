@@ -5,6 +5,7 @@ import { useSelector } from "@/hooks/use-selector";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { useEffect, useState } from "react";
 import LoanCollateralPair from "./loan-collateral-pair";
+import { LoanInfo } from "./loan-history-table";
 //import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 
 interface ManageCollateralModalProps {
@@ -109,23 +110,36 @@ export default function ManageCollateralModal({
         </>
       )}
     >
-      <div className="flex flex-col gap-2 px-6">
-        <Label
-          label="Loan Collateral"
-          secondaryLabel={`${loanData.collat} ${loanData.collateralToken}` || ""}
-        />
-        <Label
-          label="Withdrawable Collateral"
-          secondaryLabel={`${loanData.withdrawableCollat} ${loanData.collateralToken}` || ""}
-        />
-        <Label
-          label="Minimum Collateral"
-          secondaryLabel={`${loanData.minCollat} ${loanData.collateralToken}` || ""}
-        />
-        <Label
-          label="Available Collateral"
-          secondaryLabel={`${loanData.availableCollateral} ${loanData.collateralToken}` || ""}
-        />
+      <div className="flex flex-col gap-2 px-4">
+        <div className="flex flex-col gap-2 mb-2 bg-card rounded-lg bg-primary/10 p-2">
+          <Label
+            label="Overall"
+            className="!font-bold !text-sm"
+          />
+          <LoanInfo loanData={loanData} />
+        </div>
+        <div className="flex flex-col gap-2 mb-2 bg-card rounded-lg bg-primary/10 p-2">
+          <Label
+            label="Collateral"
+            className="!font-bold !text-sm"
+          />
+          <Label
+            label="Loan Collateral"
+            secondaryLabel={`${loanData.collat} ${loanData.collateralToken}` || ""}
+          />
+          <Label
+            label="Withdrawable Collateral"
+            secondaryLabel={`${loanData.withdrawableCollat} ${loanData.collateralToken}` || ""}
+          />
+          <Label
+            label="Minimum Collateral"
+            secondaryLabel={`${loanData.minCollat} ${loanData.collateralToken}` || ""}
+          />
+          <Label
+            label="Available Collateral"
+            secondaryLabel={`${loanData.availableCollateral} ${loanData.collateralToken}` || ""}
+          />
+        </div>
 
         <div className="bg-card rounded-lg max-w-full mt-4">
           <Tabs
