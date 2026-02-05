@@ -204,6 +204,7 @@ export default function LoanComponent({
         className="w-full justify-center mt-8 min-w-[240px]"
         onClick={() => handleLoan(userId, loanSelectedData.overcollateralizationRate.toString(), value, loanSelectedData.modelId)}
         disabled={!conditionsSuccess || isLoanPending}
+        isLoading={isLoanPending}
       >
         Loan
       </Button>

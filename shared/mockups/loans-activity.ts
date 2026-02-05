@@ -8,7 +8,7 @@ export const LOANS_ACTIVITY = {
                 "ownerId": "79f970d7-3b2f-492c-a358-6c1f1c2fd429",
                 "openedAt": "2025-11-25T12:11:53.505737Z",
                 "updatedAt": "2025-11-27T17:56:04.456209Z",
-                "closedAt": null,
+                "closedAt": "2025-12-09T20:15:28.584195Z",
                 "status": "ACTIVE",
                 "type": "LOAN",
                 "fullType": "LOAN"

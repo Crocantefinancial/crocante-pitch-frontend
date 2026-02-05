@@ -19,7 +19,7 @@ const Card: React.FC<CardProps> = ({ leftIcon, children, className = "", variant
       {leftIcon ? (
         <div className="flex items-center gap-3">
           <div className="flex-shrink-0">{leftIcon}</div>
-          <div className="font-montserrat font-normal text-xs leading-none text-neutral">
+          <div className="text-xs leading-none text-neutral">
             {children}
           </div>
         </div>

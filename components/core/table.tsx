@@ -2,7 +2,7 @@ import TableFilters, { TableFiltersProps } from "@/components/core/table-filters
 import { Skeleton } from "@/components/index";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import clsx from "clsx";
-import { ChevronLeft, ChevronRight } from "lucide-react";
+import { ChevronDown, ChevronLeft, ChevronRight, ChevronUp } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 
 interface TableHeader {
@@ -31,42 +31,51 @@ interface TableProps {
   rows: TableRow[];
   filters?: TableFiltersProps;
   isLoading?: boolean;
+  className?: string;
 }
 
-export default function Table({ tableHeaders, rows, filters, isLoading }: TableProps) {
+export default function Table({ tableHeaders, rows, filters, isLoading, className }: TableProps) {
   const isMobile = useIsMobile();
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const tableRef = useRef<HTMLTableElement>(null);
   const [canScrollLeft, setCanScrollLeft] = useState(false);
   const [canScrollRight, setCanScrollRight] = useState(false);
+  const [canScrollUp, setCanScrollUp] = useState(false);
+  const [canScrollDown, setCanScrollDown] = useState(false);
   const [columnWidth, setColumnWidth] = useState(0);
 
   useEffect(() => {
-    if (!isMobile || !scrollContainerRef.current || !tableRef.current) return;
+    const container = scrollContainerRef.current;
+    const table = tableRef.current;
+    if (!container) return;
 
     const updateScrollState = () => {
-      const container = scrollContainerRef.current;
-      const table = tableRef.current;
-      if (!container || !table) return;
+      const c = scrollContainerRef.current;
+      const t = tableRef.current;
+      if (!c) return;
 
-      const containerWidth = container.clientWidth;
-      const tableWidth = table.scrollWidth;
-      const scrollLeft = container.scrollLeft;
-      const scrollRight = scrollLeft + containerWidth;
+      const containerWidth = c.clientWidth;
+      const scrollLeft = c.scrollLeft;
+      const scrollTop = c.scrollTop;
+      const scrollHeight = c.scrollHeight;
+      const clientHeight = c.clientHeight;
 
-      // Calculate average column width
-      const headerCells = table.querySelectorAll("thead th");
-      if (headerCells.length > 0) {
-        const avgColumnWidth = tableWidth / headerCells.length;
-        setColumnWidth(avgColumnWidth);
+      setCanScrollUp(scrollTop > 0);
+      setCanScrollDown(scrollTop + clientHeight < scrollHeight - 1);
+
+      if (isMobile && t) {
+        const tableWidth = t.scrollWidth;
+        const scrollRight = scrollLeft + containerWidth;
+        const headerCells = t.querySelectorAll("thead th");
+        if (headerCells.length > 0) {
+          setColumnWidth(tableWidth / headerCells.length);
+        }
+        setCanScrollLeft(scrollLeft > 0);
+        setCanScrollRight(scrollRight < tableWidth - 1);
       }
-
-      setCanScrollLeft(scrollLeft > 0);
-      setCanScrollRight(scrollRight < tableWidth - 1); // -1 for rounding
     };
 
     updateScrollState();
-    const container = scrollContainerRef.current;
     container.addEventListener("scroll", updateScrollState);
     window.addEventListener("resize", updateScrollState);
 
@@ -81,7 +90,7 @@ export default function Table({ tableHeaders, rows, filters, isLoading }: TableP
 
     const container = scrollContainerRef.current;
     const currentScroll = container.scrollLeft;
-    const scrollAmount = columnWidth * 1.5; // Scroll 1.5 columns at a time
+    const scrollAmount = columnWidth * 1.5;
 
     const newScroll =
       direction === "left"
@@ -90,6 +99,22 @@ export default function Table({ tableHeaders, rows, filters, isLoading }: TableP
 
     container.scrollTo({
       left: newScroll,
+      behavior: "smooth",
+    });
+  };
+
+  const scrollRows = (direction: "up" | "down") => {
+    if (!scrollContainerRef.current) return;
+
+    const container = scrollContainerRef.current;
+    const scrollAmount = 80;
+    const newScrollTop =
+      direction === "up"
+        ? Math.max(0, container.scrollTop - scrollAmount)
+        : container.scrollTop + scrollAmount;
+
+    container.scrollTo({
+      top: newScrollTop,
       behavior: "smooth",
     });
   };
@@ -115,21 +140,39 @@ export default function Table({ tableHeaders, rows, filters, isLoading }: TableP
           <ChevronRight className="w-5 h-5 text-foreground" />
         </button>
       )}
+      {canScrollUp && (
+        <button
+          onClick={() => scrollRows("up")}
+          className="absolute left-0 right-0 top-10 z-10 py-1 flex items-center justify-center bg-gradient-to-b from-background to-transparent hover:bg-muted/10 transition-colors"
+          aria-label="Scroll up"
+        >
+          <ChevronUp className="w-5 h-5 text-foreground" />
+        </button>
+      )}
+      {canScrollDown && (
+        <button
+          onClick={() => scrollRows("down")}
+          className="absolute left-0 right-0 bottom-0 z-10 py-1 flex items-center justify-center bg-gradient-to-t from-background to-transparent hover:bg-muted/10 transition-colors"
+          aria-label="Scroll down"
+        >
+          <ChevronDown className="w-5 h-5 text-foreground" />
+        </button>
+      )}
       <div
         ref={scrollContainerRef}
-        className={clsx("overflow-x-auto", isMobile && "scrollbar-hide")}
+        className={clsx("overflow-x-auto", isMobile && "scrollbar-hide", className)}
       >
         <table
           ref={tableRef}
           className={clsx("w-full", isMobile && "min-w-max")}
         >
-          <thead>
+          <thead className="sticky top-0 z-10 bg-background shadow-[0_1px_0_0_hsl(var(--border))]">
             <tr className="bg-muted/5">
               {tableHeaders.map((header) => (
                 <th
                   key={header.id}
                   className={clsx(
-                    "px-4 py-3 text-xs font-normal text-muted-foreground uppercase",
+                    "px-4 py-3 text-xs font-normal text-muted-foreground uppercase bg-muted/5",
                     header.className
                   )}
                 >
