@@ -1,67 +1,13 @@
-import { Badge, Button, Label, Modal, Select, Table } from "@/components/index";
+import { Badge, Button, Modal, Select, Table } from "@/components/index";
 import { UILoanHistoryDataType, useLoanHistoryData } from "@/domain/credit/hooks/use-loan-history-data";
 import { FILTER_STATUS, useLoanHistoryFilters } from "@/domain/credit/hooks/use-loan-history-filters";
 import { useModal } from "@/hooks/use-modal";
 //import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 import { useEffect, useState } from "react";
+import LoanEventsTable from "./loan-events-table";
+import LoanInfo from "./loan-info";
 import ManageCollateralModal from "./manage-collateral-modal";
 import ManageDebtModal from "./manage-debt-modal";
-
-interface LoanInfoProps {
-  loanData: UILoanHistoryDataType | null;
-  isCompleteable?: boolean;
-}
-export function LoanInfo({ loanData, isCompleteable = true }: LoanInfoProps) {
-  if (!loanData) {
-    return null;
-  }
-  return (
-    <div className="flex flex-col gap-2">
-      <Label
-        label="Invested Amount"
-        secondaryLabel={loanData?.amount || ""}
-      />
-      <Label
-        label="Debt"
-        secondaryLabel={loanData?.debt || ""}
-      />
-      <Label
-        label="APY"
-        secondaryLabel={loanData?.apr || ""}
-      />
-      {!isCompleteable ?
-        <Label
-          label="Yield"
-          secondaryLabel={loanData?.interest || ""}
-        />
-        :
-        <Label
-          label="Overcollateralization"
-          secondaryLabel={loanData?.overcollateralization || ""}
-        />
-      }
-      <Label
-        label="Opened At"
-        secondaryLabel={loanData?.date || ""}
-      />
-      {!isCompleteable && <Label
-        label="Closed At"
-        secondaryLabel={loanData?.closedAt || ""}
-      />
-      }
-      <Label
-        label="Origination Fee"
-        secondaryLabel={loanData?.origFee || ""}
-      />
-      {!isCompleteable &&
-        <Label
-          label="Initial Collateral"
-          secondaryLabel={loanData?.initialCollat || ""}
-        />
-      }
-    </div>
-  );
-}
 
 export default function LoanHistoryTable() {
   const [pageLocal, setPageLocal] = useState(1);
@@ -76,7 +22,7 @@ export default function LoanHistoryTable() {
     statusSelector
   } = useLoanHistoryFilters({ page: pageLocal });
 
-  const { loanData, isLoading } = useLoanHistoryData(page, status);
+  const { loanData, isLoading, userId } = useLoanHistoryData(page, status);
   const [loanId, setLoanId] = useState("");
   const [selectedLoanData, setSelectedLoanData] = useState<UILoanHistoryDataType | null>(null);
   const [isCompleteable, setIsCompleteable] = useState(false);
@@ -329,10 +275,12 @@ export default function LoanHistoryTable() {
       >
         <div className="flex flex-col gap-2 mt-2 px-4">
           <LoanInfo loanData={selectedLoanData} isCompleteable={isCompleteable} />
+          {selectedLoanData && <LoanEventsTable opId={selectedLoanData.opId} userId={userId} />}
         </div>
       </Modal>
       {selectedLoanData &&
         <ManageCollateralModal
+          userId={userId}
           loanData={selectedLoanData}
           collateralModalOpen={collateralModalOpen}
           closeCollateralModal={closeCollateralModal}
@@ -340,6 +288,7 @@ export default function LoanHistoryTable() {
       }
       {selectedLoanData &&
         <ManageDebtModal
+          userId={userId}
           loanData={selectedLoanData}
           debtModalOpen={debtModalOpen}
           closeDebtModal={closeDebtModal}

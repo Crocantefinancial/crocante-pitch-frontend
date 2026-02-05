@@ -3,15 +3,16 @@ import { useToast } from "@/context/toast-provider";
 import { UILoanHistoryDataType } from "@/domain/credit/hooks/use-loan-history-data";
 import { useSelector } from "@/hooks/use-selector";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
+import { usePostLoanManageCollat } from "@/services/hooks/mutations/use-post-loan-manage-collat";
 import { useEffect, useState } from "react";
 import LoanCollateralPair from "./loan-collateral-pair";
-import { LoanInfo } from "./loan-history-table";
-//import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
+import LoanInfo from "./loan-info";
 
 interface ManageCollateralModalProps {
   loanData: UILoanHistoryDataType;
   collateralModalOpen: boolean;
   closeCollateralModal: () => void;
+  userId: string;
 }
 
 enum TabValues {
@@ -23,7 +24,8 @@ enum TabValues {
 export default function ManageCollateralModal({
   loanData,
   collateralModalOpen,
-  closeCollateralModal
+  closeCollateralModal,
+  userId
 }: ManageCollateralModalProps) {
   type TabType = (typeof TabValues)[keyof typeof TabValues];
   const { selectedRow, reset: resetTabSelection, change: changeTabSelection } = useSelector<TabType>(
@@ -46,29 +48,40 @@ export default function ManageCollateralModal({
   }, [collateralModalOpen]);
 
   const { showToast } = useToast();
-  //const postLoan = usePostLoan();
+  const postLoanAddCollat = usePostLoanManageCollat("add");
+  const postLoanRemoveCollat = usePostLoanManageCollat("remove");
 
   const withdrawCollateral = () => {
-    showToast("Withdraw not implemented", ToastType.ERROR);
-    /* postLoanComplete.mutate({ userId: userId, opId: loanId }, {
+    postLoanRemoveCollat.mutate({ userId, opId: loanData.opId, amount: valueCollateral }, {
       onSuccess: (data) => {
-        showToast("Loan complete successful", ToastType.SUCCESS);
+        showToast("Collateral withdrawn successfully", ToastType.SUCCESS);
       },
       onError: (err) => {
-        console.error("POST LOAN COMPLETE ERROR", err);
-        showToast("Loan complete failed", ToastType.ERROR);
+        console.error("POST LOAN REMOVE COLLATERAL ERROR", err);
+        showToast("Collateral withdrawal failed", ToastType.ERROR);
       },
       onSettled: () => {
-        setLoanId("");
-        setSelectedLoanData(null);
-        setIsCompleteable(false);
+        setValueCollateral("");
+        setValueLoan("");
       },
-    }); */
+    });
     closeCollateralModal();
   }
 
   const depositCollateral = () => {
-    showToast("Deposit not implemented", ToastType.ERROR);
+    postLoanAddCollat.mutate({ userId, opId: loanData.opId, amount: valueCollateral }, {
+      onSuccess: (data) => {
+        showToast("Collateral deposited successfully", ToastType.SUCCESS);
+      },
+      onError: (err) => {
+        console.error("POST LOAN ADD COLLATERAL ERROR", err);
+        showToast("Collateral deposit failed", ToastType.ERROR);
+      },
+      onSettled: () => {
+        setValueCollateral("");
+        setValueLoan("");
+      },
+    });
     closeCollateralModal();
   }
 

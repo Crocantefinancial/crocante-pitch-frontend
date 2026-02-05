@@ -7,12 +7,13 @@ import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
 import { useEffect, useState } from "react";
 import LoanCollateralPair from "./loan-collateral-pair";
-import { LoanInfo } from "./loan-history-table";
+import LoanInfo from "./loan-info";
 
 interface ManageDebtModalProps {
   loanData: UILoanHistoryDataType;
   debtModalOpen: boolean;
   closeDebtModal: () => void;
+  userId: string;
 }
 
 enum TabValues {
@@ -23,7 +24,8 @@ enum TabValues {
 export default function ManageDebtModal({
   loanData,
   debtModalOpen,
-  closeDebtModal
+  closeDebtModal,
+  userId
 }: ManageDebtModalProps) {
   type TabType = (typeof TabValues)[keyof typeof TabValues];
   const { selectedRow, reset: resetTabSelection, change: changeTabSelection } = useSelector<TabType>(
@@ -56,9 +58,6 @@ export default function ManageDebtModal({
     showToast("Pay with Collateral not implemented", ToastType.ERROR);
     closeDebtModal();
   }
-
-  const { user } = useSession();
-  const userId = user?.id.toString() || "";
 
   const {
     convertTo,
