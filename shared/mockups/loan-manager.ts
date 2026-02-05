@@ -1,4 +1,4 @@
-export const LOAN_MANAGE_COLLAT = {
+export const LOAN_MANAGER = {
     "data": {
         "typeId": "ETH_USDT",
         "operation": {

@@ -3,7 +3,7 @@ import { useToast } from "@/context/toast-provider";
 import { UILoanHistoryDataType } from "@/domain/credit/hooks/use-loan-history-data";
 import { useSelector } from "@/hooks/use-selector";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
-import { usePostLoanManageCollat } from "@/services/hooks/mutations/use-post-loan-manage-collat";
+import { usePostLoanManager } from "@/services/hooks/mutations/use-post-loan-manager";
 import { useEffect, useState } from "react";
 import LoanCollateralPair from "./loan-collateral-pair";
 import LoanInfo from "./loan-info";
@@ -48,8 +48,8 @@ export default function ManageCollateralModal({
   }, [collateralModalOpen]);
 
   const { showToast } = useToast();
-  const postLoanAddCollat = usePostLoanManageCollat("add");
-  const postLoanRemoveCollat = usePostLoanManageCollat("remove");
+  const postLoanAddCollat = usePostLoanManager("add");
+  const postLoanRemoveCollat = usePostLoanManager("remove");
 
   const withdrawCollateral = () => {
     postLoanRemoveCollat.mutate({ userId, opId: loanData.opId, amount: valueCollateral }, {
@@ -61,11 +61,11 @@ export default function ManageCollateralModal({
         showToast("Collateral withdrawal failed", ToastType.ERROR);
       },
       onSettled: () => {
+        closeCollateralModal();
         setValueCollateral("");
         setValueLoan("");
       },
     });
-    closeCollateralModal();
   }
 
   const depositCollateral = () => {
@@ -78,11 +78,11 @@ export default function ManageCollateralModal({
         showToast("Collateral deposit failed", ToastType.ERROR);
       },
       onSettled: () => {
+        closeCollateralModal();
         setValueCollateral("");
         setValueLoan("");
       },
     });
-    closeCollateralModal();
   }
 
   const { isValid: isValidValue } = useValueVerifier({
@@ -107,6 +107,7 @@ export default function ManageCollateralModal({
               className="w-full justify-center mt-4"
               onClick={withdrawCollateral}
               disabled={!conditionsSuccess}
+              isLoading={postLoanRemoveCollat.isPending}
             >
               Withdraw
             </Button>
@@ -116,6 +117,7 @@ export default function ManageCollateralModal({
               className="w-full justify-center mt-4"
               onClick={depositCollateral}
               disabled={!conditionsSuccess}
+              isLoading={postLoanAddCollat.isPending}
             >
               Deposit
             </Button>

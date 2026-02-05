@@ -5,6 +5,7 @@ import { UILoanHistoryDataType } from "@/domain/credit/hooks/use-loan-history-da
 import { useSelector } from "@/hooks/use-selector";
 import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
+import { usePostLoanManager } from "@/services/hooks/mutations/use-post-loan-manager";
 import { useEffect, useState } from "react";
 import LoanCollateralPair from "./loan-collateral-pair";
 import LoanInfo from "./loan-info";
@@ -48,15 +49,41 @@ export default function ManageDebtModal({
   }, [debtModalOpen]);
 
   const { showToast } = useToast();
+  const postLoanRepay = usePostLoanManager("repay");
+  const postLoanLiquidate = usePostLoanManager("liquidate");
 
   const payWithUSDT = () => {
-    showToast("Pay with USDT not implemented", ToastType.ERROR);
-    closeDebtModal();
+    postLoanRepay.mutate({ userId, opId: loanData.opId, amount: valueLoan }, {
+      onSuccess: (data) => {
+        showToast("Debt repaid successfully", ToastType.SUCCESS);
+      },
+      onError: (err) => {
+        console.error("POST LOAN REPAY ERROR", err);
+        showToast("Debt repayment failed", ToastType.ERROR);
+      },
+      onSettled: () => {
+        closeDebtModal();
+        setValueCollateral("");
+        setValueLoan("");
+      },
+    });
   }
 
   const payWithCollateral = () => {
-    showToast("Pay with Collateral not implemented", ToastType.ERROR);
-    closeDebtModal();
+    postLoanLiquidate.mutate({ userId, opId: loanData.opId, amount: valueLoan }, {
+      onSuccess: (data) => {
+        showToast("Debt liquidated successfully", ToastType.SUCCESS);
+      },
+      onError: (err) => {
+        console.error("POST LOAN LIQUIDATE ERROR", err);
+        showToast("Debt liquidation failed", ToastType.ERROR);
+      },
+      onSettled: () => {
+        closeDebtModal();
+        setValueCollateral("");
+        setValueLoan("");
+      },
+    });
   }
 
   const {
@@ -85,6 +112,7 @@ export default function ManageDebtModal({
               className="w-full justify-center mt-4"
               onClick={payWithUSDT}
               disabled={!conditionsSuccess}
+              isLoading={postLoanRepay.isPending}
             >
               Pay with USDT
             </Button>
@@ -94,6 +122,7 @@ export default function ManageDebtModal({
               className="w-full justify-center mt-4"
               onClick={payWithCollateral}
               disabled={!conditionsSuccess}
+              isLoading={postLoanLiquidate.isPending}
             >
               Pay with Collateral
             </Button>

@@ -3,9 +3,9 @@ import { UILoanHistoryDataType } from "@/domain/credit/hooks/use-loan-history-da
 
 interface LoanInfoProps {
     loanData: UILoanHistoryDataType | null;
-    isCompleteable?: boolean;
+    isActive?: boolean;
 }
-export default function LoanInfo({ loanData, isCompleteable = true }: LoanInfoProps) {
+export default function LoanInfo({ loanData, isActive = true }: LoanInfoProps) {
     if (!loanData) {
         return null;
     }
@@ -23,7 +23,7 @@ export default function LoanInfo({ loanData, isCompleteable = true }: LoanInfoPr
                 label="APY"
                 secondaryLabel={loanData?.apr || ""}
             />
-            {!isCompleteable ?
+            {!isActive ?
                 <Label
                     label="Yield"
                     secondaryLabel={loanData?.interest || ""}
@@ -38,7 +38,7 @@ export default function LoanInfo({ loanData, isCompleteable = true }: LoanInfoPr
                 label="Opened At"
                 secondaryLabel={loanData?.date || ""}
             />
-            {!isCompleteable && <Label
+            {!isActive && <Label
                 label="Closed At"
                 secondaryLabel={loanData?.closedAt || ""}
             />
@@ -47,7 +47,7 @@ export default function LoanInfo({ loanData, isCompleteable = true }: LoanInfoPr
                 label="Origination Fee"
                 secondaryLabel={loanData?.origFee || ""}
             />
-            {!isCompleteable &&
+            {!isActive &&
                 <Label
                     label="Initial Collateral"
                     secondaryLabel={loanData?.initialCollat || ""}
