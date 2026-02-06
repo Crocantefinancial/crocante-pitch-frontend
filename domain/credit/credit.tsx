@@ -1,3 +1,4 @@
+import { Skeleton } from "@/components/index";
 import { SelectOption } from "@/components/core/select";
 import { ToastType } from "@/components/core/toast";
 import { useToast } from "@/context/toast-provider";
@@ -11,9 +12,21 @@ import { useSessionMode } from "@/hooks/use-session-mode";
 import { formatToMaxDefinition } from "@/lib/utils";
 import { getDisplayMessage } from "@/services/api/errors/service-error";
 import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
+import dynamic from "next/dynamic";
 import { useEffect, useState } from "react";
-import LoanHistoryTable from "./components/loan-history-table";
 import { useLoanSelectedData } from "./hooks/use-loan-selected-data";
+
+const LoanHistoryTable = dynamic(
+    () => import("./components/loan-history-table").then((m) => m.default),
+    {
+        loading: () => (
+            <div className="flex flex-col gap-2 mt-2 px-4 py-6">
+                <Skeleton lines={4} />
+            </div>
+        ),
+        ssr: false,
+    }
+);
 
 export default function Credit() {
     const postLoan = usePostLoan();
