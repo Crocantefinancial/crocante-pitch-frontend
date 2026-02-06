@@ -29,16 +29,16 @@ export const MENU_ITEMS = [
 ];
 
 export const MENU_ITEMS_MOCK = [
-  { icon: Building2, label: "Portfolio", id: "portfolio" },
+  MENU_ITEMS[0],
   { icon: Lock, label: "Custody", id: "custody" },
   { icon: Zap, label: "Invest", id: "invest" },
-  { icon: STAKE_ICON, label: "Staking", id: "staking" },
-  { icon: CreditCard, label: "Credit", id: "credit" },
+  MENU_ITEMS[1],
+  MENU_ITEMS[2],
   { icon: Shield, label: "Governance", id: "governance" },
   { icon: Activity, label: "Reports", id: "reports" },
   { icon: Cog, label: "Settings", id: "settings" },
   { icon: FileText, label: "RFQ Manager", id: "rfq-manager" },
-  { icon: Logs, label: "Activity", id: "activity" },
+  MENU_ITEMS[3],
 ];
 
 interface NavBarProps {

@@ -101,7 +101,7 @@ export function useLoanHistoryData(page: number, status: string) {
       }
       return {} as UILoanHistoryDataType;
     });
-  }, [loanData]);
+  }, [loanData, availablesData]);
 
   return { isLoading: isLoadingLoan || isLoadingAvailables, loanData: formattedLoanData, userId: userId, };
 }
