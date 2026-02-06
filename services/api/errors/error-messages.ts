@@ -131,3 +131,11 @@ export function isKnownDomainErrorCode(
 export function isTOTPError(code: string): boolean {
   return Object.values(TOTPErrors).some((e) => e.code === code);
 }
+
+/**
+ * User-facing messages for known error codes (toasts, alerts).
+ * Falls back to the raw ServiceError.message when code is not listed.
+ */
+export const ServiceErrorDisplayMessages: Record<string, string> = {
+  BALANCE_NOT_ENOUGH: "Not enough balance",
+};

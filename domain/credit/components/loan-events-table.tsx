@@ -16,7 +16,7 @@ export default function LoanEventsTable({ opId, userId, isActive, loanTokenId, c
         userId, opId, false, POLL_LOAN_HISTORY_EVENTS_INTERVAL
     );
 
-    if (!loanEventsData) {
+    if (!loanEventsData || loanEventsData.length === 0) {
         return (
             <div className="flex flex-col gap-2 mt-2 px-4 text-center justify-center items-center bg-card rounded-lg bg-primary/10 p-2">
                 <Label label="No history events found for this loan" />
