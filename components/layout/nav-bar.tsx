@@ -19,7 +19,7 @@ import {
   Shield,
   Zap,
 } from "lucide-react";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export const MENU_ITEMS = [
   { icon: Building2, label: "Portfolio", id: "portfolio" },
@@ -46,6 +46,10 @@ interface NavBarProps {
   sidebarOpen: boolean;
   setSidebarOpen: (open: boolean) => void;
 }
+const navLinkBase =
+  "w-full px-6 py-3 flex items-center gap-3 text-sm font-normal transition-all duration-200 text-neutral-700 hover:bg-neutral-50";
+const navLinkActive =
+  "bg-primary/10 text-primary border-l-4 border-primary";
 
 export default function NavBar({
   activeMenu,
@@ -54,7 +58,6 @@ export default function NavBar({
 }: NavBarProps) {
   const { sessionMode } = useSessionMode();
   const { user } = useSession();
-  const router = useRouter();
   const isMobile = useIsMobile();
   const { mutate: logoutMutation } = useLogout();
   const menuItems = sessionMode === "mock" ? MENU_ITEMS_MOCK : MENU_ITEMS;
@@ -96,24 +99,25 @@ export default function NavBar({
         </div>
       </div>
 
-      {/* Menu Items */}
+      {/* Menu Items - Link for prefetch, faster navigation */}
       <nav className="flex-1 overflow-y-auto py-4">
         {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeMenu === item.id;
           return (
-            <Button
+            <Link
               key={item.id}
-              variant="nav"
-              isActive={isActive}
-              onClick={() => {
-                router.push(`/${item.id}`);
-              }}
-              className={clsx(!sidebarOpen && "px-0 justify-center")}
+              href={`/${item.id}`}
+              className={clsx(
+                "flex items-center min-h-[1.1rem]",
+                navLinkBase,
+                isActive && navLinkActive,
+                !sidebarOpen && "px-0 justify-center"
+              )}
             >
               <Icon className="w-5 h-5 flex-shrink-0" />
               {sidebarOpen && <span>{item.label}</span>}
-            </Button>
+            </Link>
           );
         })}
       </nav>

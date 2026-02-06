@@ -28,12 +28,10 @@ export default function DashboardLayout({
   // Extract activeMenu from pathname (e.g., /portfolio -> portfolio)
   const activeMenu = pathname?.split("/").filter(Boolean)[0] || "portfolio";
 
-  // Reset custom header when navigating away from portfolio/settings
-  useEffect(() => {
-    if (!(activeMenu === "portfolio" || activeMenu === "settings")) {
-      setCustomAdditionalHeader(<></>);
-    }
-  }, [activeMenu]);
+  // Only show custom header on portfolio/settings; avoid effect that cleared on nav
+  const showCustomHeader =
+    activeMenu === "portfolio" || activeMenu === "settings";
+  const effectiveHeader = showCustomHeader ? customAdditionalHeader : <></>;
 
   return (
     <CustomHeaderProvider setCustomAdditionalHeader={setCustomAdditionalHeader}>
@@ -41,7 +39,7 @@ export default function DashboardLayout({
         activeMenu={activeMenu}
         sidebarOpen={sidebarOpen}
         setSidebarOpen={setSidebarOpen}
-        customAdditionalHeader={customAdditionalHeader}
+        customAdditionalHeader={effectiveHeader}
       >
         {children}
       </Shell>
