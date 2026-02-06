@@ -29,8 +29,7 @@ export function useLoanHistoryEvents(
       }
       try {
         const loanHistoryEventsDataResponse = await getValidated<LoanHistoryEventsDataResponse>(
-          `${EP_LOAN_HISTORY_EVENTS}`
-            .replace("%OPID", opId),
+          `${EP_LOAN_HISTORY_EVENTS}`.replace("%OPID", opId),
           loanHistoryEventsDataResponseSchema
         );
         return getFormattedLoanHistoryEventsData(loanHistoryEventsDataResponse);

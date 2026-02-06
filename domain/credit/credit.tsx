@@ -9,6 +9,7 @@ import {
 import { useSelector } from "@/hooks/use-selector";
 import { useSessionMode } from "@/hooks/use-session-mode";
 import { formatToMaxDefinition } from "@/lib/utils";
+import { getDisplayMessage } from "@/services/api/errors/service-error";
 import { usePostLoan } from "@/services/hooks/mutations/use-post-loan";
 import { useEffect, useState } from "react";
 import LoanHistoryTable from "./components/loan-history-table";
@@ -113,9 +114,9 @@ export default function Credit() {
                         ToastType.SUCCESS
                     );
                 },
-                onError: (err) => {
+                onError: (err: unknown) => {
                     console.error("POST LOAN ERROR", err);
-                    showToast("Loan failed", ToastType.ERROR);
+                    showToast(getDisplayMessage(err, "Loan failed"), ToastType.ERROR);
                 },
                 onSettled: () => {
                     resetAssetSelector();

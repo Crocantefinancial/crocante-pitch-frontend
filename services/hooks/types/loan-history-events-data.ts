@@ -1,5 +1,5 @@
 import { LOAN_HISTORY_EVENTS } from "@/shared/mockups/loan-history-events";
-import { z } from "zod";
+import { z, type ZodType } from "zod";
 
 export const LoanHistoryEventSchema = z.object({
     createdAt: z.string(),
@@ -17,12 +17,22 @@ export const LoanHistoryEventSchema = z.object({
 
 export type LoanHistoryEvent = z.infer<typeof LoanHistoryEventSchema>;
 
-export const loanHistoryEventsDataResponseSchema = z.object({
-    data: z.array(LoanHistoryEventSchema),
+const loanHistoryEventsDataResponseSchemaRaw = z.object({
+    data: z.preprocess(
+        (val) => (val == null ? [] : val),
+        z.array(LoanHistoryEventSchema)
+    ),
     status: z.number(),
 });
 
-export type LoanHistoryEventsDataResponse = z.infer<typeof loanHistoryEventsDataResponseSchema>;
+export type LoanHistoryEventsDataResponse = z.infer<typeof loanHistoryEventsDataResponseSchemaRaw>;
+
+/** 
+ * Schema for API response; accepts data as array or null and normalizes to array. 
+ * Use with getValidated<LoanHistoryEventsDataResponse>. 
+ * */
+export const loanHistoryEventsDataResponseSchema =
+    loanHistoryEventsDataResponseSchemaRaw as ZodType<LoanHistoryEventsDataResponse>;
 
 export const getMockedLoanHistoryEventsData = (): LoanHistoryEvent[] => {
     return LoanHistoryEventSchema.array().parse(LOAN_HISTORY_EVENTS.data);

@@ -1,5 +1,5 @@
 import type { AxiosError } from "axios";
-import { ErrorMessages } from "./error-messages";
+import { ErrorMessages, ServiceErrorDisplayMessages } from "./error-messages";
 
 /**
  * Normalized domain error used across the app.
@@ -24,6 +24,13 @@ export class ServiceError extends Error {
 
     // Fix prototype chain (important for instanceof)
     Object.setPrototypeOf(this, ServiceError.prototype);
+  }
+
+  /**
+   * User-facing message for toasts/alerts. Prefers a mapped message for known codes.
+   */
+  getDisplayMessage(): string {
+    return ServiceErrorDisplayMessages[this.code] ?? this.message;
   }
 
   /**
@@ -108,6 +115,17 @@ export class ServiceError extends Error {
       status,
     });
   }
+}
+
+/**
+ * Get a user-facing message from any error (e.g. for toasts).
+ * Resolves ServiceError via getDisplayMessage(); otherwise returns fallback.
+ */
+export function getDisplayMessage(
+  err: unknown,
+  fallback: string = ErrorMessages.UNKNOWN_ERROR.msg
+): string {
+  return err instanceof ServiceError ? `${fallback}: ${err.getDisplayMessage()}` : fallback;
 }
 
 /**
