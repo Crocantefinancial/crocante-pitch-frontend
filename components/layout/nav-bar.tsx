@@ -2,6 +2,7 @@ import { Button } from "@/components/index";
 import { STAKE_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
 import { useIsMobile } from "@/hooks/use-is-mobile";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { useLogout } from "@/services/hooks/mutations/use-logout";
 import clsx from "clsx";
 import {
@@ -21,6 +22,13 @@ import {
 import { useRouter } from "next/navigation";
 
 export const MENU_ITEMS = [
+  { icon: Building2, label: "Portfolio", id: "portfolio" },
+  { icon: STAKE_ICON, label: "Staking", id: "staking" },
+  { icon: CreditCard, label: "Credit", id: "credit" },
+  { icon: Logs, label: "Activity", id: "activity" },
+];
+
+export const MENU_ITEMS_MOCK = [
   { icon: Building2, label: "Portfolio", id: "portfolio" },
   { icon: Lock, label: "Custody", id: "custody" },
   { icon: Zap, label: "Invest", id: "invest" },
@@ -44,10 +52,12 @@ export default function NavBar({
   sidebarOpen,
   setSidebarOpen,
 }: NavBarProps) {
+  const { sessionMode } = useSessionMode();
   const { user } = useSession();
   const router = useRouter();
   const isMobile = useIsMobile();
   const { mutate: logoutMutation } = useLogout();
+  const menuItems = sessionMode === "mock" ? MENU_ITEMS_MOCK : MENU_ITEMS;
   return (
     <div
       className={`${sidebarOpen ? "w-64" : "w-20"
@@ -88,7 +98,7 @@ export default function NavBar({
 
       {/* Menu Items */}
       <nav className="flex-1 overflow-y-auto py-4">
-        {MENU_ITEMS.map((item) => {
+        {menuItems.map((item) => {
           const Icon = item.icon;
           const isActive = activeMenu === item.id;
           return (
