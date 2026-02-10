@@ -9,6 +9,7 @@ import {
 
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { useSelector } from "@/hooks/use-selector";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { Plus } from "lucide-react";
 
 enum TabValues {
@@ -21,6 +22,7 @@ enum TabValues {
 
 export default function TabsSection() {
   const isMobile = useIsMobile();
+  const { sessionMode } = useSessionMode();
   type TabType = (typeof TabValues)[keyof typeof TabValues];
   const { selectedRow, change: changeTabSelection } = useSelector<TabType>(
     TabValues,
@@ -45,23 +47,25 @@ export default function TabsSection() {
   };
 
   return (
-    <div className="bg-card rounded-lg p-6">
-      <div className="flex items-end justify-between mb-6 gap-2">
-        <Tabs
-          TabValues={TabValues}
-          selectedRow={selectedRow}
-          onChange={changeTabSelection}
-        />
-        <Button variant="primary" className="text-sm mb-1">
-          <Plus className="w-4 h-4" />
-          {!isMobile && "Add New"}
-        </Button>
-      </div>
+    sessionMode !== "mock" ? null : (
+      <div className="bg-card rounded-lg p-6">
+        <div className="flex items-end justify-between mb-6 gap-2">
+          <Tabs
+            TabValues={TabValues}
+            selectedRow={selectedRow}
+            onChange={changeTabSelection}
+          />
+          <Button variant="primary" className="text-sm mb-1">
+            <Plus className="w-4 h-4" />
+            {!isMobile && "Add New"}
+          </Button>
+        </div>
 
-      {/* Table */}
-      <div className="bg-background rounded-lg overflow-hidden">
-        {renderTable()}
+        {/* Table */}
+        <div className="bg-background rounded-lg overflow-hidden">
+          {renderTable()}
+        </div>
       </div>
-    </div>
+    )
   );
 }

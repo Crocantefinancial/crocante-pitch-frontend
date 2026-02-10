@@ -130,7 +130,7 @@ export function getFormattedPortfolioData(
         amount: asset.total,
         available: asset.available,
         value: asset.estValue,
-        change: "0",
+        change: asset.estPrice,
       };
     }
   );
