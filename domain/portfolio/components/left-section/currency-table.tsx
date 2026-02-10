@@ -28,7 +28,7 @@ export default function CurrencyTable() {
         },
         {
           id: "changeHeader",
-          label: "24h",
+          label: "Change",
           className: "text-right",
         },
       ]}

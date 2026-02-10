@@ -10,7 +10,7 @@ export async function invalidatePortfolioQueries(userId: string): Promise<void> 
   const invalidateQueries = () => {
     return Promise.all([
       queryClient.invalidateQueries({ queryKey: ["netWorth", userId] }),
-      queryClient.invalidateQueries({ queryKey: ["portfolioData"] }),
+      queryClient.invalidateQueries({ queryKey: ["portfolioData", userId] }),
       queryClient.invalidateQueries({ queryKey: ["availables", userId] }),
       queryClient.invalidateQueries({ queryKey: ["conversionPairs", userId] }),
       queryClient.invalidateQueries({ queryKey: ["activity", userId] }),
