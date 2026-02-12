@@ -3,6 +3,7 @@ import { Button, Label, Modal, Select } from "@/components/index";
 import { getTokenLogo } from "@/components/token-icons";
 import { useIsMobile } from "@/hooks/use-is-mobile";
 import { getShortAddress, NetworkConfig } from "@/lib/network";
+import { formatToMaxDefinition } from "@/lib/utils";
 import clsx from "clsx";
 import { CheckIcon, CopyIcon } from "lucide-react";
 import { QRCodeSVG } from "qrcode.react";
@@ -75,7 +76,7 @@ export default function DepositModal({
               className={clsx(
                 "text-sm w-full items-center justify-center",
                 isAddressCopied &&
-                  "!text-textSuccess hover:!bg-secondary hover:!border-secondary"
+                "!text-textSuccess hover:!bg-secondary hover:!border-secondary"
               )}
             >
               {isAddressCopied ? (
@@ -139,9 +140,7 @@ export default function DepositModal({
               className="!text-normal !text-textLight"
             />
             <Label
-              label={`Minimal deposit: ${
-                networkSelector.options[networkSelector.selectedIndex]?.value
-              }.`}
+              label={`Minimal deposit: ${formatToMaxDefinition(Number(networkSelector.options[networkSelector.selectedIndex]?.value), tokenSelector.options[tokenSelector.selectedIndex]?.label).toString()} ${tokenSelector.options[tokenSelector.selectedIndex]?.label}.`}
               className="!text-normal !text-textLight"
             />
           </div>

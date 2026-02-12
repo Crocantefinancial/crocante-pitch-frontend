@@ -1,6 +1,6 @@
-import { Skeleton } from "@/components/index";
 import { SelectOption } from "@/components/core/select";
 import { ToastType } from "@/components/core/toast";
+import { Skeleton } from "@/components/index";
 import { useToast } from "@/context/toast-provider";
 import { LoanComponent } from "@/domain/credit";
 import { useLoanData } from "@/domain/credit/hooks/use-loan-data";
@@ -123,7 +123,7 @@ export default function Credit() {
             {
                 onSuccess: (data) => {
                     showToast(
-                        `Loan successful. Liquidation price: ${formatToMaxDefinition(Number(data.liqPrice))} ${data.sizeCurrencyId}/${data.collatCurrencyId}`,
+                        `Loan successful. Liquidation price: ${formatToMaxDefinition(Number(data.liqPrice), data.sizeCurrencyId)} ${data.sizeCurrencyId}/${data.collatCurrencyId}`,
                         ToastType.SUCCESS
                     );
                 },

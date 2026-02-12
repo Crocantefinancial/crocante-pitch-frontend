@@ -9,7 +9,7 @@ import { SWAP_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
 import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
-import { parseValue } from "@/lib/utils";
+import { formatToMaxDefinition, parseValue } from "@/lib/utils";
 import { ArrowDown, ArrowUpDown, Loader2 } from "lucide-react";
 import { useEffect, useState } from "react";
 
@@ -133,7 +133,7 @@ export default function SwapModal({
           )}
           {conditionsSuccess && (
             <span className="text-secondary-foreground text-xs italic">
-              (Fee: {Number(commissionRate) * Number(value)} {tokenSwapLabel})
+              (Fee: {formatToMaxDefinition(Number(commissionRate) * Number(value), tokenSwapLabel).toString()} {tokenSwapLabel})
             </span>
           )}
         </Button>

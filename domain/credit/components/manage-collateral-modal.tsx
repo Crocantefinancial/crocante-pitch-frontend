@@ -140,19 +140,20 @@ export default function ManageCollateralModal({
           />
           <Label
             label="Loan Collateral"
-            secondaryLabel={`${loanData.collat} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.collateral || ""}
           />
           <Label
             label="Withdrawable Collateral"
-            secondaryLabel={`${loanData.withdrawableCollat} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.withdrawableCollat || ""}
           />
           <Label
             label="Minimum Collateral"
-            secondaryLabel={`${loanData.minCollat} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.minCollat || ""}
+
           />
           <Label
             label="Available Collateral"
-            secondaryLabel={`${loanData.availableCollateral} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.availableCollateral || ""}
           />
         </div>
 
@@ -172,8 +173,8 @@ export default function ManageCollateralModal({
           setValueLoan={setValueLoan}
           maxValueCollateral={
             selectedRow === TabValues.Withdraw
-              ? loanData.withdrawableCollat.toString()
-              : loanData.availableCollateral.toString()
+              ? loanData.formattedWithdrawableCollat
+              : loanData.formattedAvailableCollateral
           }
         />
       </div>

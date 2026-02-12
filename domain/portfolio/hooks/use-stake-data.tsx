@@ -1,5 +1,6 @@
 import { POLL_STAKING_TYPE_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
+import { formatToMaxDefinition } from "@/lib/utils";
 import { useStakingType } from "@/services/hooks/use-staking-type";
 import { useMemo } from "react";
 import { TokenType, usePortfolioData } from "./use-portfolio-data";
