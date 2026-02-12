@@ -1,4 +1,5 @@
 import { POLL_TOKEN_CONVERSION_INTERVAL } from "@/config/constants";
+import { formatToMaxDefinition } from "@/lib/utils";
 import { useTokenValuation } from "@/services/hooks/use-token-valuation";
 import { useCallback } from "react";
 
@@ -13,7 +14,7 @@ export function useTokenConversion(userId: string, token: string) {
   const convertToUSD = useCallback(
     (value: string): string => {
       if (!value || conversionRate === 0) return "0";
-      const result = Number(value) * conversionRate;
+      const result = formatToMaxDefinition(Number(value) * conversionRate, "USD");
       return isNaN(result) || !isFinite(result) ? "0" : result.toString();
     },
     [conversionRate]
@@ -22,7 +23,7 @@ export function useTokenConversion(userId: string, token: string) {
   const convertFromUSD = useCallback(
     (usdValue: string): string => {
       if (!usdValue || conversionRate === 0) return "0";
-      const result = Number(usdValue) / conversionRate;
+      const result = formatToMaxDefinition(Number(usdValue) / conversionRate, token);
       return isNaN(result) || !isFinite(result) ? "0" : result.toString();
     },
     [conversionRate]

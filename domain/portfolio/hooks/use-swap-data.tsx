@@ -2,6 +2,7 @@ import { SelectOption } from "@/components/core/select";
 import { getTokenLogo } from "@/components/token-icons";
 import { POLL_AVAILABLES_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
+import { formatToMaxDefinition } from "@/lib/utils";
 import { ConversionPairsData } from "@/services/hooks/types/conversion-pairs-data";
 import { useAvailables } from "@/services/hooks/use-availables";
 import { useConversionPairs } from "@/services/hooks/use-conversion-pairs";
@@ -40,7 +41,7 @@ export function useSwapData(selectedTokenFrom: string) {
       options.push({
         label: currency.id,
         id: currency.id,
-        value: currency.amount, // amount - token units
+        value: formatToMaxDefinition(Number(currency.amount), currency.id).toString(), // amount - token units
         icon: token.icon,
       });
     });
@@ -74,7 +75,7 @@ export function useSwapData(selectedTokenFrom: string) {
         options.push({
           label: currency.destId,
           id: currency.destId,
-          value: currency.feePercent,
+          value: formatToMaxDefinition(Number(currency.feePercent), currency.destId).toString(),
           icon: token.icon,
         });
       }

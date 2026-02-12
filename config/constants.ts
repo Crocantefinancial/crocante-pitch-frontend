@@ -13,3 +13,9 @@ export const POLL_LOANS_ACTIVITY_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_LIABILITY_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_LOANS_TYPE_DATA_INTERVAL = 1000 * 60 * 5; // 5 minutes
 export const POLL_LOAN_HISTORY_EVENTS_INTERVAL = 1000 * 60 * 5; // 5 minutes
+
+export const TOKENS_MAX_DEFINITION = {
+    "BTC": 6,
+    "ETH": 4,
+    "DEFAULT": 2,
+}

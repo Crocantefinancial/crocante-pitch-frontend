@@ -1,4 +1,5 @@
 import { POLL_QUOTE_INTERVAL } from "@/config/constants";
+import { formatToMaxDefinition } from "@/lib/utils";
 import { useQuote } from "@/services/hooks/use-quote";
 import { useCallback } from "react";
 
@@ -24,7 +25,7 @@ export function useTokenSwap(
   const convertTo = useCallback(
     (valueFrom: string): string => {
       if (!valueFrom || conversionRateFrom === 0) return "0";
-      const result = Number(valueFrom) * conversionRateFrom;
+      const result = formatToMaxDefinition(Number(valueFrom) * conversionRateFrom, tokenTo);
       return isNaN(result) || !isFinite(result) ? "0" : result.toString();
     },
     [conversionRateFrom]
@@ -33,7 +34,7 @@ export function useTokenSwap(
   const convertFrom = useCallback(
     (valueTo: string): string => {
       if (!valueTo || conversionRateFrom === 0) return "0";
-      const result = Number(valueTo) / conversionRateFrom;
+      const result = formatToMaxDefinition(Number(valueTo) / conversionRateFrom, tokenFrom);
       return isNaN(result) || !isFinite(result) ? "0" : result.toString();
     },
     [conversionRateFrom]
@@ -44,7 +45,7 @@ export function useTokenSwap(
     convertFrom,
     conversionRateFrom,
     commissionRate: quote?.edge.pair.LastConfig.takerFeePercent,
-    minAmount: quote?.estMinSize,
+    minAmount: formatToMaxDefinition(Number(quote?.estMinSize), tokenTo).toString(),
     isLoading: !quote,
   };
 }

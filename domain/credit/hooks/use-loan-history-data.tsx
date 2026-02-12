@@ -10,34 +10,42 @@ import { useMemo } from "react";
 export type UILoanHistoryDataType = {
   opId: string;
   id: string;
-  date: string;
-  subDate?: string;
   token: string;
   collateralToken: string;
-  availableToken: number;
-  availableCollateral: number;
-  amount: string;
-  subAmount?: string;
-  status: string;
-  debt: string;
-  debtSize: number;
-  overcollateralization: string;
-  closedAt: string;
   ratio: string;
-  liqPrice: string;
-  apr: string;
-  interest: string;
   tierNum: number;
   collat: string;
   minCollat: string;
-  withdrawableCollat: number;
   initialAPR: string;
   initialRatio: string;
   initialSize: string;
-  initialCollat: string;
   initialDebt: string;
   origFee: string;
   tiers: TiersType[];
+  availableToken: number;
+  availableCollateral: number;
+  withdrawableCollat: number;
+  debtSize: number;
+  formattedAvailableCollateral: string;
+  formattedWithdrawableCollat: string;
+  uiDisplay: {
+    date: string;
+    time?: string;
+    closedAt: string;
+    amount: string;
+    status: string;
+    debt: string;
+    overcollateralization: string;
+    liqPrice: string;
+    apr: string;
+    interest: string;
+    initialCollat: string;
+    collateral: string;
+    withdrawableCollat: string;
+    minCollat: string;
+    availableCollateral: string;
+    origFee: string;
+  }
 };
 
 export function useLoanHistoryData(page: number, status: string) {
@@ -64,39 +72,52 @@ export function useLoanHistoryData(page: number, status: string) {
       const date = formatDate(loan.operation.openedAt);
       const time = formatTime(loan.operation.openedAt);
       const dateClosed = loan.operation.closedAt ? formatDate(loan.operation.closedAt) : "";
+      const withdrawableCollat = Number(loan.collat) - Number(loan.minCollat);
+      const availableCollateral = Number(availablesData?.find(available => available.id === loan.collatCurrencyId)?.amount || "0");
 
       if (LoanOperationDataSchema.safeParse(loan).success) {
         return {
           opId: loan.operation.id,
           id: loan.operation.id,
-          date: date,
-          subDate: time,
           token: loan.sizeCurrencyId,
-          availableToken: Number(availablesData?.find(available => available.id === loan.sizeCurrencyId)?.amount || "0"),
           collateralToken: loan.collatCurrencyId,
-          availableCollateral: Number(availablesData?.find(available => available.id === loan.collatCurrencyId)?.amount || "0"),
-          amount: loan.size + " " + loan.sizeCurrencyId,
-          status: loan.lastUpdate.status === "REPAYED" ?
-            loan.lastUpdate.type === "REPAY" ? "Completed" : "Liquidated" :
-            loan.operation.status,
-          debt: loan.debt + " " + loan.sizeCurrencyId,
-          debtSize: Number(loan.debt),
-          closedAt: dateClosed,
-          overcollateralization: formatToMaxDefinition(Number(loan.ratio) * 100) + "%",
-          liqPrice: formatToMaxDefinition(Number(loan.liqPrice)) + " " + loan.sizeCurrencyId + "/" + loan.collatCurrencyId,
-          apr: formatToMaxDefinition(Number(loan.apr) * 100) + "%",
-          interest: loan.interest + " " + loan.sizeCurrencyId,
           tierNum: loan.tierNum,
           collat: loan.collat,
           minCollat: loan.minCollat,
-          withdrawableCollat: Number(loan.collat) - Number(loan.minCollat),
           initialAPR: loan.initialAPR,
           initialRatio: loan.initialRatio,
           initialSize: loan.initialSize,
-          initialCollat: loan.initialCollat + " " + loan.collatCurrencyId,
           initialDebt: loan.initialDebt,
           origFee: loan.origFee,
           tiers: loan.tiers,
+          availableToken: Number(availablesData?.find(available => available.id === loan.sizeCurrencyId)?.amount || "0"),
+          availableCollateral: availableCollateral,
+          withdrawableCollat: withdrawableCollat,
+          formattedAvailableCollateral: formatToMaxDefinition(availableCollateral, loan.collatCurrencyId).toString(),
+          formattedWithdrawableCollat: formatToMaxDefinition(withdrawableCollat, loan.collatCurrencyId).toString(),
+          debtSize: Number(loan.debt),
+
+          uiDisplay: {
+            date: date,
+            //subDate: time,
+            time: time,
+            closedAt: dateClosed,
+            amount: formatToMaxDefinition(Number(loan.size), loan.sizeCurrencyId) + " " + loan.sizeCurrencyId,
+            status: loan.lastUpdate.status === "REPAYED" ?
+              loan.lastUpdate.type === "REPAY" ? "Completed" : "Liquidated" :
+              loan.operation.status,
+            debt: formatToMaxDefinition(Number(loan.debt), loan.sizeCurrencyId) + " " + loan.sizeCurrencyId,
+            overcollateralization: formatToMaxDefinition(Number(loan.ratio) * 100, loan.sizeCurrencyId) + "%",
+            liqPrice: formatToMaxDefinition(Number(loan.liqPrice), loan.sizeCurrencyId) + " " + loan.sizeCurrencyId + "/" + loan.collatCurrencyId,
+            apr: formatToMaxDefinition(Number(loan.apr) * 100, loan.sizeCurrencyId) + "%",
+            interest: formatToMaxDefinition(Number(loan.interest), loan.sizeCurrencyId) + " " + loan.sizeCurrencyId,
+            initialCollat: formatToMaxDefinition(Number(loan.initialCollat), loan.collatCurrencyId) + " " + loan.collatCurrencyId,
+            collateral: `${formatToMaxDefinition(Number(loan.collat), loan.collatCurrencyId)} ${loan.collatCurrencyId}` || "",
+            withdrawableCollat: `${formatToMaxDefinition(withdrawableCollat, loan.collatCurrencyId)} ${loan.collatCurrencyId}` || "",
+            minCollat: `${formatToMaxDefinition(Number(loan.minCollat), loan.collatCurrencyId)} ${loan.collatCurrencyId}` || "",
+            availableCollateral: `${formatToMaxDefinition(availableCollateral, loan.collatCurrencyId)} ${loan.collatCurrencyId}` || "",
+            origFee: formatToMaxDefinition(Number(loan.origFee), loan.sizeCurrencyId, 3) + " " + loan.sizeCurrencyId,
+          }
         } as UILoanHistoryDataType;
       }
       return {} as UILoanHistoryDataType;

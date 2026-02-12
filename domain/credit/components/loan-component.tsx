@@ -3,7 +3,6 @@ import { Button, InputSelectorToken, Label, Tabs } from "@/components/index";
 import { useSession } from "@/context/session-provider";
 import { useTokenSwap } from "@/hooks/use-token-swap";
 import { useValueVerifier } from "@/hooks/use-value-verifier";
-import { formatToMaxDefinition, parseValue } from "@/lib/utils";
 import { LoanTypeData } from "@/services/hooks/types/loan-type-data";
 import { ChangeEvent, useEffect } from "react";
 import { LoanSelectedData } from "../hooks/use-loan-selected-data";
@@ -47,8 +46,6 @@ export default function LoanComponent({
     {} as Record<string, string>
   );
 
-  const maxPossibleLoan = parseValue(loanSelectedData.maxPossibleLoan);
-  const parsedMinValue = parseValue(loanSelectedData.minLoanValue);
 
   const { user } = useSession();
   const userId = user?.id.toString() || "";
@@ -76,8 +73,8 @@ export default function LoanComponent({
 
   const { isValid: isValidValue } = useValueVerifier({
     value,
-    min: Number(parsedMinValue),
-    max: Number(maxPossibleLoan),
+    min: Number(loanSelectedData.parsedMinLoanValue),
+    max: Number(loanSelectedData.parsedMaxPossibleLoan),
     requireNonZero: true,
   });
 
@@ -99,15 +96,17 @@ export default function LoanComponent({
             <Label
               className={itemsClassName}
               label="APY:"
-              secondaryLabel={`${formatToMaxDefinition(Number(loanSelectedData.item.apr) * 100)}% yearly`}
+              secondaryLabel={loanSelectedData.item.aprDisplay}
             />
             <Label
               className={itemsClassName}
-              label="Overcollateralization:" secondaryLabel={`${formatToMaxDefinition(loanSelectedData.overcollateralizationRate * 100)}%`}
+              label="Overcollateralization:"
+              secondaryLabel={loanSelectedData.overcollateralizationDisplay}
             />
             <Label
               className={itemsClassName}
-              label="Origination Fee:" secondaryLabel={`${formatToMaxDefinition(loanSelectedData.originationFeeRate * 100)}%`}
+              label="Origination Fee:"
+              secondaryLabel={loanSelectedData.originationFeeRateDisplay}
             />
           </div>
         </div>
@@ -116,35 +115,32 @@ export default function LoanComponent({
             <Label
               className={itemsClassName}
               label="Origination Cost:"
-              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.originationCost)} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={loanSelectedData.originationCostDisplay}
             />
             <Label
               className={itemsClassName}
               label="Overcollateralization:"
-              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.overcollateralizationCost)} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={loanSelectedData.overcollateralizationCostDisplay}
             />
             <Label
               className={itemsClassName}
               label="Loan Total Cost:"
-              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.loanTotalCost)} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={loanSelectedData.loanTotalCostDisplay}
             />
             <Label
               className={itemsClassName}
               label="Collateral:"
-              secondaryLabel={`${Number(collateralValue)} ${loanSelectedData.collateralLabel}`}
+              secondaryLabel={loanSelectedData.collateralValueDisplay}
             />
             <Label
               className={itemsClassName}
               label="Liquidation Price:"
-              secondaryLabel={`
-                ${formatToMaxDefinition(loanSelectedData.liquidationPrice)} 
-                ${loanSelectedData.tokenLabel}/${loanSelectedData.collateralLabel}
-              `}
+              secondaryLabel={loanSelectedData.liquidationPriceDisplay}
             />
             <Label
               className={itemsClassName}
               label="Daily Cost:"
-              secondaryLabel={`${formatToMaxDefinition(loanSelectedData.dailyCost)} ${loanSelectedData.tokenLabel}`}
+              secondaryLabel={loanSelectedData.dailyCostDisplay}
             />
           </div>
         </div>
@@ -162,8 +158,8 @@ export default function LoanComponent({
             onChangeValue={(e) => handleChangeValue(e.target.value)}
             maxValue={loanSelectedData.maxPossibleLoan}
             minValue={loanSelectedData.minLoanValue}
-            onMaxClick={() => handleChangeValue(maxPossibleLoan)}
-            onMinClick={() => handleChangeValue(parsedMinValue)}
+            onMaxClick={() => handleChangeValue(loanSelectedData.parsedMaxPossibleLoan)}
+            onMinClick={() => handleChangeValue(loanSelectedData.parsedMinLoanValue)}
             tokenCode={loanSelectedData.tokenLabel}
             selectorProps={assetSelector}
           />

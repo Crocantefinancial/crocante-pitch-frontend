@@ -1,7 +1,7 @@
 import { POLL_ACTIVITY_DATA_INTERVAL } from "@/config/constants";
 import { DEPOSIT_ICON, LOAN_ICON, STAKE_ICON, SWAP_ICON, WITHDRAWAL_ICON } from "@/config/operation-icons";
 import { useSession } from "@/context/session-provider";
-import { formatDate, formatTime } from "@/lib/utils";
+import { formatDate, formatTime, formatToMaxDefinition } from "@/lib/utils";
 import { AdminOperationDataSchema, ConvertDataSchema, CryptoOperationDataSchema, LoanOperationDataSchema, StakingDataSchema, TransferOperationDataSchema } from "@/services/hooks/types/activity-data";
 import { useActivity } from "@/services/hooks/use-activity";
 import { useMemo } from "react";
@@ -9,12 +9,14 @@ import { useMemo } from "react";
 export type UIActivityDataType = {
   id: string;
   type: string;
-  opIcon: React.ReactNode;
-  date: string;
-  subDate?: string;
-  amount: string;
-  subAmount?: string;
   status: string;
+  uiDisplay: {
+    opIcon: React.ReactNode;
+    amount: string;
+    subAmount?: string;
+    date: string;
+    time?: string;
+  }
 };
 
 export function useActivityData(page: number, status: string[], txType: string[]) {
@@ -82,11 +84,13 @@ export function useActivityData(page: number, status: string[], txType: string[]
         return {
           id: instantiatedActivity.operation.id,
           type,
-          opIcon,
-          amount: amount + " " + instantiatedActivity.currencyId,
           status: instantiatedActivity.operation.status,
-          date: date,
-          subDate: time
+          uiDisplay: {
+            opIcon,
+            amount: formatToMaxDefinition(Number(amount), instantiatedActivity.currencyId).toString() + " " + instantiatedActivity.currencyId,
+            date: date,
+            time: time
+          }
         } as UIActivityDataType;
       }
       if (ConvertDataSchema.safeParse(activity).success) {
@@ -94,12 +98,14 @@ export function useActivityData(page: number, status: string[], txType: string[]
         return {
           id: instantiatedActivity.operation.id,
           type,
-          opIcon,
-          amount: instantiatedActivity.grossCreditAmount + " " + instantiatedActivity.creditCurrencyID,
-          subAmount: instantiatedActivity.debitAmount + " " + instantiatedActivity.debitCurrencyID,
           status: instantiatedActivity.operation.status,
-          date: date,
-          subDate: time
+          uiDisplay: {
+            opIcon,
+            amount: formatToMaxDefinition(Number(instantiatedActivity.grossCreditAmount), instantiatedActivity.creditCurrencyID).toString() + " " + instantiatedActivity.creditCurrencyID,
+            subAmount: formatToMaxDefinition(Number(instantiatedActivity.debitAmount), instantiatedActivity.debitCurrencyID).toString() + " " + instantiatedActivity.debitCurrencyID,
+            date: date,
+            time: time
+          }
         } as UIActivityDataType;
       }
       if (StakingDataSchema.safeParse(activity).success) {
@@ -107,11 +113,13 @@ export function useActivityData(page: number, status: string[], txType: string[]
         return {
           id: instantiatedActivity.operation.id,
           type,
-          opIcon,
-          amount: instantiatedActivity.initialAmount + " " + instantiatedActivity.type.currencyId,
           status: instantiatedActivity.operation.status,
-          date: date,
-          subDate: time
+          uiDisplay: {
+            opIcon,
+            amount: formatToMaxDefinition(Number(instantiatedActivity.initialAmount), instantiatedActivity.type.currencyId).toString() + " " + instantiatedActivity.type.currencyId,
+            date: date,
+            time: time
+          }
         } as UIActivityDataType;
       }
       if (CryptoOperationDataSchema.safeParse(activity).success) {
@@ -120,11 +128,13 @@ export function useActivityData(page: number, status: string[], txType: string[]
         return {
           id: instantiatedActivity.operation.id,
           type,
-          opIcon,
-          amount: amount + " " + instantiatedActivity.currencyId,
           status: instantiatedActivity.operation.status,
-          date: date,
-          subDate: time,
+          uiDisplay: {
+            opIcon,
+            amount: formatToMaxDefinition(Number(amount), instantiatedActivity.currencyId).toString() + " " + instantiatedActivity.currencyId,
+            date: date,
+            time: time,
+          }
         } as UIActivityDataType;
       }
       if (LoanOperationDataSchema.safeParse(activity).success) {
@@ -132,11 +142,13 @@ export function useActivityData(page: number, status: string[], txType: string[]
         return {
           id: instantiatedActivity.operation.id,
           type,
-          opIcon,
-          amount: instantiatedActivity.repayed + " " + instantiatedActivity.sizeCurrencyId,
           status: instantiatedActivity.operation.status,
-          date: formatDate(instantiatedActivity.lastUpdate.createdAt),
-          subDate: formatTime(instantiatedActivity.lastUpdate.createdAt),
+          uiDisplay: {
+            opIcon,
+            amount: formatToMaxDefinition(Number(instantiatedActivity.repayed), instantiatedActivity.sizeCurrencyId).toString() + " " + instantiatedActivity.sizeCurrencyId,
+            date: formatDate(instantiatedActivity.lastUpdate.createdAt),
+            time: formatTime(instantiatedActivity.lastUpdate.createdAt),
+          }
         } as UIActivityDataType;
       }
       if (TransferOperationDataSchema.safeParse(activity).success) {
@@ -144,11 +156,13 @@ export function useActivityData(page: number, status: string[], txType: string[]
         return {
           id: instantiatedActivity.operation.id,
           type,
-          opIcon,
-          amount: instantiatedActivity.netAmount + " " + instantiatedActivity.currencyId,
           status: instantiatedActivity.operation.status,
-          date: formatDate(instantiatedActivity.operation.updatedAt),
-          subDate: formatTime(instantiatedActivity.operation.updatedAt),
+          uiDisplay: {
+            opIcon,
+            amount: formatToMaxDefinition(Number(instantiatedActivity.netAmount), instantiatedActivity.currencyId).toString() + " " + instantiatedActivity.currencyId,
+            date: formatDate(instantiatedActivity.operation.updatedAt),
+            time: formatTime(instantiatedActivity.operation.updatedAt),
+          }
         } as UIActivityDataType;
       }
       return {} as UIActivityDataType;

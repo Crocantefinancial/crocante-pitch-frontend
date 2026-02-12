@@ -53,19 +53,19 @@ export default function ActivityTable() {
               {
                 id: "type",
                 value: tx.type.charAt(0).toUpperCase() + tx.type.slice(1).toLowerCase(),
-                leftIcon: () => tx.opIcon,
+                leftIcon: () => tx.uiDisplay.opIcon,
                 className: "text-left",
               },
               {
                 id: "date",
-                value: tx.date,
-                subtitle: tx.subDate,
+                value: tx.uiDisplay.date,
+                subtitle: tx.uiDisplay.time,
                 className: "text-center",
               },
               {
                 id: "amount",
-                value: tx.amount,
-                subtitle: tx.subAmount,
+                value: tx.uiDisplay.amount,
+                subtitle: tx.uiDisplay.subAmount,
                 className: "text-center",
               },
               {

@@ -3,23 +3,26 @@
 import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
 import { useEffect, useState } from "react";
 
+/** Default so SSR and first client paint match (no localStorage on server). */
+const SESSION_MODE_DEFAULT = "none";
+
 export function useSessionMode() {
-  const [sessionMode, setSessionMode] = useState<string>(
-    () => LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "none"
-  );
+  const [sessionMode, setSessionMode] = useState<string>(SESSION_MODE_DEFAULT);
 
   useEffect(() => {
-    // Listen for storage events (cross-tab changes)
+    setSessionMode(
+      LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? SESSION_MODE_DEFAULT
+    );
+
     const handleStorageChange = (e: StorageEvent) => {
       if (e.key === LocalStorageKeys.SESSION_MODE) {
-        setSessionMode(e.newValue ?? "none");
+        setSessionMode(e.newValue ?? SESSION_MODE_DEFAULT);
       }
     };
 
-    // Listen for custom event (same-tab changes)
     const handleCustomStorageChange = () => {
       setSessionMode(
-        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? "none"
+        LocalStorageManager.getItem(LocalStorageKeys.SESSION_MODE) ?? SESSION_MODE_DEFAULT
       );
     };
 

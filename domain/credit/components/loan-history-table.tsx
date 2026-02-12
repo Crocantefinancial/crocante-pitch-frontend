@@ -26,7 +26,7 @@ export default function LoanHistoryTable() {
   const [isActive, setIsActive] = useState(false);
 
   const isActiveLoan = (loan: UILoanHistoryDataType) => {
-    return loan.closedAt === "" || loan.closedAt === null;
+    return loan.uiDisplay.closedAt === "" || loan.uiDisplay.closedAt === null;
   }
 
   const handleLoanSelected = (loan: UILoanHistoryDataType) => {
@@ -92,22 +92,22 @@ export default function LoanHistoryTable() {
             cells: [
               {
                 id: "date",
-                value: loan.date,
+                value: loan.uiDisplay.date,
                 className: "text-center",
               },
               {
                 id: "closedAt",
-                value: loan.closedAt,
+                value: loan.uiDisplay.closedAt,
                 className: "text-center",
               },
               {
                 id: "amount",
-                value: loan.amount,
+                value: loan.uiDisplay.amount,
                 className: "text-center",
               },
               {
                 id: "yield",
-                value: loan.interest,
+                value: loan.uiDisplay.interest,
                 className: "text-center",
               },
               {
@@ -115,8 +115,8 @@ export default function LoanHistoryTable() {
                 className: "text-left",
                 leftIcon: () => (
                   <Badge
-                    label={loan.status.charAt(0).toUpperCase() + loan.status.slice(1).toLowerCase()}
-                    variant={loan.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
+                    label={loan.uiDisplay.status.charAt(0).toUpperCase() + loan.uiDisplay.status.slice(1).toLowerCase()}
+                    variant={loan.uiDisplay.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
                   />
                 ),
               },
@@ -176,28 +176,28 @@ export default function LoanHistoryTable() {
             cells: [
               {
                 id: "date",
-                value: loan.date,
-                subtitle: loan.subDate,
+                value: loan.uiDisplay.date,
+                subtitle: loan.uiDisplay.time,
                 className: "text-center",
               },
               {
                 id: "debt",
-                value: loan.debt,
+                value: loan.uiDisplay.debt,
                 className: "text-center",
               },
               {
                 id: "apr",
-                value: loan.apr,
+                value: loan.uiDisplay.apr,
                 className: "text-center",
               },
               {
                 id: "overcollateralization",
-                value: loan.overcollateralization,
+                value: loan.uiDisplay.overcollateralization,
                 className: "text-center",
               },
               {
                 id: "liqPrice",
-                value: loan.liqPrice,
+                value: loan.uiDisplay.liqPrice,
                 className: "text-center",
               },
               {
@@ -205,8 +205,8 @@ export default function LoanHistoryTable() {
                 className: "text-left",
                 leftIcon: () => (
                   <Badge
-                    label={loan.status.charAt(0).toUpperCase() + loan.status.slice(1).toLowerCase()}
-                    variant={loan.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
+                    label={loan.uiDisplay.status.charAt(0).toUpperCase() + loan.uiDisplay.status.slice(1).toLowerCase()}
+                    variant={loan.uiDisplay.status.toLocaleUpperCase() === "LIQUIDATED" ? "accent" : "primary"}
                   />
                 ),
               },
