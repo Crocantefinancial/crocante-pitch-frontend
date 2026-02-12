@@ -1,3 +1,4 @@
+import { formatToMaxDefinition } from "@/lib/utils";
 import {
   ASSET_ALLOCATION,
   ASSET_ALLOCATION_COLORS,
@@ -11,7 +12,6 @@ import {
   PORTFOLIO_DATA,
 } from "@/shared/mockups/portfolio";
 import { NetWorthData } from "./net-worth-data";
-
 export interface PortfolioDataResponse {
   totalBalance: number;
   cryptocurrencies: number;
@@ -127,10 +127,10 @@ export function getFormattedPortfolioData(
       return {
         code: asset.currency.id,
         name: asset.currency.name,
-        amount: asset.total,
-        available: asset.available,
-        value: asset.estValue,
-        change: asset.estPrice,
+        amount: formatToMaxDefinition(Number(asset.total), asset.currency.id).toString(),
+        available: formatToMaxDefinition(Number(asset.available), asset.currency.id).toString(),
+        value: formatToMaxDefinition(Number(asset.estValue), asset.currency.id).toString(),
+        change: formatToMaxDefinition(Number(asset.estPrice), asset.currency.id).toString(),
       };
     }
   );

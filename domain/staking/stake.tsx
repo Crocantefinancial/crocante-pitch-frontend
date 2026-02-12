@@ -1,4 +1,5 @@
 import { ToastType } from "@/components/core/toast";
+import { Skeleton } from "@/components/index";
 import { useToast } from "@/context/toast-provider";
 import {
   TokenType,
@@ -6,6 +7,7 @@ import {
 import { useStakeData } from "@/domain/portfolio/hooks/use-stake-data";
 import { StakeComponent } from "@/domain/staking";
 import { useSelector } from "@/hooks/use-selector";
+import { useSessionMode } from "@/hooks/use-session-mode";
 import { usePostStaking } from "@/services/hooks/mutations/use-post-staking";
 import { useEffect, useState } from "react";
 import StakeHistoryTable from "./components/stake-history-table";
@@ -14,7 +16,7 @@ export default function Stake() {
   const postStaking = usePostStaking();
   const { showToast } = useToast();
   const [selectedToken, setSelectedToken] = useState("");
-
+  const { sessionMode } = useSessionMode();
   const {
     tokens,
     tokensOptions,
@@ -100,11 +102,12 @@ export default function Stake() {
     }
   }, [selectedAsset]);
 
-  if (!tokens) return null;
+  if (!tokens) return <Skeleton lines={6} />;
 
   return (
     <div className="flex flex-col gap-8">
       <StakeComponent
+        sessionMode={sessionMode}
         isLoading={isLoadingStakeData}
         isStaking={postStaking.isPending}
         handleStake={handleStake}
@@ -124,7 +127,9 @@ export default function Stake() {
           options: stakingTypeOptions,
         }}
       />
-      <StakeHistoryTable />
+      <StakeHistoryTable
+        sessionMode={sessionMode}
+      />
     </div>
   );
 }

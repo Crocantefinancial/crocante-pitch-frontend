@@ -1,5 +1,4 @@
 import { Button, Label, Modal, Tabs, ToastType } from "@/components/index";
-import { useSession } from "@/context/session-provider";
 import { useToast } from "@/context/toast-provider";
 import { UILoanHistoryDataType } from "@/domain/credit/hooks/use-loan-history-data";
 import { useSelector } from "@/hooks/use-selector";
@@ -145,19 +144,19 @@ export default function ManageDebtModal({
           />
           <Label
             label="Loan Collateral"
-            secondaryLabel={`${loanData.collat} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.collateral || ""}
           />
           <Label
             label="Withdrawable Collateral"
-            secondaryLabel={`${loanData.withdrawableCollat} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.withdrawableCollat || ""}
           />
           <Label
             label="Minimum Collateral"
-            secondaryLabel={`${loanData.minCollat} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.minCollat || ""}
           />
           <Label
             label="Available Collateral"
-            secondaryLabel={`${loanData.availableCollateral} ${loanData.collateralToken}` || ""}
+            secondaryLabel={loanData.uiDisplay.availableCollateral || ""}
           />
         </div>
 

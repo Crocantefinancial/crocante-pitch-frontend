@@ -11,7 +11,7 @@ export function usePortfolio(userId: string, pollInterval: number) {
   const { data: netWorthData } = useNetWorth(userId, pollInterval);
   const { sessionMode } = useSessionMode();
   return useQuery<PortfolioDataResponse>({
-    queryKey: ["portfolioData"],
+    queryKey: ["portfolioData", userId],
     queryFn: async () => {
       if (sessionMode === "mock" || !netWorthData) {
         return getMockedPortfolioData();

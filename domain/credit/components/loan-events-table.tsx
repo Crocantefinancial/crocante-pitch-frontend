@@ -1,7 +1,5 @@
 import { Badge, Label, Table } from "@/components/index";
-import { POLL_LOAN_HISTORY_EVENTS_INTERVAL } from "@/config/constants";
-import { formatDate, formatTime, formatToMaxDefinition } from "@/lib/utils";
-import { useLoanHistoryEvents } from "@/services/hooks/use-loan-history-events";
+import { useLoanEventsData } from "../hooks/use-loan-events-data";
 
 interface LoanEventsTableProps {
     opId: string;
@@ -12,9 +10,7 @@ interface LoanEventsTableProps {
 }
 
 export default function LoanEventsTable({ opId, userId, isActive, loanTokenId, collateralTokenId }: LoanEventsTableProps) {
-    const { data: loanEventsData, isLoading: isLoadingLoanEvents } = useLoanHistoryEvents(
-        userId, opId, false, POLL_LOAN_HISTORY_EVENTS_INTERVAL
-    );
+    const { loanEventsData, isLoadingLoanEvents } = useLoanEventsData(userId, opId, loanTokenId, collateralTokenId);
 
     if (!loanEventsData || loanEventsData.length === 0) {
         return (
@@ -63,29 +59,29 @@ export default function LoanEventsTable({ opId, userId, isActive, loanTokenId, c
                         cells: [
                             {
                                 id: "date",
-                                value: formatDate(loan.createdAt),
-                                subtitle: formatTime(loan.createdAt),
+                                value: loan.uiDisplay.date,
+                                subtitle: loan.uiDisplay.time,
                                 className: "text-center",
                             },
                             loan.data.amount ?
                                 {
                                     id: "amount",
-                                    value: "-" + formatToMaxDefinition(Number(loan.data.amount)) + " " + loan.data.currencyId,
+                                    value: loan.uiDisplay.negativeAmount,
                                     className: "text-center",
                                 }
                                 : {
                                     id: "liqCollat",
-                                    value: "-" + formatToMaxDefinition(Number(loan.data.liqCollat)) + " " + collateralTokenId,
+                                    value: loan.uiDisplay.liqCollat,
                                     className: "text-center",
                                 },
                             {
                                 id: "liqCollatValue",
-                                value: loan.data.liqCollatValue ? "-" + formatToMaxDefinition(Number(loan.data.liqCollatValue)) + " " + loanTokenId : "",
+                                value: loan.uiDisplay.liqCollatValue,
                                 className: "text-center",
                             },
                             {
                                 id: "fee",
-                                value: loan.data.fee ? "-" + formatToMaxDefinition(Number(loan.data.fee)) + " " + loanTokenId : "",
+                                value: loan.uiDisplay.fee,
                                 className: "text-center",
                             },
                             {
@@ -139,13 +135,13 @@ export default function LoanEventsTable({ opId, userId, isActive, loanTokenId, c
                         cells: [
                             {
                                 id: "date",
-                                value: formatDate(loan.createdAt),
-                                subtitle: formatTime(loan.createdAt),
+                                value: loan.uiDisplay.date,
+                                subtitle: loan.uiDisplay.time,
                                 className: "text-center",
                             },
                             {
                                 id: "amount",
-                                value: formatToMaxDefinition(Number(loan.data.amount)) + " " + loan.data.currencyId,
+                                value: loan.uiDisplay.amount,
                                 className: "text-center",
                             },
                             {

@@ -1,20 +1,24 @@
 import { STAKING_TYPE } from "@/shared/mockups/staking-type";
 import { z } from "zod";
 
-export const StakingTypeDataSchema = z.array(z.object({
+export const StakingTypeItemSchema = z.object({
     id: z.string(),
     currencyId: z.string(),
     mode: z.enum(["VARIABLE", "FIXED"]),
     apy: z.string(),
     minAmount: z.string(),
     durationDays: z.number().optional(),
-}));
+});
+
+export type StakingTypeItem = z.infer<typeof StakingTypeItemSchema>;
+
+export const StakingTypeDataSchema = z.array(StakingTypeItemSchema);
 
 export type StakingTypeData = z.infer<typeof StakingTypeDataSchema>;
 
 export const stakingTypeDataResponseSchema = z.object({
-  data: StakingTypeDataSchema,
-  status: z.number(),
+    data: StakingTypeDataSchema,
+    status: z.number(),
 });
 
 export type StakingTypeDataResponse = z.infer<typeof stakingTypeDataResponseSchema>;

@@ -7,8 +7,11 @@ import { formatDate } from "@/lib/utils";
 import { usePostStakingRedeem } from "@/services/hooks/mutations/use-post-staking-redeem";
 import { useEffect, useState } from "react";
 
+interface StakeHistoryTableProps {
+  sessionMode: string;
+}
 
-export default function StakeHistoryTable() {
+export default function StakeHistoryTable({ sessionMode }: StakeHistoryTableProps) {
   const [pageLocal, setPageLocal] = useState(1);
   const {
     page,
@@ -120,13 +123,11 @@ export default function StakeHistoryTable() {
               {
                 id: "token",
                 value: tx.token,
-                subtitle: tx.subAmount,
                 className: "text-center",
               },
               {
                 id: "amount",
-                value: tx.amount,
-                subtitle: tx.subAmount,
+                value: tx.uiDisplay.amount,
                 className: "text-center",
               },
               {
@@ -187,7 +188,7 @@ export default function StakeHistoryTable() {
         <div className="flex flex-col gap-2 px-6">
           <Label
             label="Invested Amount"
-            secondaryLabel={selectedRedeemData?.amount || ""}
+            secondaryLabel={selectedRedeemData?.uiDisplay.amount || ""}
           />
           <Label
             label="APY"
@@ -213,23 +214,23 @@ export default function StakeHistoryTable() {
           }
           <Label
             label={selectedRedeemData?.status === "Redeemed" ? "Total Yield" : "Current Yield"}
-            secondaryLabel={selectedRedeemData?.yield || ""}
+            secondaryLabel={selectedRedeemData?.uiDisplay.yield || ""}
           />
           {selectedRedeemData?.status !== "Redeemed" && <Label
             label="Estimated Redeem Yield"
-            secondaryLabel={selectedRedeemData?.estRedeemYield || ""}
+            secondaryLabel={selectedRedeemData?.uiDisplay.estRedeemYield || ""}
           />
           }
           <Label
             label={selectedRedeemData?.status === "Redeemed" ? "Redeemed Amount" : "Redeemable Amount"}
-            secondaryLabel={selectedRedeemData?.redeemableAmount || ""}
+            secondaryLabel={selectedRedeemData?.uiDisplay.redeemableAmount || ""}
           />
         </div>
         <Button
           variant="primary"
           className="w-full justify-center mt-4"
           onClick={finalizeRedeem}
-          disabled={!selectedRedeemData || !isRedeemable}
+          disabled={!selectedRedeemData || !isRedeemable || sessionMode === "mock"}
         >
           Redeem
         </Button>

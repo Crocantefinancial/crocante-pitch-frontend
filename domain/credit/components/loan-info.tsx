@@ -13,44 +13,44 @@ export default function LoanInfo({ loanData, isActive = true }: LoanInfoProps) {
         <div className="flex flex-col gap-2">
             <Label
                 label="Invested Amount"
-                secondaryLabel={loanData?.amount || ""}
+                secondaryLabel={loanData?.uiDisplay.amount || ""}
             />
             <Label
                 label="Debt"
-                secondaryLabel={loanData?.debt || ""}
+                secondaryLabel={loanData?.uiDisplay.debt || ""}
             />
             <Label
                 label="APY"
-                secondaryLabel={loanData?.apr || ""}
+                secondaryLabel={loanData?.uiDisplay.apr || ""}
             />
             {!isActive ?
                 <Label
                     label="Yield"
-                    secondaryLabel={loanData?.interest || ""}
+                    secondaryLabel={loanData?.uiDisplay.interest || ""}
                 />
                 :
                 <Label
                     label="Overcollateralization"
-                    secondaryLabel={loanData?.overcollateralization || ""}
+                    secondaryLabel={loanData?.uiDisplay.overcollateralization || ""}
                 />
             }
             <Label
                 label="Opened At"
-                secondaryLabel={loanData?.date || ""}
+                secondaryLabel={loanData?.uiDisplay.date || ""}
             />
             {!isActive && <Label
                 label="Closed At"
-                secondaryLabel={loanData?.closedAt || ""}
+                secondaryLabel={loanData?.uiDisplay.closedAt || ""}
             />
             }
             <Label
                 label="Origination Fee"
-                secondaryLabel={loanData?.origFee || ""}
+                secondaryLabel={loanData?.uiDisplay.origFee || ""}
             />
             {!isActive &&
                 <Label
                     label="Initial Collateral"
-                    secondaryLabel={loanData?.initialCollat || ""}
+                    secondaryLabel={loanData?.uiDisplay.initialCollat || ""}
                 />
             }
         </div>

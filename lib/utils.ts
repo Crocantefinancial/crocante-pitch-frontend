@@ -1,3 +1,4 @@
+import { TOKENS_MAX_DEFINITION } from "@/config/constants";
 import envParsed from "@/config/envParsed";
 import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
@@ -39,9 +40,6 @@ export function parseValue(valueStr: string): string {
   return isNaN(numValue) || !isFinite(numValue) ? "0" : numValue.toString();
 }
 
-
-
-
 // Helper functions
 /* const roundToDecimals = (value: number, decimals: number): number => {
   return parseFloat(value.toFixed(decimals));
@@ -52,11 +50,12 @@ function truncateToDecimals(num: number, decimals: number): number {
   return Math.trunc(num * factor) / factor;
 }
 
-export const formatToMaxDefinition = (value: number | undefined | null): number => {
+export const formatToMaxDefinition = (value: number | undefined | null, token: string | undefined, forzedDecimals?: number): number => {
   if (value === undefined || value === null || isNaN(value)) {
     return 0;
   }
-  return truncateToDecimals(value, envParsed().MAX_DEFINITION);
+  const decimals = forzedDecimals || TOKENS_MAX_DEFINITION[token as keyof typeof TOKENS_MAX_DEFINITION] || TOKENS_MAX_DEFINITION["DEFAULT"];
+  return truncateToDecimals(value, decimals);
 };
 
 export const formatDate = (date: string): string => {

@@ -2,29 +2,46 @@ import { SelectOption } from "@/components/core/select";
 import { POLL_AVAILABLES_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
 import { useTokenSwap } from "@/hooks/use-token-swap";
+import { formatToMaxDefinition, parseValue } from "@/lib/utils";
 import { LoanTypeData } from "@/services/hooks/types/loan-type-data";
 import { useAvailableToken } from "@/services/hooks/use-available-token";
 import { useMemo } from "react";
+
+
+export type LoanItem = LoanTypeData["models"][number] & {
+    aprDisplay: string;
+}
 
 export interface LoanSelectedData {
     selectedLoan: string;
     selectedRow: string;
     selectedRowKey: string;
-    item: LoanTypeData["models"][number] | undefined;
+    //item: LoanTypeData["models"][number] | undefined;
+    item: LoanItem | undefined;
     overcollateralizationRate: number;
+    overcollateralizationDisplay: string;
     originationFeeRate: number;
+    originationFeeRateDisplay: string;
     loanTotalCost: number;
+    loanTotalCostDisplay: string;
+    originationCostDisplay: string;
     tokenLabel: string;
     collateralLabel: string;
+    collateralValueDisplay: string;
     availableCollat: number;
     minLoanValue: string;
     maxLoanValue: string;
     maxPossibleLoan: string;
+    parsedMaxPossibleLoan: string;
+    parsedMinLoanValue: string;
     liqThreshold: number;
     originationCost: number;
     overcollateralizationCost: number;
+    overcollateralizationCostDisplay: string;
     liquidationPrice: number;
+    liquidationPriceDisplay: string;
     dailyCost: number;
+    dailyCostDisplay: string;
     modelId: string;
 }
 
@@ -71,19 +88,29 @@ export function useLoanSelectedData(
                     selectedRowKey: "",
                     item: undefined,
                     overcollateralizationRate: 0,
+                    overcollateralizationDisplay: "",
                     originationFeeRate: 0,
+                    originationFeeRateDisplay: "",
+                    originationCostDisplay: "",
                     loanTotalCost: 0,
+                    loanTotalCostDisplay: "",
                     tokenLabel: "",
                     collateralLabel: "",
+                    collateralValueDisplay: "",
                     availableCollat: 0,
                     minLoanValue: "0",
                     maxLoanValue: "0",
                     maxPossibleLoan: "0",
+                    parsedMaxPossibleLoan: "0",
+                    parsedMinLoanValue: "0",
                     liqThreshold: 0,
                     originationCost: 0,
                     overcollateralizationCost: 0,
+                    overcollateralizationCostDisplay: "",
                     liquidationPrice: 0,
+                    liquidationPriceDisplay: "",
                     dailyCost: 0,
+                    dailyCostDisplay: "",
                     modelId: "",
                 },
                 isLoadingLoanSelectedData: false
@@ -93,7 +120,7 @@ export function useLoanSelectedData(
         const selectedRowKey = (Object.keys(LoanTypeValues).
             find(key => LoanTypeValues[key as keyof typeof LoanTypeValues] === selectedRow)) ?? "";
         const selectedRowIdx = selectedRowKey === "" ? -1 : Number(selectedRowKey);
-        const item = selectedRowIdx >= 0 ? loanData.models[selectedRowIdx] : undefined;
+        const item = selectedRowIdx >= 0 ? loanData.models[selectedRowIdx] as LoanItem : undefined;
         const overcollateralizationRate = Number(item?.ratio || 0);
         const originationFeeRate = Number(loanData.origFeePercent || 0);
         const loanTotalCost = (Number(value) + Number(value) * originationFeeRate) * overcollateralizationRate;
@@ -115,6 +142,24 @@ export function useLoanSelectedData(
         const overcollateralizationCost = (overcollateralizationRate * (Number(value) + originationCost)) - (Number(value));
         const liquidationPrice = liqThreshold * (Number(value) + originationCost) / Number(collateralValue);
         const dailyCost = (Number(item!.apr) * (Number(value) + originationCost) / 365);
+        const overcollateralizationDisplay = `${formatToMaxDefinition(overcollateralizationRate * 100, tokenLabel)}%`;
+        const originationFeeRateDisplay = `${formatToMaxDefinition(originationFeeRate * 100, tokenLabel)}%`;
+        const originationCostDisplay = `${formatToMaxDefinition(originationCost, tokenLabel)} ${tokenLabel}`;
+        const overcollateralizationCostDisplay = `${formatToMaxDefinition(overcollateralizationCost, tokenLabel)} ${tokenLabel}`;
+        const loanTotalCostDisplay = `${formatToMaxDefinition(loanTotalCost, tokenLabel)} ${tokenLabel}`;
+        const collateralValueDisplay = `${formatToMaxDefinition(Number(collateralValue), collateralLabel)} ${collateralLabel}`;
+        const liquidationPriceDisplay = `
+                ${formatToMaxDefinition(liquidationPrice, tokenLabel)} 
+                ${tokenLabel}/${collateralLabel}
+              `;
+        const dailyCostDisplay = `${formatToMaxDefinition(dailyCost, tokenLabel)} ${tokenLabel}`;
+        const parsedMaxPossibleLoan = parseValue(maxPossibleLoan);
+        const parsedMinLoanValue = parseValue(minLoanValue);
+
+
+        if (item) {
+            item.aprDisplay = `${formatToMaxDefinition(Number(item.apr) * 100, tokenLabel)}% yearly`;
+        }
 
         const loanSelectedData = {
             selectedLoan,
@@ -122,19 +167,29 @@ export function useLoanSelectedData(
             selectedRowKey,
             item,
             overcollateralizationRate,
+            overcollateralizationDisplay,
             originationFeeRate,
+            originationFeeRateDisplay,
+            originationCostDisplay,
             loanTotalCost,
+            loanTotalCostDisplay,
             tokenLabel,
             collateralLabel,
+            collateralValueDisplay,
             availableCollat: Number(availableCollateral),
             minLoanValue,
+            parsedMinLoanValue,
             maxLoanValue,
+            parsedMaxPossibleLoan,
             maxPossibleLoan,
             liqThreshold,
             originationCost,
             overcollateralizationCost,
+            overcollateralizationCostDisplay,
             liquidationPrice,
+            liquidationPriceDisplay,
             dailyCost,
+            dailyCostDisplay,
             modelId: loanData.id,
         };
         return { loanSelectedData, isLoadingLoanSelectedData: false };

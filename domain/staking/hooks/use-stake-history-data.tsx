@@ -1,6 +1,6 @@
 import { POLL_STAKING_DATA_INTERVAL } from "@/config/constants";
 import { useSession } from "@/context/session-provider";
-import { formatDate, formatTime } from "@/lib/utils";
+import { formatDate, formatTime, formatToMaxDefinition } from "@/lib/utils";
 import { StakingDataSchema } from "@/services/hooks/types/activity-data";
 import { useStaking } from "@/services/hooks/use-staking";
 import { useMemo } from "react";
@@ -11,8 +11,6 @@ export type UIStakeHistoryDataType = {
   date: string;
   subDate?: string;
   token: string;
-  amount: string;
-  subAmount?: string;
   duration: string;
   status: string;
   redeemableAmount: string;
@@ -21,6 +19,14 @@ export type UIStakeHistoryDataType = {
   yield: string;
   estRedeemYield: string;
   apy: string;
+  uiDisplay: {
+    amount: string;
+    subAmount?: string;
+    yield: string;
+    estRedeemYield: string;
+    redeemableAmount: string;
+
+  }
 };
 
 export function useStakeHistoryData(page: number, status: string) {
@@ -52,7 +58,6 @@ export function useStakeHistoryData(page: number, status: string) {
           date: date,
           subDate: time,
           token: instantiatedActivity.type.currencyId,
-          amount: instantiatedActivity.initialAmount + " " + instantiatedActivity.type.currencyId,
           redeemableAmount: instantiatedActivity.amount,
           status: instantiatedActivity.operation.status === "COMPLETED" ? "Redeemed" : instantiatedActivity.operation.status,
           duration: instantiatedActivity.type.durationDays ? `${instantiatedActivity.type.durationDays} Days` : instantiatedActivity.type.mode,
@@ -61,6 +66,13 @@ export function useStakeHistoryData(page: number, status: string) {
           yield: instantiatedActivity.yield,
           estRedeemYield: instantiatedActivity.estRedeemYield,
           apy: instantiatedActivity.apy,
+          uiDisplay: {
+            amount: formatToMaxDefinition(Number(instantiatedActivity.initialAmount), instantiatedActivity.type.currencyId).toString() + " " + instantiatedActivity.type.currencyId,
+            subAmount: formatToMaxDefinition(Number(instantiatedActivity.initialAmount), instantiatedActivity.type.currencyId).toString() + " " + instantiatedActivity.type.currencyId,
+            yield: formatToMaxDefinition(Number(instantiatedActivity.yield), instantiatedActivity.type.currencyId).toString() + " " + instantiatedActivity.type.currencyId,
+            estRedeemYield: formatToMaxDefinition(Number(instantiatedActivity.estRedeemYield), instantiatedActivity.type.currencyId).toString() + " " + instantiatedActivity.type.currencyId,
+            redeemableAmount: formatToMaxDefinition(Number(instantiatedActivity.amount), instantiatedActivity.type.currencyId).toString() + " " + instantiatedActivity.type.currencyId,
+          }
         } as UIStakeHistoryDataType;
       }
       return {} as UIStakeHistoryDataType;
