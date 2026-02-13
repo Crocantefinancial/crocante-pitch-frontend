@@ -1,3 +1,5 @@
+import envParsed from "@/config/envParsed";
+import { getBackendTokenFromRequest } from "@/lib/auth/cookies";
 import { NextRequest, NextResponse } from "next/server";
 
 type Ctx = { params: Promise<{ path: string[] }> | { path: string[] } };
@@ -9,7 +11,17 @@ function buildUpstreamUrl(req: NextRequest, base: string, pathParts: string[]) {
   return upstream.toString();
 }
 
-function forwardHeaders(req: NextRequest, proxyOrigin: string) {
+/** Require valid BFF session for these path prefixes (token injected by BFF). */
+function requiresAuth(pathParts: string[]) {
+  const first = pathParts[0] ?? "";
+  return first === "private";
+}
+
+function forwardHeaders(
+  req: NextRequest,
+  proxyOrigin: string,
+  backendToken: string | null
+) {
   const h = new Headers(req.headers);
 
   h.delete("host");
@@ -17,8 +29,12 @@ function forwardHeaders(req: NextRequest, proxyOrigin: string) {
   h.delete("content-length");
   h.delete("accept-encoding");
   h.delete("cookie");
+  h.delete("authorization"); // Never forward client auth; BFF injects token
 
-  // Optional origin spoof, controlled by env
+  if (backendToken) {
+    h.set("Authorization", `Bearer ${backendToken}`);
+  }
+
   if (proxyOrigin) {
     h.set("origin", proxyOrigin);
     h.set("referer", `${proxyOrigin.replace(/\/$/, "")}/`);
@@ -48,15 +64,14 @@ function isAllowedPath(pathParts: string[]) {
 }
 
 async function handler(req: NextRequest, ctx: Ctx) {
+  const env = envParsed();
   // gate FIRST, before touching required env vars
-  const appEnv =
-    process.env.APP_ENV ?? process.env.NEXT_PUBLIC_APP_ENV ?? "development";
+  const appEnv = env.APP_ENV ?? "development";
   if (appEnv !== "development") {
     return new NextResponse("Not Found", { status: 404 });
   }
 
-  const apiGateway =
-    process.env.API_GATEWAY ?? process.env.NEXT_PUBLIC_API_GATEWAY;
+  const apiGateway = env.API_GATEWAY;
   if (!apiGateway) {
     return NextResponse.json(
       { proxyError: true, message: "Missing API_GATEWAY env var" },
@@ -64,22 +79,36 @@ async function handler(req: NextRequest, ctx: Ctx) {
     );
   }
 
-  const proxyOrigin =
-    process.env.API_PROXY_ORIGIN ??
-    process.env.NEXT_PUBLIC_API_PROXY_ORIGIN ??
-    "";
+  const proxyOrigin = env.API_PROXY_ORIGIN ?? "";
 
   try {
-    const { path } = await ctx.params;
+    const resolved = await ctx.params;
+    // Ensure path is always string[] (Next may pass string in some cases)
+    const rawPath = resolved.path;
+    const pathSegments: string[] = Array.isArray(rawPath)
+      ? rawPath
+      : typeof rawPath === "string"
+        ? (rawPath as string).split("/").filter(Boolean)
+        : [];
 
-    // optional hardening
-    if (!isAllowedPath(path)) {
+    if (!isAllowedPath(pathSegments)) {
       return new NextResponse("Not Found", { status: 404 });
     }
 
-    const targetUrl = buildUpstreamUrl(req, apiGateway, path);
+    let backendToken: string | null = null;
+    if (requiresAuth(pathSegments)) {
+      backendToken = getBackendTokenFromRequest(req);
+      if (!backendToken) {
+        return new NextResponse(
+          JSON.stringify({ error: "Unauthorized", code: "SESSION_INVALID" }),
+          { status: 401, headers: { "Content-Type": "application/json" } }
+        );
+      }
+    }
+
+    const targetUrl = buildUpstreamUrl(req, apiGateway, pathSegments);
     const method = req.method.toUpperCase();
-    const headers = forwardHeaders(req, proxyOrigin);
+    const headers = forwardHeaders(req, proxyOrigin, backendToken);
 
     const body =
       method === "GET" || method === "HEAD"
@@ -94,6 +123,9 @@ async function handler(req: NextRequest, ctx: Ctx) {
     });
 
     const resHeaders = sanitizeResponseHeaders(upstreamRes.headers);
+    if (backendToken && appEnv === "development") {
+      resHeaders.set("X-BFF-Auth", "Bearer-sent");
+    }
     const bytes = await upstreamRes.arrayBuffer();
 
     return new NextResponse(bytes, {

@@ -10,12 +10,13 @@ function shouldTriggerAuthExpired(error: unknown) {
   // For example: TOKEN_EXPIRED / SESSION_INVALID
   const msg = error.message ?? "";
   return (
+    error.code === "SESSION_INVALID" ||
+    error.code === "NOT_AUTHENTICATED" ||
     msg.includes("token is expired") ||
     msg.includes("token has invalid claims") ||
     msg.includes("SESSION_INVALID") ||
     msg.includes("authorization header not found") ||
-    msg.includes("Not authenticated") ||
-    error.code === "NOT_AUTHENTICATED"
+    msg.includes("Not authenticated")
   );
 }
 

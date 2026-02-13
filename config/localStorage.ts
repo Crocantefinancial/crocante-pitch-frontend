@@ -1,5 +1,5 @@
+/** Client-only storage. Auth uses BFF + HttpOnly cookie; no token stored here. */
 export enum LocalStorageKeys {
-  TOKEN = "crocante_token",
   SESSION_MODE = "crocante_session_mode",
 }
 
@@ -24,7 +24,6 @@ export const LocalStorageManager = {
   },
   clearLocalStorage() {
     if (typeof window === "undefined") return;
-    localStorage.removeItem(LocalStorageKeys.TOKEN);
     localStorage.removeItem(LocalStorageKeys.SESSION_MODE);
   },
 };

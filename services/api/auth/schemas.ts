@@ -6,6 +6,7 @@ export const LoginRequestSchema = z.object({
   totpCode: z.string().min(1).optional().nullable(),
 });
 
+/** Backend auth response shape (token never sent to client; BFF returns { success: true }). */
 export const LoginResponseSchema = z.object({
   data: z.object({
     token: z.string(),
