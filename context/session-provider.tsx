@@ -1,7 +1,8 @@
 "use client";
 
 import { POLL_USER_DATA_INTERVAL } from "@/config/constants";
-import { LocalStorageKeys, LocalStorageManager } from "@/config/localStorage";
+import { LocalStorageManager } from "@/config/localStorage";
+import { LoginService } from "@/services/api/auth/login-service";
 import type { User } from "@/services/hooks/types/user-data";
 import { useUser } from "@/services/hooks/use-user";
 import { queryClient } from "@/services/react-query/query-client";
@@ -12,6 +13,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+import { SessionExpiryManager } from "./session-expiry-manager";
 
 type SessionContextType = {
   isSignedIn: boolean;
@@ -28,18 +30,17 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
     data: user,
     isLoading,
     isError,
-    error,
   } = useUser(POLL_USER_DATA_INTERVAL);
 
   const isSignedIn = !!user && !isError;
 
-  const setToken = useCallback((token: string) => {
-    LocalStorageManager.setItem(LocalStorageKeys.TOKEN, token);
+  const setToken = useCallback((_token: string) => {
+    // No-op: session is HttpOnly cookie; BFF owns token. Refresh user state if needed.
     queryClient.invalidateQueries({ queryKey: ["user", "me"] });
   }, []);
 
-  const logout = useCallback(() => {
-    LocalStorageManager.clearLocalStorage();
+  const logout = useCallback(async () => {
+    await LoginService.logout();
     queryClient.removeQueries({ queryKey: ["user", "me"] });
   }, []);
 
@@ -64,7 +65,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={value}>
+      <SessionExpiryManager />
+      {children}
+    </SessionContext.Provider>
   );
 }
 

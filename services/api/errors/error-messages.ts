@@ -138,4 +138,5 @@ export function isTOTPError(code: string): boolean {
  */
 export const ServiceErrorDisplayMessages: Record<string, string> = {
   BALANCE_NOT_ENOUGH: "Not enough balance",
+  SESSION_INVALID: "Your session has expired. Please log in again.",
 };

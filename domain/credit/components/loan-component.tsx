@@ -78,9 +78,17 @@ export default function LoanComponent({
     requireNonZero: true,
   });
 
+  const { isValid: isValidCollateralValue } = useValueVerifier({
+    value: collateralValue,
+    min: 0,
+    max: Number(loanSelectedData.availableCollat),
+    requireNonZero: true,
+  });
+
   const conditionsSuccess =
     !isSessionModeMock &&
     isValidValue &&
+    isValidCollateralValue &&
     loanSelectedData.selectedRowKey !== "" &&
     loanSelectedData.tokenLabel !== "" &&
     loanSelectedData.collateralLabel !== "";
@@ -101,12 +109,12 @@ export default function LoanComponent({
             <Label
               className={itemsClassName}
               label="Overcollateralization:"
-              secondaryLabel={loanSelectedData.overcollateralizationDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.overcollateralizationDisplay}
             />
             <Label
               className={itemsClassName}
               label="Origination Fee:"
-              secondaryLabel={loanSelectedData.originationFeeRateDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.originationFeeRateDisplay}
             />
           </div>
         </div>
@@ -115,32 +123,32 @@ export default function LoanComponent({
             <Label
               className={itemsClassName}
               label="Origination Cost:"
-              secondaryLabel={loanSelectedData.originationCostDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.originationCostDisplay}
             />
             <Label
               className={itemsClassName}
               label="Overcollateralization:"
-              secondaryLabel={loanSelectedData.overcollateralizationCostDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.overcollateralizationCostDisplay}
             />
             <Label
               className={itemsClassName}
               label="Loan Total Cost:"
-              secondaryLabel={loanSelectedData.loanTotalCostDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.loanTotalCostDisplay}
             />
             <Label
               className={itemsClassName}
               label="Collateral:"
-              secondaryLabel={loanSelectedData.collateralValueDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.collateralValueDisplay}
             />
             <Label
               className={itemsClassName}
               label="Liquidation Price:"
-              secondaryLabel={loanSelectedData.liquidationPriceDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.liquidationPriceDisplay}
             />
             <Label
               className={itemsClassName}
               label="Daily Cost:"
-              secondaryLabel={loanSelectedData.dailyCostDisplay}
+              secondaryLabel={loanSelectedData.uiDisplay.dailyCostDisplay}
             />
           </div>
         </div>

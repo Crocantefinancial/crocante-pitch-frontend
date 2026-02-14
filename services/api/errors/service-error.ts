@@ -74,7 +74,7 @@ export class ServiceError extends Error {
       });
     }
 
-    // Case 2: error as string
+    // Case 2: error as string (preserve code if present, e.g. proxy 401 SESSION_INVALID)
     if (
       data &&
       typeof data === "object" &&
@@ -83,7 +83,10 @@ export class ServiceError extends Error {
     ) {
       return new ServiceError({
         message: (data as any).error,
-        code: ErrorMessages.UNKNOWN_ERROR.code,
+        code:
+          typeof (data as any).code === "string"
+            ? (data as any).code
+            : ErrorMessages.UNKNOWN_ERROR.code,
         status,
         details: data,
       });
