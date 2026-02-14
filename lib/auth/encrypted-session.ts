@@ -1,12 +1,20 @@
-import envParsed from "@/config/envParsed";
 import { createCipheriv, createDecipheriv, createHash, randomBytes } from "crypto";
 
 const ALGO = "aes-256-gcm";
 const IV_LEN = 16;
 const TAG_LEN = 16;
+
+/**
+ * Use SESSION_SECRET from env without NEXT_PUBLIC_ prefix so it is never
+ * exposed to the client bundle. Only this module (server-only) reads it.
+ */
 function getKey(): Buffer {
-  const env = envParsed();
-  const secret = env.SESSION_SECRET ?? "default-secret";
+  const secret =
+    process.env.SESSION_SECRET ??
+    (process.env.NODE_ENV === "production" ? "" : "dev-only-default-secret");
+  if (!secret && process.env.NODE_ENV === "production") {
+    throw new Error("SESSION_SECRET must be set in production");
+  }
   return createHash("sha256").update(secret).digest();
 }
 
