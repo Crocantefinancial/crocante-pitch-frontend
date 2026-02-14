@@ -13,6 +13,7 @@ import React, {
   useEffect,
   useMemo,
 } from "react";
+import { SessionExpiryManager } from "./session-expiry-manager";
 
 type SessionContextType = {
   isSignedIn: boolean;
@@ -64,7 +65,10 @@ export function SessionProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   return (
-    <SessionContext.Provider value={value}>{children}</SessionContext.Provider>
+    <SessionContext.Provider value={value}>
+      <SessionExpiryManager />
+      {children}
+    </SessionContext.Provider>
   );
 }
 
